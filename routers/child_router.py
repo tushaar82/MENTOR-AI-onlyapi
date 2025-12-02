@@ -18,7 +18,7 @@ Version: 1.0.0
 import logging
 from typing import Dict, Any
 
-from fastapi import APIRouter, HTTPException, status, Query, Path
+from fastapi import APIRouter, HTTPException, status, Query, Path, Depends
 
 from models.child_models import (
     ChildProfileRequest,

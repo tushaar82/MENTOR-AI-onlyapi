@@ -18,7 +18,7 @@ Version: 1.0.0
 import logging
 from typing import Dict, Any
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 
 from models.verification_models import (
     SendEmailVerificationRequest,

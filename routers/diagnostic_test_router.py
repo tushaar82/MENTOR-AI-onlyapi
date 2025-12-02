@@ -57,23 +57,7 @@ router = APIRouter(
 # ============================================================================
 
 # Import the real authentication dependency
-from middleware.auth_middleware import get_current_user as auth_get_current_user
-
-async def get_current_user(parent_id: str = Depends(auth_get_current_user)):
-    """
-    Verify JWT token and extract user information.
-    
-    Args:
-        parent_id: Parent ID from JWT token verification
-        
-    Returns:
-        User information dict with parent_id
-    """
-    # Return the authenticated parent's information
-    return {
-        "parent_id": parent_id,
-        "student_id": parent_id  # Using parent_id as student_id for now
-    }
+from middleware.testing_auth import get_current_user_testing as get_current_user
 
 
 async def get_diagnostic_test_service():

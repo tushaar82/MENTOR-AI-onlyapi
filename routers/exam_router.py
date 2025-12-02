@@ -19,7 +19,7 @@ Version: 1.0.0
 import logging
 from typing import Dict, Any
 
-from fastapi import APIRouter, HTTPException, status, Query
+from fastapi import APIRouter, HTTPException, status, Query, Depends
 
 from models.exam_models import (
     ExamSelectionRequest,
