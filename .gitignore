@@ -1,0 +1,132 @@
+# ========================================
+# Mentor AI Backend - Git Ignore Rules
+# ========================================
+
+# ========================================
+# Environment Files
+# ========================================
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+*.env
+
+# ========================================
+# Python Cache Files
+# ========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# ========================================
+# Virtual Environments
+# ========================================
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+pythonenv*/
+
+# ========================================
+# IDE and Editor Files
+# ========================================
+# VSCode
+.vscode/
+*.code-workspace
+
+# PyCharm
+.idea/
+*.iml
+
+# Vim
+*.swp
+*.swo
+*~
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ========================================
+# Firebase Credentials
+# ========================================
+# Service account JSON files
+*service-account*.json
+*firebase-adminsdk*.json
+*serviceAccountKey*.json
+firebase-credentials.json
+
+# Config directory with credentials
+config/*.json
+!config/.gitkeep
+
+# ========================================
+# Logs and Databases
+# ========================================
+*.log
+logs/
+*.sqlite
+*.db
+
+# ========================================
+# OS Files
+# ========================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.directory
+.Trash-*
+
+# ========================================
+# Distribution and Build Files
+# ========================================
+dist/
+build/
+*.egg-info/
+*.egg
+wheels/
+pip-wheel-metadata/
+.installed.cfg
+
+# ========================================
+# Testing and Coverage
+# ========================================
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+.hypothesis/
+
+# ========================================
+# Jupyter Notebook
+# ========================================
+.ipynb_checkpoints/
+*.ipynb
+
+# ========================================
+# Package Management
+# ========================================
+pip-log.txt
+pip-delete-this-directory.txt
+
+# ========================================
+# Temporary Files
+# ========================================
+*.tmp
+*.temp
+*.bak
+*.backup

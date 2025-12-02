@@ -1,0 +1,51 @@
+[
+  {
+    "plan_id": "free",
+    "name": "Free Plan",
+    "price": 0,
+    "duration_days": 365,
+    "features": [
+      "1 diagnostic test",
+      "Basic analytics",
+      "50 practice questions per month",
+      "Standard support"
+    ],
+    "currency": "INR",
+    "is_active": true,
+    "description": "Get started with basic features to explore the platform"
+  },
+  {
+    "plan_id": "premium_monthly",
+    "name": "Premium Monthly",
+    "price": 99900,
+    "duration_days": 30,
+    "features": [
+      "Unlimited diagnostic tests",
+      "Advanced AI analytics",
+      "Unlimited practice questions",
+      "Personalized study schedules",
+      "Teaching resources for parents",
+      "Progress tracking",
+      "Priority support"
+    ],
+    "currency": "INR",
+    "is_active": true,
+    "description": "Complete access to all premium features - ₹999 per month"
+  },
+  {
+    "plan_id": "premium_yearly",
+    "name": "Premium Yearly",
+    "price": 999900,
+    "duration_days": 365,
+    "features": [
+      "All Premium Monthly features",
+      "Priority support",
+      "Early access to new features",
+      "Dedicated success manager",
+      "Annual progress reports"
+    ],
+    "currency": "INR",
+    "is_active": true,
+    "description": "Best value - ₹9,999 per year (Save ₹2,889 compared to monthly)"
+  }
+]
