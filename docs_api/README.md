@@ -39,11 +39,16 @@ The API documentation is organized into the following sections:
 - [vector_search_router.md](./06_ai_features/vector_search_router.md) - Semantic search
 - [ai_features_router.md](./06_ai_features/ai_features_router.md) - General AI features
 
-### [07 Payments](./07_payments/)
+### [07 Parent Features](./08_parent_features/)
+- [parent_features_router.md](./08_parent_features/parent_features_router.md) - Parent engagement and insights features
+
+### [08 Payments](./07_payments/)
 - [payment_router.md](./07_payments/payment_router.md) - Payment processing (Razorpay)
 
 ## Additional Resources
 
+- [MANUAL_TESTING_GUIDE.md](./MANUAL_TESTING_GUIDE.md) - Comprehensive manual testing guide for all endpoints
+- [ENDPOINTS_GUIDE.md](./ENDPOINTS_GUIDE.md) - Complete API endpoints reference with examples
 - [TESTING_WORKFLOW.md](./TESTING_WORKFLOW.md) - Complete user journey testing guide
 - [TROUBLESHOOTING_GUIDE.md](./TROUBLESHOOTING_GUIDE.md) - Common errors and solutions
 - [AI_PROMPTS.md](./AI_PROMPTS.md) - AI troubleshooting prompts for debugging
@@ -114,11 +119,13 @@ For general issues, use the prompts in [AI_PROMPTS.md](./AI_PROMPTS.md).
 ## Testing Best Practices
 
 1. **Follow the Testing Workflow**: Use [TESTING_WORKFLOW.md](./TESTING_WORKFLOW.md) for systematic testing
-2. **Test in Order**: Start with authentication, then onboarding, then other features
-3. **Use Test Data**: Create consistent test data for reproducible results
-4. **Check Dependencies**: Some endpoints require data from other endpoints
-5. **Verify Responses**: Always check both success and error scenarios
-6. **Monitor Logs**: Use server logs to debug issues not visible in responses
+2. **Use the Manual Testing Guide**: Refer to [MANUAL_TESTING_GUIDE.md](./MANUAL_TESTING_GUIDE.md) for comprehensive testing instructions
+3. **Check the Endpoints Guide**: Use [ENDPOINTS_GUIDE.md](./ENDPOINTS_GUIDE.md) for complete API reference
+4. **Test in Order**: Start with authentication, then onboarding, then other features
+5. **Use Test Data**: Create consistent test data for reproducible results
+6. **Check Dependencies**: Some endpoints require data from other endpoints
+7. **Verify Responses**: Always check both success and error scenarios
+8. **Monitor Logs**: Use server logs to debug issues not visible in responses
 
 ## Getting Help
 

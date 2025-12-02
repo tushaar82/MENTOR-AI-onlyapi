@@ -27,8 +27,9 @@ This comprehensive guide covers all API endpoints for the Mentor AI EdTech Platf
 19. [Vector Search](#vector-search)
 20. [RAG](#rag)
 21. [AI Features](#ai-features)
-22. [Payment](#payment)
-23. [Health](#health)
+22. [Parent Features](#parent-features)
+23. [Payment](#payment)
+24. [Health](#health)
 
 ## Authentication
 
@@ -3442,6 +3443,32 @@ curl -X POST "http://localhost:8000/api/ai/content/generate" \
 - 400: Invalid content type
 - 401: Invalid token
 - 500: Content generation failed
+
+## Parent Features
+
+### Overview
+
+Parent features endpoints provide comprehensive tools for parents to monitor, engage, and support their child's learning journey. These endpoints include AI-powered insights, gamified engagement tracking, communication hub, predictive analytics, and resource library access.
+
+For detailed testing instructions and examples for all parent features endpoints, please refer to the dedicated documentation:
+
+**[Parent Features Router Testing Guide →](08_parent_features/parent_features_router.md)**
+
+This guide includes:
+- Detailed endpoint descriptions with curl and Postman examples
+- Request/response formats for all parent features
+- Error handling and troubleshooting guidance
+- Testing workflows for AI insights, engagement tracking, and communication features
+
+### Quick Reference
+
+| Feature | Key Endpoints | Description |
+|---------|---------------|-------------|
+| AI Insights | `/api/parent/insights/*` | AI-powered learning insights and recommendations |
+| Engagement Tracking | `/api/parent/engagement/*` | Gamified engagement tracking and challenges |
+| Communication Hub | `/api/parent/communication/*` | Family communication with AI suggestions |
+| Predictive Analytics | `/api/parent/analytics/*` | Performance predictions and trends |
+| Resource Library | `/api/parent/resources/*` | Curated educational resources |
 
 ## Payment
 
