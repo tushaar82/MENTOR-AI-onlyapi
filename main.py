@@ -46,9 +46,9 @@ from routers.parent_dashboard_router import router as parent_dashboard_router  #
 from routers.student_dashboard_router import router as student_dashboard_router  # Student dashboard and learning features
 from routers.gamification_router import router as gamification_router  # Gamification features
 from routers.ai_features_router import router as ai_features_router  # AI-powered features
+from routers.parent_features_router import router as parent_features_router  # Phase 2 Parent AI Features
 from routers.analytics_router import router as analytics_router  # Analytics and performance insights
 from routers.syllabus_coverage_router import router as syllabus_coverage_router  # Syllabus coverage tracking
-from routers.analytics_router import router as analytics_router  # Analytics and performance insights
 
 # Vertex AI is no longer needed - using Gemini API directly
 
@@ -347,6 +347,13 @@ app.include_router(
     ai_features_router,
     # Prefix and tags are already defined in the router
     # Endpoints: /api/ai/tutor/ask, /api/ai/recommend/topics, /api/ai/readiness, etc.
+)
+
+# Parent features router - Phase 2 Parent AI Features
+app.include_router(
+    parent_features_router,
+    # Prefix and tags are already defined in the router
+    # Endpoints: /api/parent/insights, /api/parent/predictions, /api/parent/communications, etc.
 )
 
 

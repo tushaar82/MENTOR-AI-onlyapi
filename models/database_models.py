@@ -433,11 +433,337 @@ INTERVENTION_ALERTS_SCHEMA = DatabaseSchema(
     ]
 )
 
+# ============================================================================
+# PHASE 2 PARENT AI FEATURES MODELS
+# ============================================================================
+
+class PredictionResult(BaseModel):
+    """Model for predictive analytics results."""
+    
+    prediction_id: str = Field(..., description="Unique prediction identifier")
+    parent_id: str = Field(..., description="Parent ID")
+    student_id: str = Field(..., description="Student ID")
+    prediction_type: Literal["performance_trend", "risk_assessment", "intervention_need", "engagement_forecast"] = Field(..., description="Type of prediction")
+    confidence_score: float = Field(..., description="Confidence score (0-1)")
+    prediction_data: Dict[str, Any] = Field(..., description="Prediction data and insights")
+    risk_factors: List[str] = Field(default_factory=list, description="Identified risk factors")
+    recommended_actions: List[str] = Field(default_factory=list, description="Recommended actions")
+    time_horizon_days: int = Field(..., description="Prediction time horizon in days")
+    model_version: str = Field(..., description="AI model version used")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    expires_at: Optional[datetime] = Field(None, description="Prediction expiry time")
+    
+    model_config = {
+        "json_encoders": {
+            datetime: lambda v: v.isoformat()
+        }
+    }
+
+
+class CommunicationSuggestion(BaseModel):
+    """Model for AI-powered communication suggestions."""
+    
+    suggestion_id: str = Field(..., description="Unique suggestion identifier")
+    parent_id: str = Field(..., description="Parent ID")
+    student_id: str = Field(..., description="Student ID")
+    communication_type: Literal["conversation_starter", "encouragement", "concern", "goal_discussion", "progress_review"] = Field(..., description="Type of communication")
+    suggested_content: str = Field(..., description="Suggested communication content")
+    tone: Literal["supportive", "encouraging", "concerned", "neutral", "celebratory"] = Field(..., description="Recommended tone")
+    context: Dict[str, Any] = Field(..., description="Context for the suggestion")
+    timing_suggestion: Optional[str] = Field(None, description="When to have this conversation")
+    follow_up_suggestions: List[str] = Field(default_factory=list, description="Follow-up suggestions")
+    effectiveness_score: Optional[float] = Field(None, description="Effectiveness score if used")
+    used: bool = Field(False, description="Whether suggestion was used")
+    feedback: Optional[str] = Field(None, description="User feedback on suggestion")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    used_at: Optional[datetime] = Field(None, description="When suggestion was used")
+    
+    model_config = {
+        "json_encoders": {
+            datetime: lambda v: v.isoformat()
+        }
+    }
+
+
+class EngagementChallenge(BaseModel):
+    """Model for gamified engagement challenges."""
+    
+    challenge_id: str = Field(..., description="Unique challenge identifier")
+    parent_id: str = Field(..., description="Parent ID")
+    student_id: str = Field(..., description="Student ID")
+    challenge_type: Literal["weekly_goal", "study_streak", "topic_mastery", "practice_consistency", "engagement_boost"] = Field(..., description="Type of challenge")
+    title: str = Field(..., description="Challenge title")
+    description: str = Field(..., description="Challenge description")
+    difficulty_level: Literal["easy", "medium", "hard", "expert"] = Field(..., description="Difficulty level")
+    target_metrics: Dict[str, Any] = Field(..., description="Target metrics to achieve")
+    current_progress: Dict[str, Any] = Field(default_factory=dict, description="Current progress")
+    points_awarded: int = Field(0, description="Points awarded for completion")
+    bonus_points: int = Field(0, description="Bonus points available")
+    start_date: datetime = Field(..., description="Challenge start date")
+    end_date: datetime = Field(..., description="Challenge end date")
+    status: Literal["active", "completed", "failed", "expired"] = Field(..., description="Challenge status")
+    completed_at: Optional[datetime] = Field(None, description="Completion timestamp")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    model_config = {
+        "json_encoders": {
+            datetime: lambda v: v.isoformat()
+        }
+    }
+
+
+class Achievement(BaseModel):
+    """Model for parent and student achievements."""
+    
+    achievement_id: str = Field(..., description="Unique achievement identifier")
+    parent_id: str = Field(..., description="Parent ID")
+    student_id: str = Field(..., description="Student ID")
+    achievement_type: Literal["milestone", "streak", "improvement", "engagement", "mastery"] = Field(..., description="Type of achievement")
+    title: str = Field(..., description="Achievement title")
+    description: str = Field(..., description="Achievement description")
+    badge_icon: str = Field(..., description="Badge icon identifier")
+    points_awarded: int = Field(..., description="Points awarded")
+    rarity: Literal["common", "rare", "epic", "legendary"] = Field(..., description="Achievement rarity")
+    criteria_met: Dict[str, Any] = Field(..., description="Criteria that were met")
+    earned_at: datetime = Field(..., description="When achievement was earned")
+    shared: bool = Field(False, description="Whether achievement was shared")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    model_config = {
+        "json_encoders": {
+            datetime: lambda v: v.isoformat()
+        }
+    }
+
+
+class ParentResource(BaseModel):
+    """Model for parent resources with AI curation."""
+    
+    resource_id: str = Field(..., description="Unique resource identifier")
+    title: str = Field(..., description="Resource title")
+    description: str = Field(..., description="Resource description")
+    resource_type: Literal["article", "video", "guide", "template", "tool", "course"] = Field(..., description="Type of resource")
+    category: Literal["academic_support", "parenting_tips", "communication", "motivation", "exam_prep", "career_guidance"] = Field(..., description="Resource category")
+    content: str = Field(..., description="Resource content or URL")
+    age_appropriate: List[str] = Field(default_factory=list, description="Age groups this is appropriate for")
+    difficulty_level: Literal["beginner", "intermediate", "advanced"] = Field(..., description="Difficulty level")
+    language: str = Field(default="en", description="Resource language")
+    tags: List[str] = Field(default_factory=list, description="Resource tags")
+    quality_score: float = Field(..., description="AI-assessed quality score (0-1)")
+    effectiveness_rating: Optional[float] = Field(None, description="User effectiveness rating")
+    usage_count: int = Field(0, description="Number of times used")
+    download_count: int = Field(0, description="Number of times downloaded")
+    author: Optional[str] = Field(None, description="Resource author")
+    source: Optional[str] = Field(None, description="Resource source")
+    curated_by_ai: bool = Field(True, description="Whether curated by AI")
+    last_updated: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    model_config = {
+        "json_encoders": {
+            datetime: lambda v: v.isoformat()
+        }
+    }
+
+
+class ResourceUsage(BaseModel):
+    """Model for tracking resource usage and effectiveness."""
+    
+    usage_id: str = Field(..., description="Unique usage identifier")
+    parent_id: str = Field(..., description="Parent ID")
+    student_id: Optional[str] = Field(None, description="Student ID if applicable")
+    resource_id: str = Field(..., description="Resource ID")
+    usage_type: Literal["viewed", "downloaded", "bookmarked", "shared", "rated"] = Field(..., description="Type of usage")
+    effectiveness_rating: Optional[float] = Field(None, description="User effectiveness rating (1-5)")
+    feedback: Optional[str] = Field(None, description="User feedback")
+    outcome: Optional[str] = Field(None, description="Outcome after using resource")
+    time_spent_minutes: Optional[int] = Field(None, description="Time spent with resource")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    model_config = {
+        "json_encoders": {
+            datetime: lambda v: v.isoformat()
+        }
+    }
+
+
+# ============================================================================
+# PHASE 2 DATABASE SCHEMA MODELS
+# ============================================================================
+
+PREDICTION_RESULTS_SCHEMA = DatabaseSchema(
+    collection_name="prediction_results",
+    description="Predictive analytics results for early warnings",
+    fields={
+        "prediction_id": {"type": "string", "required": True, "description": "Unique identifier"},
+        "parent_id": {"type": "string", "required": True, "description": "Parent ID"},
+        "student_id": {"type": "string", "required": True, "description": "Student ID"},
+        "prediction_type": {"type": "string", "required": True, "description": "Type of prediction"},
+        "confidence_score": {"type": "float", "required": True, "description": "Confidence score"},
+        "prediction_data": {"type": "map", "required": True, "description": "Prediction data"},
+        "risk_factors": {"type": "array", "required": True, "description": "Risk factors"},
+        "recommended_actions": {"type": "array", "required": True, "description": "Recommended actions"},
+        "time_horizon_days": {"type": "integer", "required": True, "description": "Time horizon"},
+        "model_version": {"type": "string", "required": True, "description": "Model version"},
+        "created_at": {"type": "timestamp", "required": True, "description": "Creation time"},
+        "expires_at": {"type": "timestamp", "required": False, "description": "Expiry time"}
+    },
+    indexes=[
+        {"fields": ["parent_id", "created_at"], "name": "parent_predictions_by_time"},
+        {"fields": ["student_id", "created_at"], "name": "student_predictions_by_time"},
+        {"fields": ["prediction_type", "created_at"], "name": "predictions_by_type"},
+        {"fields": ["confidence_score", "created_at"], "name": "predictions_by_confidence"}
+    ]
+)
+
+COMMUNICATION_SUGGESTIONS_SCHEMA = DatabaseSchema(
+    collection_name="communication_suggestions",
+    description="AI-powered communication suggestions",
+    fields={
+        "suggestion_id": {"type": "string", "required": True, "description": "Unique identifier"},
+        "parent_id": {"type": "string", "required": True, "description": "Parent ID"},
+        "student_id": {"type": "string", "required": True, "description": "Student ID"},
+        "communication_type": {"type": "string", "required": True, "description": "Type of communication"},
+        "suggested_content": {"type": "string", "required": True, "description": "Suggested content"},
+        "tone": {"type": "string", "required": True, "description": "Recommended tone"},
+        "context": {"type": "map", "required": True, "description": "Context"},
+        "timing_suggestion": {"type": "string", "required": False, "description": "Timing suggestion"},
+        "follow_up_suggestions": {"type": "array", "required": True, "description": "Follow-up suggestions"},
+        "effectiveness_score": {"type": "float", "required": False, "description": "Effectiveness score"},
+        "used": {"type": "boolean", "required": True, "description": "Whether used"},
+        "feedback": {"type": "string", "required": False, "description": "User feedback"},
+        "created_at": {"type": "timestamp", "required": True, "description": "Creation time"},
+        "used_at": {"type": "timestamp", "required": False, "description": "When used"}
+    },
+    indexes=[
+        {"fields": ["parent_id", "created_at"], "name": "parent_suggestions_by_time"},
+        {"fields": ["student_id", "created_at"], "name": "student_suggestions_by_time"},
+        {"fields": ["communication_type", "created_at"], "name": "suggestions_by_type"},
+        {"fields": ["used", "created_at"], "name": "suggestions_by_usage"}
+    ]
+)
+
+ENGAGEMENT_CHALLENGES_SCHEMA = DatabaseSchema(
+    collection_name="engagement_challenges",
+    description="Gamified engagement challenges",
+    fields={
+        "challenge_id": {"type": "string", "required": True, "description": "Unique identifier"},
+        "parent_id": {"type": "string", "required": True, "description": "Parent ID"},
+        "student_id": {"type": "string", "required": True, "description": "Student ID"},
+        "challenge_type": {"type": "string", "required": True, "description": "Type of challenge"},
+        "title": {"type": "string", "required": True, "description": "Challenge title"},
+        "description": {"type": "string", "required": True, "description": "Challenge description"},
+        "difficulty_level": {"type": "string", "required": True, "description": "Difficulty level"},
+        "target_metrics": {"type": "map", "required": True, "description": "Target metrics"},
+        "current_progress": {"type": "map", "required": True, "description": "Current progress"},
+        "points_awarded": {"type": "integer", "required": True, "description": "Points awarded"},
+        "bonus_points": {"type": "integer", "required": True, "description": "Bonus points"},
+        "start_date": {"type": "timestamp", "required": True, "description": "Start date"},
+        "end_date": {"type": "timestamp", "required": True, "description": "End date"},
+        "status": {"type": "string", "required": True, "description": "Challenge status"},
+        "completed_at": {"type": "timestamp", "required": False, "description": "Completion time"},
+        "created_at": {"type": "timestamp", "required": True, "description": "Creation time"}
+    },
+    indexes=[
+        {"fields": ["parent_id", "created_at"], "name": "parent_challenges_by_time"},
+        {"fields": ["student_id", "created_at"], "name": "student_challenges_by_time"},
+        {"fields": ["challenge_type", "created_at"], "name": "challenges_by_type"},
+        {"fields": ["status", "created_at"], "name": "challenges_by_status"}
+    ]
+)
+
+ACHIEVEMENTS_SCHEMA = DatabaseSchema(
+    collection_name="achievements",
+    description="Parent and student achievements",
+    fields={
+        "achievement_id": {"type": "string", "required": True, "description": "Unique identifier"},
+        "parent_id": {"type": "string", "required": True, "description": "Parent ID"},
+        "student_id": {"type": "string", "required": True, "description": "Student ID"},
+        "achievement_type": {"type": "string", "required": True, "description": "Type of achievement"},
+        "title": {"type": "string", "required": True, "description": "Achievement title"},
+        "description": {"type": "string", "required": True, "description": "Achievement description"},
+        "badge_icon": {"type": "string", "required": True, "description": "Badge icon"},
+        "points_awarded": {"type": "integer", "required": True, "description": "Points awarded"},
+        "rarity": {"type": "string", "required": True, "description": "Achievement rarity"},
+        "criteria_met": {"type": "map", "required": True, "description": "Criteria met"},
+        "earned_at": {"type": "timestamp", "required": True, "description": "When earned"},
+        "shared": {"type": "boolean", "required": True, "description": "Whether shared"},
+        "created_at": {"type": "timestamp", "required": True, "description": "Creation time"}
+    },
+    indexes=[
+        {"fields": ["parent_id", "earned_at"], "name": "parent_achievements_by_time"},
+        {"fields": ["student_id", "earned_at"], "name": "student_achievements_by_time"},
+        {"fields": ["achievement_type", "earned_at"], "name": "achievements_by_type"},
+        {"fields": ["rarity", "earned_at"], "name": "achievements_by_rarity"}
+    ]
+)
+
+PARENT_RESOURCES_SCHEMA = DatabaseSchema(
+    collection_name="parent_resources",
+    description="AI-curated parent resources",
+    fields={
+        "resource_id": {"type": "string", "required": True, "description": "Unique identifier"},
+        "title": {"type": "string", "required": True, "description": "Resource title"},
+        "description": {"type": "string", "required": True, "description": "Resource description"},
+        "resource_type": {"type": "string", "required": True, "description": "Resource type"},
+        "category": {"type": "string", "required": True, "description": "Resource category"},
+        "content": {"type": "string", "required": True, "description": "Resource content or URL"},
+        "age_appropriate": {"type": "array", "required": True, "description": "Age groups"},
+        "difficulty_level": {"type": "string", "required": True, "description": "Difficulty level"},
+        "language": {"type": "string", "required": True, "description": "Resource language"},
+        "tags": {"type": "array", "required": True, "description": "Resource tags"},
+        "quality_score": {"type": "float", "required": True, "description": "Quality score"},
+        "effectiveness_rating": {"type": "float", "required": False, "description": "Effectiveness rating"},
+        "usage_count": {"type": "integer", "required": True, "description": "Usage count"},
+        "download_count": {"type": "integer", "required": True, "description": "Download count"},
+        "author": {"type": "string", "required": False, "description": "Resource author"},
+        "source": {"type": "string", "required": False, "description": "Resource source"},
+        "curated_by_ai": {"type": "boolean", "required": True, "description": "AI curated"},
+        "last_updated": {"type": "timestamp", "required": True, "description": "Last updated"},
+        "created_at": {"type": "timestamp", "required": True, "description": "Creation time"}
+    },
+    indexes=[
+        {"fields": ["category", "created_at"], "name": "resources_by_category"},
+        {"fields": ["resource_type", "created_at"], "name": "resources_by_type"},
+        {"fields": ["quality_score", "created_at"], "name": "resources_by_quality"},
+        {"fields": ["language", "created_at"], "name": "resources_by_language"}
+    ]
+)
+
+RESOURCE_USAGE_SCHEMA = DatabaseSchema(
+    collection_name="resource_usage",
+    description="Resource usage tracking and effectiveness",
+    fields={
+        "usage_id": {"type": "string", "required": True, "description": "Unique identifier"},
+        "parent_id": {"type": "string", "required": True, "description": "Parent ID"},
+        "student_id": {"type": "string", "required": False, "description": "Student ID"},
+        "resource_id": {"type": "string", "required": True, "description": "Resource ID"},
+        "usage_type": {"type": "string", "required": True, "description": "Type of usage"},
+        "effectiveness_rating": {"type": "float", "required": False, "description": "Effectiveness rating"},
+        "feedback": {"type": "string", "required": False, "description": "User feedback"},
+        "outcome": {"type": "string", "required": False, "description": "Outcome"},
+        "time_spent_minutes": {"type": "integer", "required": False, "description": "Time spent"},
+        "created_at": {"type": "timestamp", "required": True, "description": "Creation time"}
+    },
+    indexes=[
+        {"fields": ["parent_id", "created_at"], "name": "parent_usage_by_time"},
+        {"fields": ["student_id", "created_at"], "name": "student_usage_by_time"},
+        {"fields": ["resource_id", "created_at"], "name": "usage_by_resource"},
+        {"fields": ["usage_type", "created_at"], "name": "usage_by_type"}
+    ]
+)
+
 # All schemas for easy access
 DATABASE_SCHEMAS = {
     "ai_interactions": AI_INTERACTIONS_SCHEMA,
     "parent_insights": PARENT_INSIGHTS_SCHEMA,
     "engagement_metrics": ENGAGEMENT_METRICS_SCHEMA,
     "communication_history": COMMUNICATION_HISTORY_SCHEMA,
-    "intervention_alerts": INTERVENTION_ALERTS_SCHEMA
+    "intervention_alerts": INTERVENTION_ALERTS_SCHEMA,
+    "prediction_results": PREDICTION_RESULTS_SCHEMA,
+    "communication_suggestions": COMMUNICATION_SUGGESTIONS_SCHEMA,
+    "engagement_challenges": ENGAGEMENT_CHALLENGES_SCHEMA,
+    "achievements": ACHIEVEMENTS_SCHEMA,
+    "parent_resources": PARENT_RESOURCES_SCHEMA,
+    "resource_usage": RESOURCE_USAGE_SCHEMA
 }

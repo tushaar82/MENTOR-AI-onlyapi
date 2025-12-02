@@ -29,7 +29,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { aiFeaturesAPI } from '@/lib/api';
+import { aiFeaturesAPI, parentFeaturesAPI } from '@/lib/api';
 import { useAuth } from '@/contexts/AuthContext';
 
 // Types
@@ -62,11 +62,86 @@ interface Alert {
   created_at: string;
 }
 
+interface Prediction {
+  prediction_id: string;
+  student_id: string;
+  prediction_type: 'performance_trend' | 'risk_assessment' | 'intervention_need' | 'engagement_forecast';
+  confidence_score: number;
+  prediction_data: Record<string, any>;
+  risk_factors: string[];
+  recommended_actions: string[];
+  time_horizon_days: number;
+  created_at: string;
+}
+
+interface CommunicationSuggestion {
+  suggestion_id: string;
+  student_id: string;
+  communication_type: 'conversation_starter' | 'encouragement' | 'concern' | 'goal_discussion' | 'progress_review';
+  suggested_content: string;
+  tone: 'supportive' | 'encouraging' | 'concerned' | 'neutral' | 'celebratory';
+  context: Record<string, any>;
+  timing_suggestion?: string;
+  follow_up_suggestions: string[];
+  used: boolean;
+  created_at: string;
+}
+
+interface Challenge {
+  challenge_id: string;
+  student_id: string;
+  challenge_type: 'weekly_goal' | 'study_streak' | 'topic_mastery' | 'practice_consistency' | 'engagement_boost';
+  title: string;
+  description: string;
+  difficulty_level: 'easy' | 'medium' | 'hard' | 'expert';
+  target_metrics: Record<string, any>;
+  current_progress: Record<string, any>;
+  points_awarded: number;
+  bonus_points: number;
+  start_date: string;
+  end_date: string;
+  status: 'active' | 'completed' | 'failed' | 'expired';
+}
+
+interface Achievement {
+  achievement_id: string;
+  student_id: string;
+  achievement_type: 'milestone' | 'streak' | 'improvement' | 'engagement' | 'mastery';
+  title: string;
+  description: string;
+  badge_icon: string;
+  points_awarded: number;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+  earned_at: string;
+  shared: boolean;
+}
+
+interface Resource {
+  resource_id: string;
+  title: string;
+  description: string;
+  resource_type: 'article' | 'video' | 'guide' | 'template' | 'tool' | 'course';
+  category: 'academic_support' | 'parenting_tips' | 'communication' | 'motivation' | 'exam_prep' | 'career_guidance';
+  content: string;
+  age_appropriate: string[];
+  difficulty_level: 'beginner' | 'intermediate' | 'advanced';
+  language: string;
+  tags: string[];
+  quality_score: number;
+  effectiveness_rating?: number;
+  usage_count: number;
+  download_count: number;
+  curated_by_ai: boolean;
+}
+
 interface DashboardData {
   recent_insights: Insight[];
   active_alerts: Alert[];
   insights_count: number;
   alerts_count: number;
+  recent_predictions?: Prediction[];
+  active_challenges?: Challenge[];
+  recent_achievements?: Achievement[];
 }
 
 const AIInsightsPanel: React.FC = () => {
@@ -74,6 +149,11 @@ const AIInsightsPanel: React.FC = () => {
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [insights, setInsights] = useState<Insight[]>([]);
   const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [predictions, setPredictions] = useState<Prediction[]>([]);
+  const [suggestions, setSuggestions] = useState<CommunicationSuggestion[]>([]);
+  const [challenges, setChallenges] = useState<Challenge[]>([]);
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [resources, setResources] = useState<Resource[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedStudent, setSelectedStudent] = useState<string>('');
@@ -101,6 +181,41 @@ const AIInsightsPanel: React.FC = () => {
     }
   }, [selectedStudent, activeTab]);
 
+  // Load predictions when predictions tab is active
+  useEffect(() => {
+    if (activeTab === 'predictions') {
+      loadPredictions();
+    }
+  }, [selectedStudent, activeTab]);
+
+  // Load suggestions when communication tab is active
+  useEffect(() => {
+    if (activeTab === 'communication') {
+      loadSuggestions();
+    }
+  }, [selectedStudent, activeTab]);
+
+  // Load challenges when engagement tab is active
+  useEffect(() => {
+    if (activeTab === 'engagement') {
+      loadChallenges();
+    }
+  }, [selectedStudent, activeTab]);
+
+  // Load achievements when engagement tab is active
+  useEffect(() => {
+    if (activeTab === 'engagement') {
+      loadAchievements();
+    }
+  }, [selectedStudent, activeTab]);
+
+  // Load resources when resources tab is active
+  useEffect(() => {
+    if (activeTab === 'resources') {
+      loadResources();
+    }
+  }, [activeTab]);
+
   const loadDashboardData = async () => {
     try {
       setLoading(true);
@@ -112,6 +227,9 @@ const AIInsightsPanel: React.FC = () => {
       // Set initial insights and alerts from dashboard
       setInsights(response.data.recent_insights || []);
       setAlerts(response.data.active_alerts || []);
+      setPredictions(response.data.recent_predictions || []);
+      setChallenges(response.data.active_challenges || []);
+      setAchievements(response.data.recent_achievements || []);
       
     } catch (err: any) {
       console.error('Failed to load dashboard data:', err);
@@ -156,6 +274,118 @@ const AIInsightsPanel: React.FC = () => {
     } catch (err: any) {
       console.error('Failed to load alerts:', err);
       setError(err.response?.data?.error?.message || 'Failed to load alerts');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadPredictions = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const params: any = {};
+      if (selectedStudent) params.student_id = selectedStudent;
+      
+      // Note: This would need to be added to the API
+      // const response = await parentFeaturesAPI.getPredictions(params);
+      // setPredictions(response.data);
+      
+      // Mock data for now
+      setPredictions([]);
+      
+    } catch (err: any) {
+      console.error('Failed to load predictions:', err);
+      setError(err.response?.data?.error?.message || 'Failed to load predictions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadSuggestions = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const params: any = {};
+      if (selectedStudent) params.student_id = selectedStudent;
+      
+      // Note: This would need to be added to the API
+      // const response = await parentFeaturesAPI.getCommunicationSuggestions(params);
+      // setSuggestions(response.data);
+      
+      // Mock data for now
+      setSuggestions([]);
+      
+    } catch (err: any) {
+      console.error('Failed to load suggestions:', err);
+      setError(err.response?.data?.error?.message || 'Failed to load suggestions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadChallenges = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const params: any = {};
+      if (selectedStudent) params.student_id = selectedStudent;
+      
+      // Note: This would need to be added to the API
+      // const response = await parentFeaturesAPI.getEngagementChallenges(params);
+      // setChallenges(response.data);
+      
+      // Mock data for now
+      setChallenges([]);
+      
+    } catch (err: any) {
+      console.error('Failed to load challenges:', err);
+      setError(err.response?.data?.error?.message || 'Failed to load challenges');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadAchievements = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const params: any = {};
+      if (selectedStudent) params.student_id = selectedStudent;
+      
+      // Note: This would need to be added to the API
+      // const response = await parentFeaturesAPI.getAchievements(params);
+      // setAchievements(response.data);
+      
+      // Mock data for now
+      setAchievements([]);
+      
+    } catch (err: any) {
+      console.error('Failed to load achievements:', err);
+      setError(err.response?.data?.error?.message || 'Failed to load achievements');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loadResources = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Note: This would need to be added to the API
+      // const response = await parentFeaturesAPI.getResources();
+      // setResources(response.data);
+      
+      // Mock data for now
+      setResources([]);
+      
+    } catch (err: any) {
+      console.error('Failed to load resources:', err);
+      setError(err.response?.data?.error?.message || 'Failed to load resources');
     } finally {
       setLoading(false);
     }
@@ -340,9 +570,13 @@ const AIInsightsPanel: React.FC = () => {
 
       {/* Main Content */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="insights">Insights</TabsTrigger>
           <TabsTrigger value="alerts">Alerts</TabsTrigger>
+          <TabsTrigger value="predictions">Predictions</TabsTrigger>
+          <TabsTrigger value="communication">Communication</TabsTrigger>
+          <TabsTrigger value="engagement">Engagement</TabsTrigger>
+          <TabsTrigger value="resources">Resources</TabsTrigger>
         </TabsList>
         
         {/* Insights Tab */}
@@ -533,6 +767,42 @@ const AIInsightsPanel: React.FC = () => {
                 No active alerts found.
               </div>
             )}
+          </div>
+        </TabsContent>
+        
+        {/* Predictions Tab */}
+        <TabsContent value="predictions" className="space-y-4">
+          <div className="text-center py-8 text-gray-500">
+            <h3 className="text-lg font-medium mb-2">Predictive Analytics</h3>
+            <p>AI-powered predictions and early warnings coming soon.</p>
+            <p className="text-sm mt-2">This feature will help you anticipate your child's learning needs.</p>
+          </div>
+        </TabsContent>
+        
+        {/* Communication Tab */}
+        <TabsContent value="communication" className="space-y-4">
+          <div className="text-center py-8 text-gray-500">
+            <h3 className="text-lg font-medium mb-2">Communication Hub</h3>
+            <p>AI-powered communication suggestions coming soon.</p>
+            <p className="text-sm mt-2">Get personalized conversation starters and communication strategies.</p>
+          </div>
+        </TabsContent>
+        
+        {/* Engagement Tab */}
+        <TabsContent value="engagement" className="space-y-4">
+          <div className="text-center py-8 text-gray-500">
+            <h3 className="text-lg font-medium mb-2">Gamified Engagement</h3>
+            <p>Challenges, achievements, and engagement tracking coming soon.</p>
+            <p className="text-sm mt-2">Motivate your child with AI-powered learning activities.</p>
+          </div>
+        </TabsContent>
+        
+        {/* Resources Tab */}
+        <TabsContent value="resources" className="space-y-4">
+          <div className="text-center py-8 text-gray-500">
+            <h3 className="text-lg font-medium mb-2">Parent Resource Library</h3>
+            <p>AI-curated resources and guides coming soon.</p>
+            <p className="text-sm mt-2">Access expert-vetted content to support your child's education.</p>
           </div>
         </TabsContent>
       </Tabs>

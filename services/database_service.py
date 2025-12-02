@@ -24,7 +24,8 @@ from models.database_models import (
     AIInteraction, AIInteractionSummary, ParentInsight, ParentDashboardConfig,
     EngagementMetric, EngagementSummary, StudySession, CommunicationRecord,
     CommunicationTemplate, InterventionAlert, InterventionRule,
-    DATABASE_SCHEMAS
+    PredictionResult, CommunicationSuggestion, EngagementChallenge, Achievement,
+    ParentResource, ResourceUsage, DATABASE_SCHEMAS
 )
 from utils.firebase_config import get_firestore_client
 
@@ -731,6 +732,507 @@ class DatabaseService:
             
         except Exception as e:
             logger.error(f"Failed to cleanup old data: {e}")
+            raise
+    
+    # ============================================================================
+    # PHASE 2 PARENT AI FEATURES METHODS
+    # ============================================================================
+    
+    # Prediction Results Methods
+    async def save_prediction_result(self, prediction: PredictionResult) -> str:
+        """Save a prediction result to Firestore."""
+        try:
+            collection = self.collections["prediction_results"]
+            
+            # Convert to dict
+            prediction_dict = prediction.model_dump()
+            
+            # Insert prediction
+            doc_ref = collection.document(prediction.prediction_id)
+            await doc_ref.set(prediction_dict)
+            
+            logger.info(f"Saved prediction result: {prediction.prediction_id}")
+            return prediction.prediction_id
+            
+        except Exception as e:
+            logger.error(f"Failed to save prediction result: {e}")
+            raise
+    
+    async def get_prediction_results(
+        self,
+        parent_id: str,
+        student_id: Optional[str] = None,
+        prediction_type: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
+        limit: int = 100
+    ) -> List[PredictionResult]:
+        """Get prediction results with optional filters."""
+        try:
+            collection = self.collections["prediction_results"]
+            
+            # Build query
+            query = collection.where("parent_id", "==", parent_id)
+            if student_id:
+                query = query.where("student_id", "==", student_id)
+            if prediction_type:
+                query = query.where("prediction_type", "==", prediction_type)
+            if start_date:
+                query = query.where("created_at", ">=", start_date)
+            if end_date:
+                query = query.where("created_at", "<=", end_date)
+            
+            # Execute query
+            query = query.order_by("created_at", direction=firestore.Query.DESCENDING)
+            docs = list(query.limit(limit).stream())
+            
+            # Convert to PredictionResult objects
+            predictions = []
+            for doc in docs:
+                result = doc.to_dict()
+                result["document_id"] = doc.id
+                predictions.append(PredictionResult(**result))
+            
+            return predictions
+            
+        except Exception as e:
+            logger.error(f"Failed to get prediction results: {e}")
+            raise
+    
+    # Communication Suggestions Methods
+    async def save_communication_suggestion(self, suggestion: CommunicationSuggestion) -> str:
+        """Save a communication suggestion to Firestore."""
+        try:
+            collection = self.collections["communication_suggestions"]
+            
+            # Convert to dict
+            suggestion_dict = suggestion.model_dump()
+            
+            # Insert suggestion
+            doc_ref = collection.document(suggestion.suggestion_id)
+            await doc_ref.set(suggestion_dict)
+            
+            logger.info(f"Saved communication suggestion: {suggestion.suggestion_id}")
+            return suggestion.suggestion_id
+            
+        except Exception as e:
+            logger.error(f"Failed to save communication suggestion: {e}")
+            raise
+    
+    async def get_communication_suggestions(
+        self,
+        parent_id: str,
+        student_id: Optional[str] = None,
+        communication_type: Optional[str] = None,
+        used: Optional[bool] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
+        limit: int = 100
+    ) -> List[CommunicationSuggestion]:
+        """Get communication suggestions with optional filters."""
+        try:
+            collection = self.collections["communication_suggestions"]
+            
+            # Build query
+            query = collection.where("parent_id", "==", parent_id)
+            if student_id:
+                query = query.where("student_id", "==", student_id)
+            if communication_type:
+                query = query.where("communication_type", "==", communication_type)
+            if used is not None:
+                query = query.where("used", "==", used)
+            if start_date:
+                query = query.where("created_at", ">=", start_date)
+            if end_date:
+                query = query.where("created_at", "<=", end_date)
+            
+            # Execute query
+            query = query.order_by("created_at", direction=firestore.Query.DESCENDING)
+            docs = list(query.limit(limit).stream())
+            
+            # Convert to CommunicationSuggestion objects
+            suggestions = []
+            for doc in docs:
+                result = doc.to_dict()
+                result["document_id"] = doc.id
+                suggestions.append(CommunicationSuggestion(**result))
+            
+            return suggestions
+            
+        except Exception as e:
+            logger.error(f"Failed to get communication suggestions: {e}")
+            raise
+    
+    async def update_communication_suggestion_usage(
+        self,
+        suggestion_id: str,
+        used: bool,
+        feedback: Optional[str] = None,
+        effectiveness_score: Optional[float] = None
+    ) -> bool:
+        """Update communication suggestion usage and feedback."""
+        try:
+            collection = self.collections["communication_suggestions"]
+            
+            # Build update document
+            update_doc = {"used": used}
+            if used:
+                update_doc["used_at"] = datetime.utcnow()
+            
+            if feedback is not None:
+                update_doc["feedback"] = feedback
+            if effectiveness_score is not None:
+                update_doc["effectiveness_score"] = effectiveness_score
+            
+            # Update suggestion
+            doc_ref = collection.document(suggestion_id)
+            await doc_ref.update(update_doc)
+            
+            logger.info(f"Updated communication suggestion usage: {suggestion_id}")
+            return True
+            
+        except GoogleAPICallError as e:
+            if "NOT_FOUND" in str(e):
+                logger.warning(f"Communication suggestion not found for update: {suggestion_id}")
+                return False
+            else:
+                logger.error(f"Failed to update communication suggestion usage: {e}")
+                raise
+        except Exception as e:
+            logger.error(f"Failed to update communication suggestion usage: {e}")
+            raise
+    
+    # Engagement Challenges Methods
+    async def save_engagement_challenge(self, challenge: EngagementChallenge) -> str:
+        """Save an engagement challenge to Firestore."""
+        try:
+            collection = self.collections["engagement_challenges"]
+            
+            # Convert to dict
+            challenge_dict = challenge.model_dump()
+            
+            # Insert challenge
+            doc_ref = collection.document(challenge.challenge_id)
+            await doc_ref.set(challenge_dict)
+            
+            logger.info(f"Saved engagement challenge: {challenge.challenge_id}")
+            return challenge.challenge_id
+            
+        except Exception as e:
+            logger.error(f"Failed to save engagement challenge: {e}")
+            raise
+    
+    async def get_engagement_challenges(
+        self,
+        parent_id: str,
+        student_id: Optional[str] = None,
+        challenge_type: Optional[str] = None,
+        status: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
+        limit: int = 100
+    ) -> List[EngagementChallenge]:
+        """Get engagement challenges with optional filters."""
+        try:
+            collection = self.collections["engagement_challenges"]
+            
+            # Build query
+            query = collection.where("parent_id", "==", parent_id)
+            if student_id:
+                query = query.where("student_id", "==", student_id)
+            if challenge_type:
+                query = query.where("challenge_type", "==", challenge_type)
+            if status:
+                query = query.where("status", "==", status)
+            if start_date:
+                query = query.where("created_at", ">=", start_date)
+            if end_date:
+                query = query.where("created_at", "<=", end_date)
+            
+            # Execute query
+            query = query.order_by("created_at", direction=firestore.Query.DESCENDING)
+            docs = list(query.limit(limit).stream())
+            
+            # Convert to EngagementChallenge objects
+            challenges = []
+            for doc in docs:
+                result = doc.to_dict()
+                result["document_id"] = doc.id
+                challenges.append(EngagementChallenge(**result))
+            
+            return challenges
+            
+        except Exception as e:
+            logger.error(f"Failed to get engagement challenges: {e}")
+            raise
+    
+    async def update_engagement_challenge_progress(
+        self,
+        challenge_id: str,
+        current_progress: Dict[str, Any],
+        status: Optional[str] = None
+    ) -> bool:
+        """Update engagement challenge progress and status."""
+        try:
+            collection = self.collections["engagement_challenges"]
+            
+            # Build update document
+            update_doc = {"current_progress": current_progress}
+            if status:
+                update_doc["status"] = status
+                if status == "completed":
+                    update_doc["completed_at"] = datetime.utcnow()
+            
+            # Update challenge
+            doc_ref = collection.document(challenge_id)
+            await doc_ref.update(update_doc)
+            
+            logger.info(f"Updated engagement challenge progress: {challenge_id}")
+            return True
+            
+        except GoogleAPICallError as e:
+            if "NOT_FOUND" in str(e):
+                logger.warning(f"Engagement challenge not found for update: {challenge_id}")
+                return False
+            else:
+                logger.error(f"Failed to update engagement challenge progress: {e}")
+                raise
+        except Exception as e:
+            logger.error(f"Failed to update engagement challenge progress: {e}")
+            raise
+    
+    # Achievements Methods
+    async def save_achievement(self, achievement: Achievement) -> str:
+        """Save an achievement to Firestore."""
+        try:
+            collection = self.collections["achievements"]
+            
+            # Convert to dict
+            achievement_dict = achievement.model_dump()
+            
+            # Insert achievement
+            doc_ref = collection.document(achievement.achievement_id)
+            await doc_ref.set(achievement_dict)
+            
+            logger.info(f"Saved achievement: {achievement.achievement_id}")
+            return achievement.achievement_id
+            
+        except Exception as e:
+            logger.error(f"Failed to save achievement: {e}")
+            raise
+    
+    async def get_achievements(
+        self,
+        parent_id: str,
+        student_id: Optional[str] = None,
+        achievement_type: Optional[str] = None,
+        rarity: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
+        limit: int = 100
+    ) -> List[Achievement]:
+        """Get achievements with optional filters."""
+        try:
+            collection = self.collections["achievements"]
+            
+            # Build query
+            query = collection.where("parent_id", "==", parent_id)
+            if student_id:
+                query = query.where("student_id", "==", student_id)
+            if achievement_type:
+                query = query.where("achievement_type", "==", achievement_type)
+            if rarity:
+                query = query.where("rarity", "==", rarity)
+            if start_date:
+                query = query.where("earned_at", ">=", start_date)
+            if end_date:
+                query = query.where("earned_at", "<=", end_date)
+            
+            # Execute query
+            query = query.order_by("earned_at", direction=firestore.Query.DESCENDING)
+            docs = list(query.limit(limit).stream())
+            
+            # Convert to Achievement objects
+            achievements = []
+            for doc in docs:
+                result = doc.to_dict()
+                result["document_id"] = doc.id
+                achievements.append(Achievement(**result))
+            
+            return achievements
+            
+        except Exception as e:
+            logger.error(f"Failed to get achievements: {e}")
+            raise
+    
+    # Parent Resources Methods
+    async def save_parent_resource(self, resource: ParentResource) -> str:
+        """Save a parent resource to Firestore."""
+        try:
+            collection = self.collections["parent_resources"]
+            
+            # Convert to dict
+            resource_dict = resource.model_dump()
+            
+            # Insert resource
+            doc_ref = collection.document(resource.resource_id)
+            await doc_ref.set(resource_dict)
+            
+            logger.info(f"Saved parent resource: {resource.resource_id}")
+            return resource.resource_id
+            
+        except Exception as e:
+            logger.error(f"Failed to save parent resource: {e}")
+            raise
+    
+    async def get_parent_resources(
+        self,
+        category: Optional[str] = None,
+        resource_type: Optional[str] = None,
+        difficulty_level: Optional[str] = None,
+        language: Optional[str] = None,
+        tags: Optional[List[str]] = None,
+        min_quality_score: Optional[float] = None,
+        limit: int = 100
+    ) -> List[ParentResource]:
+        """Get parent resources with optional filters."""
+        try:
+            collection = self.collections["parent_resources"]
+            
+            # Build query
+            query = collection
+            if category:
+                query = query.where("category", "==", category)
+            if resource_type:
+                query = query.where("resource_type", "==", resource_type)
+            if difficulty_level:
+                query = query.where("difficulty_level", "==", difficulty_level)
+            if language:
+                query = query.where("language", "==", language)
+            if min_quality_score:
+                query = query.where("quality_score", ">=", min_quality_score)
+            
+            # Execute query
+            query = query.order_by("quality_score", direction=firestore.Query.DESCENDING)
+            docs = list(query.limit(limit).stream())
+            
+            # Filter by tags if provided (client-side filtering)
+            resources = []
+            for doc in docs:
+                result = doc.to_dict()
+                result["document_id"] = doc.id
+                
+                # Tag filtering
+                if tags:
+                    resource_tags = set(result.get("tags", []))
+                    tag_filter = set(tags)
+                    if not resource_tags.intersection(tag_filter):
+                        continue
+                
+                resources.append(ParentResource(**result))
+            
+            return resources
+            
+        except Exception as e:
+            logger.error(f"Failed to get parent resources: {e}")
+            raise
+    
+    async def update_resource_usage(
+        self,
+        resource_id: str,
+        usage_type: str,
+        increment: int = 1
+    ) -> bool:
+        """Update resource usage statistics."""
+        try:
+            collection = self.collections["parent_resources"]
+            
+            # Get current resource
+            doc_ref = collection.document(resource_id)
+            doc = await doc_ref.get()
+            
+            if not doc.exists:
+                logger.warning(f"Resource not found for usage update: {resource_id}")
+                return False
+            
+            # Update usage count based on type
+            update_doc = {}
+            if usage_type == "viewed":
+                update_doc["usage_count"] = firestore.Increment(increment)
+            elif usage_type == "downloaded":
+                update_doc["download_count"] = firestore.Increment(increment)
+            
+            update_doc["last_updated"] = datetime.utcnow()
+            
+            # Update resource
+            await doc_ref.update(update_doc)
+            
+            logger.info(f"Updated resource usage: {resource_id} -> {usage_type}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Failed to update resource usage: {e}")
+            raise
+    
+    # Resource Usage Methods
+    async def save_resource_usage(self, usage: ResourceUsage) -> str:
+        """Save a resource usage record to Firestore."""
+        try:
+            collection = self.collections["resource_usage"]
+            
+            # Convert to dict
+            usage_dict = usage.model_dump()
+            
+            # Insert usage
+            doc_ref = collection.document(usage.usage_id)
+            await doc_ref.set(usage_dict)
+            
+            logger.info(f"Saved resource usage: {usage.usage_id}")
+            return usage.usage_id
+            
+        except Exception as e:
+            logger.error(f"Failed to save resource usage: {e}")
+            raise
+    
+    async def get_resource_usage(
+        self,
+        parent_id: str,
+        resource_id: Optional[str] = None,
+        usage_type: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None,
+        limit: int = 100
+    ) -> List[ResourceUsage]:
+        """Get resource usage records with optional filters."""
+        try:
+            collection = self.collections["resource_usage"]
+            
+            # Build query
+            query = collection.where("parent_id", "==", parent_id)
+            if resource_id:
+                query = query.where("resource_id", "==", resource_id)
+            if usage_type:
+                query = query.where("usage_type", "==", usage_type)
+            if start_date:
+                query = query.where("created_at", ">=", start_date)
+            if end_date:
+                query = query.where("created_at", "<=", end_date)
+            
+            # Execute query
+            query = query.order_by("created_at", direction=firestore.Query.DESCENDING)
+            docs = list(query.limit(limit).stream())
+            
+            # Convert to ResourceUsage objects
+            usage_records = []
+            for doc in docs:
+                result = doc.to_dict()
+                result["document_id"] = doc.id
+                usage_records.append(ResourceUsage(**result))
+            
+            return usage_records
+            
+        except Exception as e:
+            logger.error(f"Failed to get resource usage: {e}")
             raise
 
 

@@ -389,3 +389,157 @@ export const syllabusAPI = {
   getRecommendations: (student_id: string) =>
     api.get('/api/syllabus/recommendations', { params: { student_id } }),
 };
+
+// Phase 2 Parent Features API
+export const parentFeaturesAPI = {
+  // Predictive Analytics
+  getPredictions: (params?: {
+    student_id?: string;
+    prediction_type?: string;
+    start_date?: string;
+    end_date?: string;
+    limit?: number;
+  }) => api.get('/api/parent/predictions', { params }),
+  
+  generatePrediction: (student_id: string, prediction_type?: string) =>
+    api.post('/api/parent/predictions/generate', { student_id, prediction_type }),
+  
+  getWhatIfScenarios: (student_id: string) =>
+    api.get('/api/parent/predictions/what-if', { params: { student_id } }),
+  
+  generateWhatIfScenario: (student_id: string, data: {
+    scenario_type: string;
+    parameters: Record<string, any>;
+  }) => api.post('/api/parent/predictions/what-if/generate', { student_id, ...data }),
+  
+  // Communication Hub
+  getCommunicationSuggestions: (params?: {
+    student_id?: string;
+    communication_type?: string;
+    tone?: string;
+    used?: boolean;
+    start_date?: string;
+    end_date?: string;
+    limit?: number;
+  }) => api.get('/api/parent/communications/suggestions', { params }),
+  
+  generateCommunicationSuggestion: (student_id: string, data: {
+    communication_type: string;
+    context?: Record<string, any>;
+    mood?: string;
+  }) => api.post('/api/parent/communications/suggestions/generate', { student_id, ...data }),
+  
+  useCommunicationSuggestion: (suggestion_id: string, data: {
+    feedback?: string;
+    effectiveness_rating?: number;
+  }) => api.post(`/api/parent/communications/suggestions/${suggestion_id}/use`, data),
+  
+  getConversationStarters: (student_id: string, context?: string) =>
+    api.get('/api/parent/communications/conversation-starters', { params: { student_id, context } }),
+  
+  // Gamified Engagement
+  getEngagementChallenges: (params?: {
+    student_id?: string;
+    challenge_type?: string;
+    status?: string;
+    difficulty_level?: string;
+    start_date?: string;
+    end_date?: string;
+    limit?: number;
+  }) => api.get('/api/parent/engagement/challenges', { params }),
+  
+  generateWeeklyChallenge: (student_id: string) =>
+    api.post('/api/parent/engagement/challenges/weekly/generate', { student_id }),
+  
+  updateChallengeProgress: (challenge_id: string, data: {
+    current_progress: Record<string, any>;
+    notes?: string;
+  }) => api.put(`/api/parent/engagement/challenges/${challenge_id}/progress`, data),
+  
+  completeChallenge: (challenge_id: string, data?: {
+    completion_notes?: string;
+    time_taken?: number;
+  }) => api.post(`/api/parent/engagement/challenges/${challenge_id}/complete`, data),
+  
+  getAchievements: (params?: {
+    student_id?: string;
+    achievement_type?: string;
+    rarity?: string;
+    start_date?: string;
+    end_date?: string;
+    limit?: number;
+  }) => api.get('/api/parent/engagement/achievements', { params }),
+  
+  shareAchievement: (achievement_id: string) =>
+    api.post(`/api/parent/engagement/achievements/${achievement_id}/share`),
+  
+  getLeaderboard: (params?: {
+    student_id?: string;
+    type?: string;
+    period?: string;
+    limit?: number;
+  }) => api.get('/api/parent/engagement/leaderboard', { params }),
+  
+  getEngagementAnalytics: (student_id: string, params?: {
+    period?: string;
+    metrics?: string[];
+  }) => api.get('/api/parent/engagement/analytics', { params: { student_id, ...params } }),
+  
+  // Parent Resource Library
+  getResources: (params?: {
+    category?: string;
+    resource_type?: string;
+    difficulty_level?: string;
+    language?: string;
+    tags?: string[];
+    min_quality_score?: number;
+    limit?: number;
+  }) => api.get('/api/parent/resources', { params }),
+  
+  getResource: (resource_id: string) =>
+    api.get(`/api/parent/resources/${resource_id}`),
+  
+  searchResources: (query: string, params?: {
+    category?: string;
+    resource_type?: string;
+    difficulty_level?: string;
+    language?: string;
+    limit?: number;
+  }) => api.get('/api/parent/resources/search', { params: { query, ...params } }),
+  
+  getRecommendedResources: (student_id: string, params?: {
+    category?: string;
+    limit?: number;
+  }) => api.get('/api/parent/resources/recommended', { params: { student_id, ...params } }),
+  
+  rateResource: (resource_id: string, data: {
+    effectiveness_rating: number;
+    feedback?: string;
+  }) => api.post(`/api/parent/resources/${resource_id}/rate`, data),
+  
+  downloadResource: (resource_id: string) =>
+    api.post(`/api/parent/resources/${resource_id}/download`),
+  
+  trackResourceUsage: (resource_id: string, data: {
+    usage_type: string;
+    time_spent_minutes?: number;
+    outcome?: string;
+  }) => api.post(`/api/parent/resources/${resource_id}/usage`, data),
+  
+  getResourceUsage: (params?: {
+    parent_id?: string;
+    student_id?: string;
+    resource_id?: string;
+    usage_type?: string;
+    start_date?: string;
+    end_date?: string;
+    limit?: number;
+  }) => api.get('/api/parent/resources/usage', { params }),
+  
+  // Service Health and Metrics
+  getServiceHealth: () =>
+    api.get('/api/parent/health'),
+  
+  getServiceMetrics: () =>
+    api.get('/api/parent/metrics'),
+};
