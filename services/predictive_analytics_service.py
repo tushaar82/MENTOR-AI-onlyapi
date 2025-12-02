@@ -847,6 +847,24 @@ Format as JSON array:
                     "implementation_steps": ["Analyze situation", "Implement changes"],
                     "expected_outcome": "Improved performance",
                     "time_to_effect": "2-4 weeks",
+                    "resources_needed": [],
+                    "success_indicators": ["Better engagement", "Improved scores"]
+                }]
+                
+        except json.JSONDecodeError:
+            # Fallback: return basic intervention
+            return [{
+                "intervention_type": "general",
+                "title": "Recommended Intervention",
+                "description": content,
+                "priority": "medium",
+                "implementation_steps": ["Analyze situation", "Implement changes"],
+                "expected_outcome": "Improved performance",
+                "time_to_effect": "2-4 weeks",
+                "resources_needed": [],
+                "success_indicators": ["Better engagement", "Improved scores"]
+            }]
+    
     # ========================================================================
     # PREDICTION MODEL METHODS
     # ========================================================================
@@ -1273,24 +1291,6 @@ Format as JSON:
                 "confidence_score": 0.3,
                 "risk_score": 0.7
             }, {"error": str(e)}
-
-                    "resources_needed": [],
-                    "success_indicators": ["Better engagement", "Improved scores"]
-                }]
-                
-        except json.JSONDecodeError:
-            # Fallback: return basic intervention
-            return [{
-                "intervention_type": "general",
-                "title": "Recommended Intervention",
-                "description": content,
-                "priority": "medium",
-                "implementation_steps": ["Analyze situation", "Implement changes"],
-                "expected_outcome": "Improved performance",
-                "time_to_effect": "2-4 weeks",
-                "resources_needed": [],
-                "success_indicators": ["Better engagement", "Improved scores"]
-            }]
     
     def _calculate_intervention_effectiveness(
         self,

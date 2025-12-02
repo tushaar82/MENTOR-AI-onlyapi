@@ -1662,5 +1662,42 @@ Format as JSON array of strings:
             logger.error(f"Resource insights generation failed: {e}")
             return ["Unable to generate insights at this time"]
 
+# Service instance
+_parent_resource_library_service_instance = None
+
+def get_parent_resource_library_service(
+    db: Optional[firestore.Client] = None,
+    unified_config: Optional[GeminiConfig] = None,
+    enable_database_persistence: bool = True,
+    cache_size: int = 200,
+    cache_ttl_hours: int = 12
+) -> ParentResourceLibraryService:
+    """
+    Get singleton instance of Parent Resource Library Service.
+    
+    Args:
+        db: Firestore client (creates new if None)
+        unified_config: Optional unified configuration
+        enable_database_persistence: Enable saving to database
+        cache_size: Maximum cache size
+        cache_ttl_hours: Cache TTL in hours
+    
+    Returns:
+        ParentResourceLibraryService instance
+    """
+    global _parent_resource_library_service_instance
+    
+    if _parent_resource_library_service_instance is None:
+        logger.info("Creating new ParentResourceLibraryService singleton instance")
+        _parent_resource_library_service_instance = ParentResourceLibraryService(
+            db=db,
+            unified_config=unified_config,
+            enable_database_persistence=enable_database_persistence,
+            cache_size=cache_size,
+            cache_ttl_hours=cache_ttl_hours
+        )
+    
+    return _parent_resource_library_service_instance
+
 # Module initialization
 logger.info("Parent Resource Library Service module loaded")

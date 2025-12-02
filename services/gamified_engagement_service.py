@@ -82,6 +82,12 @@ class RewardType(Enum):
     MILESTONE = "milestone"
     LEADERBOARD_RANK = "leaderboard_rank"
 
+class DifficultyLevel(Enum):
+    """Difficulty levels for challenges."""
+    EASY = "easy"
+    MEDIUM = "medium"
+    HARD = "hard"
+
 @dataclass
 class EngagementEvent:
     """Event for engagement tracking."""
@@ -92,6 +98,7 @@ class EngagementEvent:
     event_data: Dict[str, Any]
     timestamp: datetime
     points_earned: int
+    engagement_score: float = 0.0
     metadata: Optional[Dict[str, Any]] = None
 
 @dataclass
@@ -135,10 +142,9 @@ class ParentProfile:
     challenges_completed: int
     weekly_rank: Optional[int] = None
     monthly_rank: Optional[int] = None
-    engagement_score: float
-    last_active: datetime
-    created_at: datetime
-    updated_at: datetime
+    last_active: Optional[datetime] = None
+    created_at: datetime = datetime.utcnow()
+    updated_at: datetime = datetime.utcnow()
 
 class GamifiedEngagementService:
     """
@@ -1304,6 +1310,43 @@ Format as JSON array of strings:
         except Exception as e:
             logger.error(f"Failed to generate insights: {e}")
             return ["Unable to generate insights at this time"]
+
+# Service instance
+_gamified_engagement_service_instance = None
+
+def get_gamified_engagement_service(
+    db: Optional[firestore.Client] = None,
+    unified_config: Optional[GeminiConfig] = None,
+    enable_database_persistence: bool = True,
+    cache_size: int = 100,
+    cache_ttl_hours: int = 4
+) -> GamifiedEngagementService:
+    """
+    Get singleton instance of Gamified Engagement Service.
+    
+    Args:
+        db: Firestore client (creates new if None)
+        unified_config: Optional unified configuration
+        enable_database_persistence: Enable saving to database
+        cache_size: Maximum cache size
+        cache_ttl_hours: Cache TTL in hours
+    
+    Returns:
+        GamifiedEngagementService instance
+    """
+    global _gamified_engagement_service_instance
+    
+    if _gamified_engagement_service_instance is None:
+        logger.info("Creating new GamifiedEngagementService singleton instance")
+        _gamified_engagement_service_instance = GamifiedEngagementService(
+            db=db,
+            unified_config=unified_config,
+            enable_database_persistence=enable_database_persistence,
+            cache_size=cache_size,
+            cache_ttl_hours=cache_ttl_hours
+        )
+    
+    return _gamified_engagement_service_instance
 
 # Module initialization
 logger.info("Gamified Engagement Service module loaded")
