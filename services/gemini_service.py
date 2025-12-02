@@ -53,6 +53,7 @@ from collections import deque
 from models.question_models import Question
 from utils.gemini_client import GeminiClient, GeminiClientError
 from utils.response_parser import ResponseParser, ResponseParserError
+from services.unified_gemini_config_service import get_unified_gemini_service, GeminiConfig
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -84,20 +85,22 @@ class InsufficientQuestionsError(Exception):
 
 class GeminiService:
     """
-    High-level service for Gemini API interactions.
+    High-level service for Gemini API interactions with database persistence.
     
     This service manages question generation using Gemini Flash, including
-    caching, rate limiting, cost tracking, and error handling.
+    caching, rate limiting, cost tracking, database persistence, and error handling.
     
     Attributes:
         client: GeminiClient instance for API calls
         parser: ResponseParser for validating responses
+        unified_service: Unified Gemini configuration service
         cache_enabled: Whether to use response caching
         rate_limit_enabled: Whether to enforce rate limiting
         usage_stats: Dictionary tracking API usage and costs
+        enable_database_persistence: Whether to save to database
     
     Example:
-        >>> service = GeminiService()
+        >>> service = GeminiService(enable_database_persistence=True)
         >>> questions = service.generate_questions(prompt, num_questions=5)
         >>> stats = service.get_usage_stats()
         >>> print(f"Total API calls: {stats['total_calls']}")
@@ -108,18 +111,22 @@ class GeminiService:
         cache_enabled: bool = True,
         rate_limit_enabled: bool = True,
         gemini_client: Optional[GeminiClient] = None,
-        parser: Optional[ResponseParser] = None
+        parser: Optional[ResponseParser] = None,
+        enable_database_persistence: bool = True,
+        unified_config: Optional[GeminiConfig] = None
     ):
         """
-        Initialize GeminiService.
+        Initialize GeminiService with database persistence.
         
         Args:
             cache_enabled: Enable response caching (default: True)
             rate_limit_enabled: Enable rate limiting (default: True)
             gemini_client: Optional GeminiClient instance (creates new if None)
             parser: Optional ResponseParser instance (creates new if None)
+            enable_database_persistence: Enable saving to database (default: True)
+            unified_config: Optional unified configuration
         """
-        logger.info("Initializing GeminiService")
+        logger.info("Initializing Enhanced GeminiService with database persistence")
         
         # Initialize Gemini client
         self.client = gemini_client if gemini_client else GeminiClient()
@@ -131,6 +138,15 @@ class GeminiService:
             log_invalid=True
         )
         logger.info("Response parser initialized")
+        
+        # Initialize unified service for database persistence
+        self.enable_database_persistence = enable_database_persistence
+        if enable_database_persistence:
+            self.unified_service = get_unified_gemini_service(config=unified_config)
+            logger.info("Unified Gemini service initialized for database persistence")
+        else:
+            self.unified_service = None
+            logger.info("Database persistence disabled")
         
         # Configuration
         self.cache_enabled = cache_enabled
@@ -158,23 +174,28 @@ class GeminiService:
             "total_questions_valid": 0,
             "total_questions_invalid": 0,
             "average_response_time": 0.0,
-            "total_response_time": 0.0
+            "total_response_time": 0.0,
+            "database_saves": 0,
+            "database_save_failures": 0
         }
         
         logger.info(
-            f"GeminiService initialized (cache={cache_enabled}, "
-            f"rate_limit={rate_limit_enabled})"
+            f"Enhanced GeminiService initialized (cache={cache_enabled}, "
+            f"rate_limit={rate_limit_enabled}, db_persistence={enable_database_persistence})"
         )
     
-    def generate_questions(
+    async def generate_questions(
         self,
         prompt: str,
         num_questions: int,
         use_cache: bool = True,
-        retry_on_insufficient: bool = True
+        retry_on_insufficient: bool = True,
+        user_id: Optional[str] = None,
+        student_id: Optional[str] = None,
+        metadata: Optional[Dict[str, Any]] = None
     ) -> List[Question]:
         """
-        Generate questions using Gemini Flash.
+        Generate questions using Gemini Flash with database persistence.
         
         This is the main method for question generation. It handles:
         - Prompt validation
@@ -184,12 +205,16 @@ class GeminiService:
         - Response parsing
         - Retry logic
         - Cost tracking
+        - Database persistence
         
         Args:
             prompt: Complete prompt for Gemini
             num_questions: Expected number of questions
             use_cache: Use cached response if available (default: True)
             retry_on_insufficient: Retry if insufficient questions (default: True)
+            user_id: User ID for database tracking (optional)
+            student_id: Student ID for database tracking (optional)
+            metadata: Additional metadata for database storage (optional)
         
         Returns:
             List of validated Question objects
@@ -200,9 +225,9 @@ class GeminiService:
             ValueError: If prompt is invalid
         
         Example:
-            >>> service = GeminiService()
+            >>> service = GeminiService(enable_database_persistence=True)
             >>> prompt = build_prompt("JEE_MAIN", "Calculus", "...", "medium", 5)
-            >>> questions = service.generate_questions(prompt, num_questions=5)
+            >>> questions = service.generate_questions(prompt, num_questions=5, user_id="user123")
             >>> print(f"Generated {len(questions)} questions")
         """
         start_time = time.time()
@@ -243,25 +268,61 @@ class GeminiService:
         questions = []
         attempt = 0
         max_attempts = MAX_RETRIES + 1 if retry_on_insufficient else 1
+        interaction_id = None
         
         while attempt < max_attempts:
             try:
                 attempt += 1
                 logger.info(f"Generation attempt {attempt}/{max_attempts}")
                 
-                # Call Gemini API
-                response_text = self._call_gemini_api(prompt)
-                
-                # Parse response
-                questions, parse_stats = self.parser.parse_response(
-                    response_text,
-                    expected_count=num_questions
-                )
-                
-                # Update statistics
-                self.usage_stats["total_questions_generated"] += parse_stats["total"]
-                self.usage_stats["total_questions_valid"] += parse_stats["valid"]
-                self.usage_stats["total_questions_invalid"] += parse_stats["invalid"]
+                # Use unified service if available for database persistence
+                if self.enable_database_persistence and self.unified_service and user_id:
+                    # Extract topic, exam_type, difficulty from prompt for better tracking
+                    topic_info = self._extract_topic_info_from_prompt(prompt)
+                    
+                    result = await self.unified_service.generate_questions(
+                        topic=topic_info.get("topic", "Unknown"),
+                        exam_type=topic_info.get("exam_type", "JEE_MAIN"),
+                        difficulty=topic_info.get("difficulty", "medium"),
+                        num_questions=num_questions,
+                        user_id=user_id,
+                        student_id=student_id,
+                        metadata=metadata
+                    )
+                    
+                    questions_data = result.get("questions", [])
+                    questions = self._parse_questions_from_unified_response(questions_data)
+                    interaction_id = result.get("interaction_id")
+                    
+                    # Update statistics
+                    parse_stats = {
+                        "total": len(questions),
+                        "valid": len(questions),
+                        "invalid": 0
+                    }
+                    
+                    self.usage_stats["total_questions_generated"] += parse_stats["total"]
+                    self.usage_stats["total_questions_valid"] += parse_stats["valid"]
+                    self.usage_stats["database_saves"] += 1
+                    
+                    logger.info(
+                        f"Generated via unified service: {len(questions)} questions, "
+                        f"interaction_id: {interaction_id}"
+                    )
+                else:
+                    # Fallback to original method
+                    response_text = self._call_gemini_api(prompt)
+                    
+                    # Parse response
+                    questions, parse_stats = self.parser.parse_response(
+                        response_text,
+                        expected_count=num_questions
+                    )
+                    
+                    # Update statistics
+                    self.usage_stats["total_questions_generated"] += parse_stats["total"]
+                    self.usage_stats["total_questions_valid"] += parse_stats["valid"]
+                    self.usage_stats["total_questions_invalid"] += parse_stats["invalid"]
                 
                 logger.info(
                     f"Parsed {parse_stats['valid']} valid questions "
@@ -295,12 +356,16 @@ class GeminiService:
                     time.sleep(RETRY_DELAY)
                 else:
                     self.usage_stats["failed_calls"] += 1
+                    if self.enable_database_persistence and self.unified_service and user_id:
+                        self.usage_stats["database_save_failures"] += 1
                     raise
             
             except Exception as e:
                 logger.error(f"Unexpected error during generation: {e}")
                 logger.exception("Full traceback:")
                 self.usage_stats["failed_calls"] += 1
+                if self.enable_database_persistence and self.unified_service and user_id:
+                    self.usage_stats["database_save_failures"] += 1
                 raise
         
         # Update response time
@@ -321,14 +386,17 @@ class GeminiService:
         
         return questions
     
-    def generate_content(
+    async def generate_content(
         self,
         prompt: str,
         use_cache: bool = True,
-        retry_on_failure: bool = True
+        retry_on_failure: bool = True,
+        user_id: Optional[str] = None,
+        student_id: Optional[str] = None,
+        metadata: Optional[Dict[str, Any]] = None
     ) -> Optional[str]:
         """
-        Generate content using Gemini Flash.
+        Generate content using Gemini Flash with database persistence.
         
         This method is for generating general content (not questions)
         like learning materials, mind maps, teaching content.
@@ -337,6 +405,9 @@ class GeminiService:
             prompt: Complete prompt for Gemini
             use_cache: Use cached response if available (default: True)
             retry_on_failure: Retry if generation fails (default: True)
+            user_id: User ID for database tracking (optional)
+            student_id: Student ID for database tracking (optional)
+            metadata: Additional metadata for database storage (optional)
         
         Returns:
             Generated content string or None if generation fails
@@ -347,8 +418,8 @@ class GeminiService:
             ValueError: If prompt is invalid
         
         Example:
-            >>> service = GeminiService()
-            >>> content = service.generate_content(prompt)
+            >>> service = GeminiService(enable_database_persistence=True)
+            >>> content = service.generate_content(prompt, user_id="user123")
             >>> print(f"Generated content length: {len(content)}")
         """
         start_time = time.time()
@@ -390,12 +461,33 @@ class GeminiService:
                 attempt += 1
                 logger.info(f"Generation attempt {attempt}/{max_attempts}")
                 
-                # Call Gemini API
-                response_text = self._call_gemini_api(prompt)
+                # Use unified service if available for database persistence
+                if self.enable_database_persistence and self.unified_service and user_id:
+                    result = await self.unified_service.generate_content(
+                        prompt=prompt,
+                        user_id=user_id,
+                        student_id=student_id,
+                        interaction_type="content_generation",
+                        metadata=metadata
+                    )
+                    
+                    content = result.get("content")
+                    interaction_id = result.get("interaction_id")
+                    
+                    self.usage_stats["database_saves"] += 1
+                    logger.info(
+                        f"Generated content via unified service: {len(content) if content else 0} chars, "
+                        f"interaction_id: {interaction_id}"
+                    )
+                else:
+                    # Fallback to original method
+                    response_text = self._call_gemini_api(prompt)
+                    
+                    if response_text and len(response_text.strip()) > 0:
+                        content = response_text.strip()
+                        logger.info(f"Successfully generated content (length: {len(content)})")
                 
-                if response_text and len(response_text.strip()) > 0:
-                    content = response_text.strip()
-                    logger.info(f"Successfully generated content (length: {len(content)})")
+                if content:
                     break
                     
             except Exception as e:
@@ -407,6 +499,8 @@ class GeminiService:
                 else:
                     logger.error("All generation attempts failed")
                     content = None
+                    if self.enable_database_persistence and self.unified_service and user_id:
+                        self.usage_stats["database_save_failures"] += 1
                     break
         
         # Update response time
@@ -781,6 +875,72 @@ class GeminiService:
             "ttl_hours": self._cache_ttl.total_seconds() / 3600,
             "enabled": self.cache_enabled
         }
+    
+    def _extract_topic_info_from_prompt(self, prompt: str) -> Dict[str, str]:
+        """
+        Extract topic information from prompt for better database tracking.
+        
+        Args:
+            prompt: Generation prompt
+        
+        Returns:
+            Dict with topic, exam_type, difficulty
+        """
+        import re
+        
+        # Try to extract topic from prompt
+        topic_match = re.search(r'Topic:\s*([^\n]+)', prompt, re.IGNORECASE)
+        topic = topic_match.group(1).strip() if topic_match else "Unknown"
+        
+        # Try to extract exam type
+        exam_match = re.search(r'(JEE_MAIN|JEE_ADVANCED|NEET)', prompt, re.IGNORECASE)
+        exam_type = exam_match.group(1) if exam_match else "JEE_MAIN"
+        
+        # Try to extract difficulty
+        diff_match = re.search(r'(easy|medium|hard)', prompt, re.IGNORECASE)
+        difficulty = diff_match.group(1).lower() if diff_match else "medium"
+        
+        return {
+            "topic": topic,
+            "exam_type": exam_type,
+            "difficulty": difficulty
+        }
+    
+    def _parse_questions_from_unified_response(self, questions_data: List[Dict[str, Any]]) -> List[Question]:
+        """
+        Parse questions from unified service response.
+        
+        Args:
+            questions_data: Questions data from unified service
+        
+        Returns:
+            List of Question objects
+        """
+        questions = []
+        
+        for q_data in questions_data:
+            try:
+                # Create Question object from unified service data
+                question = Question(
+                    question_id=f"q_{len(questions) + 1}",
+                    question_text=q_data.get("question", ""),
+                    options=q_data.get("options", []),
+                    correct_answer=q_data.get("correct_answer", ""),
+                    explanation=q_data.get("explanation", ""),
+                    difficulty="medium",  # Default, should be extracted from context
+                    subject="General",  # Default, should be extracted from context
+                    topic="Unknown",  # Default, should be extracted from context
+                    marks=1,  # Default
+                    negative_marks=0,  # Default
+                    time_limit=60  # Default
+                )
+                questions.append(question)
+                
+            except Exception as e:
+                logger.warning(f"Failed to parse question from unified response: {e}")
+                continue
+        
+        return questions
 
 
 # Singleton instance (optional)
@@ -789,35 +949,41 @@ _gemini_service_instance: Optional[GeminiService] = None
 
 def get_gemini_service(
     cache_enabled: bool = True,
-    rate_limit_enabled: bool = True
+    rate_limit_enabled: bool = True,
+    enable_database_persistence: bool = True,
+    unified_config: Optional[GeminiConfig] = None
 ) -> GeminiService:
     """
-    Get or create singleton GeminiService instance.
+    Get or create singleton GeminiService instance with database persistence.
     
     Args:
         cache_enabled: Enable response caching
         rate_limit_enabled: Enable rate limiting
+        enable_database_persistence: Enable database persistence
+        unified_config: Optional unified configuration
     
     Returns:
-        GeminiService instance
+        Enhanced GeminiService instance
     
     Example:
-        >>> service = get_gemini_service()
-        >>> questions = service.generate_questions(prompt, 5)
+        >>> service = get_gemini_service(enable_database_persistence=True)
+        >>> questions = service.generate_questions(prompt, 5, user_id="user123")
     """
     global _gemini_service_instance
     
     if _gemini_service_instance is None:
-        logger.info("Creating new GeminiService singleton instance")
+        logger.info("Creating new Enhanced GeminiService singleton instance")
         _gemini_service_instance = GeminiService(
             cache_enabled=cache_enabled,
-            rate_limit_enabled=rate_limit_enabled
+            rate_limit_enabled=rate_limit_enabled,
+            enable_database_persistence=enable_database_persistence,
+            unified_config=unified_config
         )
     
     return _gemini_service_instance
 
 
 # Module initialization
-logger.info("Gemini service module loaded")
+logger.info("Enhanced Gemini service module loaded with database persistence")
 logger.info(f"Rate limit: {MAX_REQUESTS_PER_MINUTE} requests per {RATE_LIMIT_WINDOW}s")
 logger.info(f"Pricing: ${GEMINI_INPUT_COST_PER_1K}/1K input, ${GEMINI_OUTPUT_COST_PER_1K}/1K output")

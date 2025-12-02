@@ -51,6 +51,7 @@ from pydantic import BaseModel, Field
 
 from models.question_models import Question
 from services.question_generator import QuestionGenerator, QuestionGeneratorError
+from services.unified_gemini_config_service import get_unified_gemini_service, GeminiConfig
 from utils.firebase_config import get_firestore_client
 
 # Configure logging
@@ -149,17 +150,21 @@ class RAGService:
         self,
         question_generator: Optional[QuestionGenerator] = None,
         enable_caching: bool = True,
-        high_quality_only: bool = True
+        high_quality_only: bool = True,
+        enable_database_persistence: bool = True,
+        unified_config: Optional[GeminiConfig] = None
     ):
         """
-        Initialize RAGService.
+        Initialize Enhanced RAGService with database persistence.
         
         Args:
             question_generator: Optional QuestionGenerator instance
             enable_caching: Enable multi-level caching
             high_quality_only: Only return questions with score > 80
+            enable_database_persistence: Enable saving to database
+            unified_config: Optional unified configuration
         """
-        logger.info("Initializing RAGService")
+        logger.info("Initializing Enhanced RAGService with database persistence")
         
         # Initialize question generator
         self.question_generator = question_generator if question_generator else QuestionGenerator()
@@ -174,6 +179,15 @@ class RAGService:
         
         self.enable_caching = enable_caching and self.firestore_client is not None
         self.high_quality_only = high_quality_only
+        self.enable_database_persistence = enable_database_persistence
+        
+        # Initialize unified service for database persistence
+        if enable_database_persistence:
+            self.unified_service = get_unified_gemini_service(config=unified_config)
+            logger.info("Unified Gemini service initialized for RAG database persistence")
+        else:
+            self.unified_service = None
+            logger.info("Database persistence disabled for RAG")
         
         # Diversity tracking (in-memory, last N questions)
         self.diversity_tracker: Dict[str, List[str]] = defaultdict(list)
@@ -191,25 +205,30 @@ class RAGService:
             "average_generation_time": 0.0,
             "total_api_cost": 0.0,
             "topic_success_rate": defaultdict(float),
-            "difficulty_distribution": defaultdict(int)
+            "difficulty_distribution": defaultdict(int),
+            "database_saves": 0,
+            "database_save_failures": 0
         }
         
         logger.info(
-            f"RAGService initialized (caching={enable_caching}, "
-            f"high_quality_only={high_quality_only})"
+            f"Enhanced RAGService initialized (caching={enable_caching}, "
+            f"high_quality_only={high_quality_only}, db_persistence={enable_database_persistence})"
         )
     
-    def generate_for_topic(
+    async def generate_for_topic(
         self,
         topic: str,
         exam_type: str,
         difficulty: str,
         count: int = 5,
         use_cache: bool = True,
-        question_type: str = "single_correct"
+        question_type: str = "single_correct",
+        user_id: Optional[str] = None,
+        student_id: Optional[str] = None,
+        metadata: Optional[Dict[str, Any]] = None
     ) -> RAGResult:
         """
-        Generate questions for a specific topic using RAG.
+        Generate questions for a specific topic using RAG with database persistence.
         
         This is the main method for topic-based question generation. It includes:
         - Cache checking
@@ -217,6 +236,7 @@ class RAGService:
         - Quality filtering
         - Diversity checking
         - Metadata tracking
+        - Database persistence
         
         Args:
             topic: Topic name (e.g., "Limits and Continuity")
@@ -225,6 +245,9 @@ class RAGService:
             count: Number of questions to generate
             use_cache: Whether to use cached results
             question_type: Type of questions to generate
+            user_id: User ID for database tracking (optional)
+            student_id: Student ID for database tracking (optional)
+            metadata: Additional metadata for database storage (optional)
         
         Returns:
             RAGResult with questions and metadata
@@ -234,12 +257,13 @@ class RAGService:
             QuestionGeneratorError: If generation fails
         
         Example:
-            >>> rag = RAGService()
+            >>> rag = RAGService(enable_database_persistence=True)
             >>> result = rag.generate_for_topic(
             ...     topic="Limits and Continuity",
             ...     exam_type="JEE_MAIN",
             ...     difficulty="medium",
-            ...     count=5
+            ...     count=5,
+            ...     user_id="user123"
             ... )
             >>> print(f"Generated: {len(result.questions)} questions")
             >>> print(f"Average quality: {result.quality_stats.average_score:.1f}")
@@ -271,16 +295,61 @@ class RAGService:
             
             self.metrics["cache_misses"] += 1
             
-            # Step 2: Generate questions
-            logger.info("Generating questions via QuestionGenerator")
-            questions = self.question_generator.generate_questions(
-                topic=topic,
-                exam_type=exam_type,
-                difficulty=difficulty,
-                num_questions=count,
-                use_cache=use_cache,
-                question_type=question_type
-            )
+            # Step 2: Generate questions with database persistence
+            logger.info("Generating questions via QuestionGenerator with database persistence")
+            
+            if self.enable_database_persistence and self.unified_service and user_id:
+                # Use unified service for database persistence
+                try:
+                    result = await self.unified_service.generate_questions(
+                        topic=topic,
+                        exam_type=exam_type,
+                        difficulty=difficulty,
+                        num_questions=count,
+                        user_id=user_id,
+                        student_id=student_id,
+                        metadata={
+                            "question_type": question_type,
+                            "rag_service": True,
+                            **(metadata or {})
+                        }
+                    )
+                    
+                    questions_data = result.get("questions", [])
+                    questions = self._parse_questions_from_unified_response(questions_data)
+                    interaction_id = result.get("interaction_id")
+                    
+                    logger.info(
+                        f"Generated via unified service: {len(questions)} questions, "
+                        f"interaction_id: {interaction_id}"
+                    )
+                    
+                    # Update metrics
+                    self.metrics["database_saves"] += 1
+                    
+                except Exception as e:
+                    logger.error(f"Unified service generation failed: {e}")
+                    self.metrics["database_save_failures"] += 1
+                    
+                    # Fallback to original method
+                    questions = self.question_generator.generate_questions(
+                        topic=topic,
+                        exam_type=exam_type,
+                        difficulty=difficulty,
+                        num_questions=count,
+                        use_cache=use_cache,
+                        question_type=question_type
+                    )
+            else:
+                # Use original method
+                questions = self.question_generator.generate_questions(
+                    topic=topic,
+                    exam_type=exam_type,
+                    difficulty=difficulty,
+                    num_questions=count,
+                    use_cache=use_cache,
+                    question_type=question_type
+                )
             
             logger.info(f"QuestionGenerator returned {len(questions)} questions")
             
@@ -973,13 +1042,49 @@ class RAGService:
         
         return distributions.get(exam_type, {"General": total_questions})
     
+    def _parse_questions_from_unified_response(self, questions_data: List[Dict[str, Any]]) -> List[Question]:
+        """
+        Parse questions from unified service response.
+        
+        Args:
+            questions_data: Questions data from unified service
+        
+        Returns:
+            List of Question objects
+        """
+        questions = []
+        
+        for q_data in questions_data:
+            try:
+                # Create Question object from unified service data
+                question = Question(
+                    question_id=f"q_{len(questions) + 1}",
+                    question_text=q_data.get("question", ""),
+                    options=q_data.get("options", []),
+                    correct_answer=q_data.get("correct_answer", ""),
+                    explanation=q_data.get("explanation", ""),
+                    difficulty="medium",  # Default, should be extracted from context
+                    subject="General",  # Default, should be extracted from context
+                    topic="Unknown",  # Default, should be extracted from context
+                    marks=1,  # Default
+                    negative_marks=0,  # Default
+                    time_limit=60  # Default
+                )
+                questions.append(question)
+                
+            except Exception as e:
+                logger.warning(f"Failed to parse question from unified response: {e}")
+                continue
+        
+        return questions
+    
     def _update_metrics(
         self,
         questions_generated: int,
         generation_time: float,
         success: bool
     ) -> None:
-        """Update performance metrics."""
+        """Update performance metrics with database persistence stats."""
         self.metrics["total_generation_time"] += generation_time
         
         if success and self.metrics["successful_requests"] > 0:
@@ -987,11 +1092,12 @@ class RAGService:
             current_avg = self.metrics["average_generation_time"]
             
             self.metrics["average_generation_time"] = (
-                (current_avg * (total_successful - 1) + generation_time) / 
+                (current_avg * (total_successful - 1) + generation_time) /
                 total_successful
             )
 
 
 # Module initialization
-logger.info("RAG service module loaded")
+logger.info("Enhanced RAG service module loaded with database persistence")
 logger.info(f"Configuration: cache_ttl={CACHE_TTL_DAYS} days, quality_threshold={HIGH_QUALITY_THRESHOLD}")
+logger.info('Database persistence: enabled by default for RAG service instances')

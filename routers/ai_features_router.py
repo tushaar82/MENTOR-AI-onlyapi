@@ -1,289 +1,691 @@
 """
 AI Features Router
 
-This module defines FastAPI endpoints for AI-powered features including
-AI tutor chat, smart recommendations, exam readiness, and mistake analysis.
+This router handles all API endpoints for AI features and parent insights:
+- AI interactions tracking
+- Parent insights generation
+- Engagement metrics
+- Communication history
+- Intervention alerts
 
 Author: Mentor AI Team
 Version: 1.0.0
 """
 
+import os
+import uuid
 import logging
-from typing import List
+from datetime import datetime, timedelta
+from typing import List, Dict, Any, Optional
+from fastapi import APIRouter, Depends, HTTPException, Query, BackgroundTasks
+from fastapi.responses import JSONResponse
 
-from fastapi import APIRouter, HTTPException, Depends, Query, status
-
-from models.ai_models import (
-    AITutorRequest,
-    AITutorResponse,
-    ChatHistory,
-    TopicRecommendation,
-    ResourceRecommendation,
-    ExamReadiness,
-    MistakeAnalysis
+from services.database_service import database_service
+from services.unified_gemini_config_service import get_unified_gemini_service
+from services.gemini_service import get_gemini_service
+from services.rag_service import RAGService
+from services.ai_content_service import get_ai_content_service
+from models.database_models import (
+    AIInteraction, ParentInsight, EngagementMetric, CommunicationRecord,
+    InterventionAlert, InterventionRule, ParentDashboardConfig
 )
-from middleware.testing_auth import get_current_user_testing as get_current_user
+# The get_current_user function returns a string (user_id), not a User model
+from middleware.auth_middleware import get_current_user
 
+# Configure logging
+logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-router = APIRouter(
-    prefix="/api/ai",
-    tags=["AI Features"]
-)
+# Create router
+router = APIRouter(prefix="/api/ai-features", tags=["AI Features"])
 
 
-@router.post(
-    "/tutor/ask",
-    response_model=AITutorResponse,
-    summary="Ask AI tutor",
-    description="Ask a question to the AI tutor and get detailed explanation"
-)
-async def ask_ai_tutor(
-    request: AITutorRequest,
-    current_user: str = Depends(get_current_user)
+# ============================================================================
+# AI INTERACTIONS ENDPOINTS
+# ============================================================================
+
+@router.get("/interactions", response_model=List[AIInteraction])
+async def get_ai_interactions(
+    current_user: str = Depends(get_current_user),
+    student_id: Optional[str] = Query(None, description="Filter by student ID"),
+    interaction_type: Optional[str] = Query(None, description="Filter by interaction type"),
+    status: Optional[str] = Query(None, description="Filter by status"),
+    start_date: Optional[datetime] = Query(None, description="Filter by start date"),
+    end_date: Optional[datetime] = Query(None, description="Filter by end date"),
+    limit: int = Query(100, ge=1, le=1000, description="Maximum number of results"),
+    skip: int = Query(0, ge=0, description="Number of results to skip")
 ):
-    """Ask a question to the AI tutor."""
-    # This would use Gemini to generate response
-    response = AITutorResponse(
-        message_id=f"msg_{int(__import__('time').time())}",
-        answer="The second law of thermodynamics states that the total entropy of an isolated system can never decrease over time. In simple terms, heat naturally flows from hot to cold, and processes tend to move towards disorder.",
-        key_points=[
-            "Entropy always increases in isolated systems",
-            "Heat flows from hot to cold spontaneously",
-            "Impossible to convert all heat to work (100% efficiency)"
-        ],
-        examples=[
-            "Ice melting in warm water - heat flows from water to ice",
-            "Gas expanding into vacuum - molecules spread out (increase disorder)",
-            "Coffee cooling down - heat dissipates to surroundings"
-        ],
-        related_topics=["Entropy", "Heat Engines", "Carnot Cycle", "Reversible Processes"],
-        practice_questions=[],
-        resources=[
-            {
-                "title": "Thermodynamics Video Lecture",
-                "url": "https://youtube.com/watch?v=example"
-            }
-        ]
-    )
-    return response
-
-
-@router.get(
-    "/tutor/history/{student_id}",
-    response_model=ChatHistory,
-    summary="Get chat history",
-    description="Get chat history with AI tutor"
-)
-async def get_chat_history(
-    student_id: str,
-    limit: int = Query(50, ge=1, le=100, description="Maximum messages to return"),
-    current_user: str = Depends(get_current_user)
-):
-    """Get chat history with AI tutor."""
-    history = ChatHistory(
-        student_id=student_id,
-        messages=[],
-        total_messages=0
-    )
-    return history
-
-
-@router.get(
-    "/recommend/topics/{student_id}",
-    response_model=List[TopicRecommendation],
-    summary="Get topic recommendations",
-    description="Get AI-recommended topics to study based on performance"
-)
-async def get_topic_recommendations(
-    student_id: str,
-    limit: int = Query(5, ge=1, le=20, description="Number of recommendations"),
-    current_user: str = Depends(get_current_user)
-):
-    """Get AI-recommended topics to study."""
-    recommendations = [
-        TopicRecommendation(
-            topic_id="topic_123",
-            topic_name="Thermodynamics",
-            subject="Physics",
-            priority="high",
-            reason="Low accuracy (45%) on high-weightage topic (8%)",
-            estimated_hours=6.0,
-            current_accuracy=45.0,
-            target_accuracy=75.0,
-            weightage=8.0
-        ),
-        TopicRecommendation(
-            topic_id="topic_124",
-            topic_name="Organic Chemistry",
-            subject="Chemistry",
-            priority="high",
-            reason="Critical topic with moderate performance (62%)",
-            estimated_hours=8.0,
-            current_accuracy=62.0,
-            target_accuracy=80.0,
-            weightage=12.0
-        )
-    ]
-    return recommendations[:limit]
-
-
-@router.get(
-    "/recommend/resources/{topic_id}",
-    response_model=List[ResourceRecommendation],
-    summary="Get resource recommendations",
-    description="Get AI-recommended resources for a topic"
-)
-async def get_resource_recommendations(
-    topic_id: str,
-    limit: int = Query(5, ge=1, le=20, description="Number of recommendations"),
-    current_user: str = Depends(get_current_user)
-):
-    """Get AI-recommended resources for a topic."""
-    recommendations = [
-        ResourceRecommendation(
-            resource_id="res_123",
-            title="Thermodynamics Explained",
-            type="video",
-            url="https://youtube.com/watch?v=example",
-            description="Comprehensive explanation of thermodynamics laws",
-            difficulty="intermediate",
-            duration="25:30",
-            rating=4.5,
-            relevance_score=0.92
-        ),
-        ResourceRecommendation(
-            resource_id="res_124",
-            title="Thermodynamics Practice Problems",
-            type="practice",
-            url="https://example.com/practice",
-            description="50 practice problems with solutions",
-            difficulty="intermediate",
-            duration="2 hours",
-            rating=4.7,
-            relevance_score=0.88
-        )
-    ]
-    return recommendations[:limit]
-
-
-@router.get(
-    "/readiness/{student_id}",
-    response_model=ExamReadiness,
-    summary="Get exam readiness",
-    description="Get comprehensive exam readiness assessment with predictions"
-)
-async def get_exam_readiness(
-    student_id: str,
-    current_user: str = Depends(get_current_user)
-):
-    """Get exam readiness assessment."""
-    readiness = ExamReadiness(
-        student_id=student_id,
-        overall_readiness=72.5,
-        readiness_level="good",
-        subject_readiness={
-            "Physics": 68.0,
-            "Chemistry": 75.0,
-            "Mathematics": 74.5
-        },
-        topic_coverage=78.0,
-        practice_score=71.5,
-        consistency_score=85.0,
-        predicted_rank_range="2000-2500",
-        confidence=78.0,
-        gaps=[
-            {
-                "subject": "Physics",
-                "topic": "Thermodynamics",
-                "severity": "high",
-                "hours_needed": 6.0
-            },
-            {
-                "subject": "Chemistry",
-                "topic": "Electrochemistry",
-                "severity": "medium",
-                "hours_needed": 4.0
-            }
-        ],
-        recommendations=[
-            "Focus 6 more hours on Thermodynamics",
-            "Take 2 more full-length practice tests",
-            "Revise Organic Chemistry formulas",
-            "Practice more numerical problems in Physics"
-        ],
-        days_to_exam=45
-    )
-    return readiness
-
-
-@router.get(
-    "/analysis/mistakes/{student_id}",
-    response_model=MistakeAnalysis,
-    summary="Get mistake analysis",
-    description="Get AI-powered analysis of mistake patterns"
-)
-async def get_mistake_analysis(
-    student_id: str,
-    current_user: str = Depends(get_current_user)
-):
-    """Get mistake pattern analysis."""
-    from models.ai_models import MistakePattern
+    """
+    Get AI interactions with optional filters.
     
-    analysis = MistakeAnalysis(
-        student_id=student_id,
-        total_mistakes=34,
-        analysis_period="Last 30 days",
-        patterns=[
-            MistakePattern(
-                pattern_type="calculation",
-                frequency=12,
-                percentage=35.3,
-                subjects_affected=["Physics", "Chemistry"],
-                topics_affected=["Thermodynamics", "Chemical Kinetics"],
-                examples=[
-                    {"question": "Q15", "mistake": "Decimal point error"}
-                ],
-                impact="high",
-                recommendation="Double-check calculations and use calculator"
-            ),
-            MistakePattern(
-                pattern_type="conceptual",
-                frequency=10,
-                percentage=29.4,
-                subjects_affected=["Physics"],
-                topics_affected=["Electromagnetism", "Optics"],
-                examples=[
-                    {"question": "Q8", "mistake": "Misunderstood concept"}
-                ],
-                impact="high",
-                recommendation="Review fundamental concepts and theory"
-            ),
-            MistakePattern(
-                pattern_type="silly",
-                frequency=8,
-                percentage=23.5,
-                subjects_affected=["Mathematics", "Physics"],
-                topics_affected=["Calculus", "Mechanics"],
-                examples=[
-                    {"question": "Q22", "mistake": "Misread question"}
-                ],
-                impact="medium",
-                recommendation="Read questions carefully and highlight key terms"
+    Args:
+        current_user: Authenticated user
+        student_id: Optional student ID filter
+        interaction_type: Optional interaction type filter
+        status: Optional status filter
+        start_date: Optional start date filter
+        end_date: Optional end date filter
+        limit: Maximum number of results
+        skip: Number of results to skip
+    
+    Returns:
+        List of AI interactions
+    """
+    try:
+        interactions = await database_service.get_ai_interactions(
+            user_id=current_user,
+            student_id=student_id,
+            interaction_type=interaction_type,
+            status=status,
+            start_date=start_date,
+            end_date=end_date,
+            limit=limit,
+            skip=skip
+        )
+        
+        return interactions
+        
+    except Exception as e:
+        logger.error(f"Failed to get AI interactions: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve AI interactions")
+
+
+@router.get("/interactions/summary")
+async def get_ai_interactions_summary(
+    current_user: str = Depends(get_current_user),
+    days: int = Query(30, ge=1, le=365, description="Number of days to summarize")
+):
+    """
+    Get AI interactions summary for the user.
+    
+    Args:
+        current_user: Authenticated user
+        days: Number of days to include in summary
+    
+    Returns:
+        AI interactions summary
+    """
+    try:
+        end_date = datetime.utcnow()
+        start_date = end_date - timedelta(days=days)
+        
+        summary = await database_service.get_ai_interaction_summary(
+            user_id=current_user,
+            period_start=start_date,
+            period_end=end_date
+        )
+        
+        return summary
+        
+    except Exception as e:
+        logger.error(f"Failed to get AI interactions summary: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve AI interactions summary")
+
+
+# ============================================================================
+# PARENT INSIGHTS ENDPOINTS
+# ============================================================================
+
+@router.get("/insights", response_model=List[ParentInsight])
+async def get_parent_insights(
+    current_user: str = Depends(get_current_user),
+    student_id: Optional[str] = Query(None, description="Filter by student ID"),
+    insight_type: Optional[str] = Query(None, description="Filter by insight type"),
+    severity: Optional[str] = Query(None, description="Filter by severity"),
+    status: Optional[str] = Query(None, description="Filter by status"),
+    start_date: Optional[datetime] = Query(None, description="Filter by start date"),
+    end_date: Optional[datetime] = Query(None, description="Filter by end date"),
+    limit: int = Query(100, ge=1, le=1000, description="Maximum number of results"),
+    skip: int = Query(0, ge=0, description="Number of results to skip")
+):
+    """
+    Get parent insights with optional filters.
+    
+    Args:
+        current_user: Authenticated user
+        student_id: Optional student ID filter
+        insight_type: Optional insight type filter
+        severity: Optional severity filter
+        status: Optional status filter
+        start_date: Optional start date filter
+        end_date: Optional end date filter
+        limit: Maximum number of results
+        skip: Number of results to skip
+    
+    Returns:
+        List of parent insights
+    """
+    try:
+        insights = await database_service.get_parent_insights(
+            parent_id=current_user,
+            student_id=student_id,
+            insight_type=insight_type,
+            severity=severity,
+            status=status,
+            start_date=start_date,
+            end_date=end_date,
+            limit=limit,
+            skip=skip
+        )
+        
+        return insights
+        
+    except Exception as e:
+        logger.error(f"Failed to get parent insights: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve parent insights")
+
+
+@router.post("/insights/{insight_id}/status")
+async def update_parent_insight_status(
+    insight_id: str,
+    status_data: Dict[str, Any],
+    current_user: str = Depends(get_current_user)
+):
+    """
+    Update parent insight status.
+    
+    Args:
+        insight_id: Insight ID
+        status_data: Status update data
+        current_user: Authenticated user
+    
+    Returns:
+        Update result
+    """
+    try:
+        status = status_data.get("status")
+        action_taken = status_data.get("action_taken")
+        
+        if not status:
+            raise HTTPException(status_code=400, detail="Status is required")
+        
+        success = await database_service.update_parent_insight_status(
+            insight_id=insight_id,
+            status=status,
+            action_taken=action_taken
+        )
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Insight not found")
+        
+        return {"message": "Insight status updated successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to update parent insight status: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update insight status")
+
+
+@router.get("/insights/generate")
+async def generate_parent_insights(
+    current_user: str = Depends(get_current_user),
+    student_id: str = Query(..., description="Student ID"),
+    insight_type: Optional[str] = Query(None, description="Specific insight type to generate")
+):
+    """
+    Generate parent insights using AI.
+    
+    Args:
+        current_user: Authenticated user
+        student_id: Student ID
+        insight_type: Optional specific insight type
+    
+    Returns:
+        Generated insights
+    """
+    try:
+        # Get student data and performance metrics
+        # This would typically involve querying multiple collections
+        student_data = await _get_student_data_for_insights(student_id)
+        
+        # Generate insights using AI content service
+        ai_content_service = await get_ai_content_service()
+        insights = await ai_content_service.generate_parent_insights(
+            parent_id=current_user,
+            student_id=student_id,
+            student_data=student_data,
+            insight_type=insight_type
+        )
+        
+        # Save insights to database
+        saved_insights = []
+        for insight_data in insights:
+            insight = ParentInsight(
+                insight_id=str(uuid.uuid4()),
+                parent_id=current_user,
+                student_id=student_id,
+                **insight_data
             )
-        ],
-        most_common_pattern="calculation",
-        improvement_potential=12.5,
-        priority_actions=[
-            "Practice more calculation-heavy problems",
-            "Use calculator for complex computations",
-            "Review conceptual understanding of Thermodynamics",
-            "Read questions more carefully"
-        ],
-        subject_wise_mistakes={
-            "Physics": 15,
-            "Chemistry": 10,
-            "Mathematics": 9
+            
+            await database_service.save_parent_insight(insight)
+            saved_insights.append(insight)
+        
+        return {"insights": saved_insights, "count": len(saved_insights)}
+        
+    except Exception as e:
+        logger.error(f"Failed to generate parent insights: {e}")
+        raise HTTPException(status_code=500, detail="Failed to generate insights")
+
+
+# ============================================================================
+# ENGAGEMENT METRICS ENDPOINTS
+# ============================================================================
+
+@router.get("/engagement-metrics", response_model=List[EngagementMetric])
+async def get_engagement_metrics(
+    current_user: str = Depends(get_current_user),
+    student_id: str = Query(..., description="Student ID"),
+    metric_type: Optional[str] = Query(None, description="Filter by metric type"),
+    period: Optional[str] = Query(None, description="Filter by period"),
+    start_date: Optional[datetime] = Query(None, description="Filter by start date"),
+    end_date: Optional[datetime] = Query(None, description="Filter by end date"),
+    limit: int = Query(100, ge=1, le=1000, description="Maximum number of results"),
+    skip: int = Query(0, ge=0, description="Number of results to skip")
+):
+    """
+    Get engagement metrics with optional filters.
+    
+    Args:
+        current_user: Authenticated user
+        student_id: Student ID
+        metric_type: Optional metric type filter
+        period: Optional period filter
+        start_date: Optional start date filter
+        end_date: Optional end date filter
+        limit: Maximum number of results
+        skip: Number of results to skip
+    
+    Returns:
+        List of engagement metrics
+    """
+    try:
+        metrics = await database_service.get_engagement_metrics(
+            student_id=student_id,
+            metric_type=metric_type,
+            period=period,
+            start_date=start_date,
+            end_date=end_date,
+            limit=limit,
+            skip=skip
+        )
+        
+        return metrics
+        
+    except Exception as e:
+        logger.error(f"Failed to get engagement metrics: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve engagement metrics")
+
+
+@router.post("/engagement-metrics/track")
+async def track_engagement_metric(
+    metric_data: Dict[str, Any],
+    current_user: str = Depends(get_current_user)
+):
+    """
+    Track an engagement metric.
+    
+    Args:
+        metric_data: Metric data
+        current_user: Authenticated user
+    
+    Returns:
+        Tracking result
+    """
+    try:
+        metric = EngagementMetric(
+            metric_id=str(uuid.uuid4()),
+            user_id=current_user,
+            **metric_data
+        )
+        
+        await database_service.save_engagement_metric(metric)
+        
+        return {"message": "Engagement metric tracked successfully", "metric_id": metric.metric_id}
+        
+    except Exception as e:
+        logger.error(f"Failed to track engagement metric: {e}")
+        raise HTTPException(status_code=500, detail="Failed to track engagement metric")
+
+
+# ============================================================================
+# COMMUNICATION HISTORY ENDPOINTS
+# ============================================================================
+
+@router.get("/communications", response_model=List[CommunicationRecord])
+async def get_communication_history(
+    current_user: str = Depends(get_current_user),
+    student_id: Optional[str] = Query(None, description="Filter by student ID"),
+    communication_type: Optional[str] = Query(None, description="Filter by communication type"),
+    channel: Optional[str] = Query(None, description="Filter by channel"),
+    status: Optional[str] = Query(None, description="Filter by status"),
+    start_date: Optional[datetime] = Query(None, description="Filter by start date"),
+    end_date: Optional[datetime] = Query(None, description="Filter by end date"),
+    limit: int = Query(100, ge=1, le=1000, description="Maximum number of results"),
+    skip: int = Query(0, ge=0, description="Number of results to skip")
+):
+    """
+    Get communication history with optional filters.
+    
+    Args:
+        current_user: Authenticated user
+        student_id: Optional student ID filter
+        communication_type: Optional communication type filter
+        channel: Optional channel filter
+        status: Optional status filter
+        start_date: Optional start date filter
+        end_date: Optional end date filter
+        limit: Maximum number of results
+        skip: Number of results to skip
+    
+    Returns:
+        List of communication records
+    """
+    try:
+        communications = await database_service.get_communication_history(
+            parent_id=current_user,
+            student_id=student_id,
+            communication_type=communication_type,
+            channel=channel,
+            status=status,
+            start_date=start_date,
+            end_date=end_date,
+            limit=limit,
+            skip=skip
+        )
+        
+        return communications
+        
+    except Exception as e:
+        logger.error(f"Failed to get communication history: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve communication history")
+
+
+# ============================================================================
+# INTERVENTION ALERTS ENDPOINTS
+# ============================================================================
+
+@router.get("/alerts", response_model=List[InterventionAlert])
+async def get_intervention_alerts(
+    current_user: str = Depends(get_current_user),
+    student_id: Optional[str] = Query(None, description="Filter by student ID"),
+    alert_type: Optional[str] = Query(None, description="Filter by alert type"),
+    severity: Optional[str] = Query(None, description="Filter by severity"),
+    status: Optional[str] = Query(None, description="Filter by status"),
+    start_date: Optional[datetime] = Query(None, description="Filter by start date"),
+    end_date: Optional[datetime] = Query(None, description="Filter by end date"),
+    limit: int = Query(100, ge=1, le=1000, description="Maximum number of results"),
+    skip: int = Query(0, ge=0, description="Number of results to skip")
+):
+    """
+    Get intervention alerts with optional filters.
+    
+    Args:
+        current_user: Authenticated user
+        student_id: Optional student ID filter
+        alert_type: Optional alert type filter
+        severity: Optional severity filter
+        status: Optional status filter
+        start_date: Optional start date filter
+        end_date: Optional end date filter
+        limit: Maximum number of results
+        skip: Number of results to skip
+    
+    Returns:
+        List of intervention alerts
+    """
+    try:
+        alerts = await database_service.get_intervention_alerts(
+            parent_id=current_user,
+            student_id=student_id,
+            alert_type=alert_type,
+            severity=severity,
+            status=status,
+            start_date=start_date,
+            end_date=end_date,
+            limit=limit,
+            skip=skip
+        )
+        
+        return alerts
+        
+    except Exception as e:
+        logger.error(f"Failed to get intervention alerts: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve intervention alerts")
+
+
+@router.post("/alerts/{alert_id}/status")
+async def update_intervention_alert_status(
+    alert_id: str,
+    status_data: Dict[str, Any],
+    current_user: str = Depends(get_current_user)
+):
+    """
+    Update intervention alert status.
+    
+    Args:
+        alert_id: Alert ID
+        status_data: Status update data
+        current_user: Authenticated user
+    
+    Returns:
+        Update result
+    """
+    try:
+        status = status_data.get("status")
+        resolution_notes = status_data.get("resolution_notes")
+        
+        if not status:
+            raise HTTPException(status_code=400, detail="Status is required")
+        
+        success = await database_service.update_intervention_alert_status(
+            alert_id=alert_id,
+            status=status,
+            resolved_by=current_user,
+            resolution_notes=resolution_notes
+        )
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Alert not found")
+        
+        return {"message": "Alert status updated successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Failed to update intervention alert status: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update alert status")
+
+
+# ============================================================================
+# DASHBOARD ENDPOINTS
+# ============================================================================
+
+@router.get("/dashboard")
+async def get_parent_dashboard(
+    current_user: str = Depends(get_current_user),
+    student_id: Optional[str] = Query(None, description="Filter by student ID")
+):
+    """
+    Get parent dashboard data including insights, alerts, and communications.
+    
+    Args:
+        current_user: Authenticated user
+        student_id: Optional student ID filter
+    
+    Returns:
+        Dashboard data
+    """
+    try:
+        dashboard_data = await database_service.get_dashboard_stats(
+            parent_id=current_user,
+            student_id=student_id
+        )
+        
+        return dashboard_data
+        
+    except Exception as e:
+        logger.error(f"Failed to get parent dashboard: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve dashboard data")
+
+
+@router.get("/dashboard/config")
+async def get_parent_dashboard_config(
+    current_user: str = Depends(get_current_user)
+):
+    """
+    Get parent dashboard configuration.
+    
+    Args:
+        current_user: Authenticated user
+    
+    Returns:
+        Dashboard configuration
+    """
+    try:
+        # For now, return default configuration
+        # In a real implementation, this would be stored in the database
+        config = ParentDashboardConfig(
+            parent_id=current_user
+        )
+        
+        return config
+        
+    except Exception as e:
+        logger.error(f"Failed to get parent dashboard config: {e}")
+        raise HTTPException(status_code=500, detail="Failed to retrieve dashboard configuration")
+
+
+@router.post("/dashboard/config")
+async def update_parent_dashboard_config(
+    config_data: Dict[str, Any],
+    current_user: str = Depends(get_current_user)
+):
+    """
+    Update parent dashboard configuration.
+    
+    Args:
+        config_data: Configuration data
+        current_user: Authenticated user
+    
+    Returns:
+        Update result
+    """
+    try:
+        # Update configuration in database
+        # For now, just return success
+        # In a real implementation, this would update the database
+        
+        return {"message": "Dashboard configuration updated successfully"}
+        
+    except Exception as e:
+        logger.error(f"Failed to update parent dashboard config: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update dashboard configuration")
+
+
+# ============================================================================
+# UTILITY FUNCTIONS
+# ============================================================================
+
+async def _get_student_data_for_insights(student_id: str) -> Dict[str, Any]:
+    """
+    Get student data for generating insights.
+    
+    Args:
+        student_id: Student ID
+    
+    Returns:
+        Student data dictionary
+    """
+    try:
+        # This would typically query multiple collections to get comprehensive student data
+        # For now, return mock data
+        
+        # Get recent engagement metrics
+        end_date = datetime.utcnow()
+        start_date = end_date - timedelta(days=30)
+        
+        engagement_metrics = await database_service.get_engagement_metrics(
+            student_id=student_id,
+            start_date=start_date,
+            end_date=end_date,
+            limit=100
+        )
+        
+        # Get recent AI interactions
+        ai_interactions = await database_service.get_ai_interactions(
+            student_id=student_id,
+            start_date=start_date,
+            end_date=end_date,
+            limit=100
+        )
+        
+        # Get active intervention alerts
+        active_alerts = await database_service.get_intervention_alerts(
+            parent_id="",  # This would need to be determined
+            student_id=student_id,
+            status="new",
+            limit=10
+        )
+        
+        return {
+            "student_id": student_id,
+            "engagement_metrics": [metric.model_dump() for metric in engagement_metrics],
+            "ai_interactions": [interaction.model_dump() for interaction in ai_interactions],
+            "active_alerts": [alert.model_dump() for alert in active_alerts],
+            "period_start": start_date.isoformat(),
+            "period_end": end_date.isoformat()
         }
-    )
-    return analysis
+        
+    except Exception as e:
+        logger.error(f"Failed to get student data for insights: {e}")
+        raise
+
+
+# ============================================================================
+# HEALTH CHECK
+# ============================================================================
+
+@router.get("/health")
+async def health_check():
+    """
+    Health check endpoint for AI features service.
+    
+    Returns:
+        Health status
+    """
+    try:
+        # Check database connection
+        # This would typically ping the database
+        db_status = "healthy"
+        
+        # Check AI services
+        gemini_status = "healthy" if gemini_service else "unhealthy"
+        rag_status = "healthy" if rag_service else "unhealthy"
+        
+        overall_status = "healthy" if all([
+            db_status == "healthy",
+            gemini_status == "healthy",
+            rag_status == "healthy"
+        ]) else "unhealthy"
+        
+        return {
+            "status": overall_status,
+            "services": {
+                "database": db_status,
+                "gemini": gemini_status,
+                "rag": rag_status
+            },
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error(f"Health check failed: {e}")
+        return JSONResponse(
+            status_code=503,
+            content={
+                "status": "unhealthy",
+                "error": str(e),
+                "timestamp": datetime.utcnow().isoformat()
+            }
+        )

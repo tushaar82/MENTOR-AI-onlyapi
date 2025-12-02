@@ -49,9 +49,11 @@ from routers.ai_features_router import router as ai_features_router  # AI-powere
 from routers.analytics_router import router as analytics_router  # Analytics and performance insights
 from routers.syllabus_coverage_router import router as syllabus_coverage_router  # Syllabus coverage tracking
 from routers.analytics_router import router as analytics_router  # Analytics and performance insights
-from routers.syllabus_coverage_router import router as syllabus_coverage_router  # Syllabus coverage tracking
 
 # Vertex AI is no longer needed - using Gemini API directly
+
+# Import database service for initialization
+from services.database_service import database_service
 
 # Configure logging
 logging.basicConfig(
@@ -77,6 +79,14 @@ async def lifespan(app: FastAPI):
     logger.info("Using Gemini API for all AI features (vector search and RAG)")
     logger.info("No Vertex AI initialization required")
     
+    # Initialize database service
+    logger.info("Initializing database service...")
+    db_connected = await database_service.connect()
+    if db_connected:
+        logger.info("Database service initialized successfully")
+    else:
+        logger.error("Failed to initialize database service")
+    
     logger.info("Available routes:")
     for route in app.routes:
         if hasattr(route, "methods") and hasattr(route, "path"):
@@ -89,6 +99,11 @@ async def lifespan(app: FastAPI):
     # Shutdown
     logger.info("Mentor AI Backend shutting down...")
     logger.info("Cleaning up resources...")
+    
+    # Disconnect database service
+    await database_service.disconnect()
+    logger.info("Database service disconnected")
+    
     # Note: Vertex AI client cleanup is handled automatically
     logger.info("Shutdown complete")
 

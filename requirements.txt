@@ -5,6 +5,10 @@ uvicorn[standard]==0.24.0
 # Firebase Integration
 firebase-admin==6.2.0
 
+# MongoDB Integration
+motor==3.3.2
+pymongo==4.6.0
+
 # Environment Management
 python-dotenv==1.0.0
 
