@@ -58,11 +58,11 @@ from services.unified_gemini_config_service import get_unified_gemini_service, G
 # Configure logging
 logger = logging.getLogger(__name__)
 
-# Gemini Flash pricing (as of 2024)
-# Input: $0.000125 per 1K tokens (up to 128K context)
-# Output: $0.000375 per 1K tokens
-GEMINI_INPUT_COST_PER_1K = 0.000125
-GEMINI_OUTPUT_COST_PER_1K = 0.000375
+# Gemini Flash Lite pricing (as of 2024)
+# Input: $0.000075 per 1K tokens (up to 128K context)
+# Output: $0.00015 per 1K tokens
+GEMINI_INPUT_COST_PER_1K = 0.000075
+GEMINI_OUTPUT_COST_PER_1K = 0.00015
 
 # Rate limiting
 MAX_REQUESTS_PER_MINUTE = 60
@@ -986,4 +986,4 @@ def get_gemini_service(
 # Module initialization
 logger.info("Enhanced Gemini service module loaded with database persistence")
 logger.info(f"Rate limit: {MAX_REQUESTS_PER_MINUTE} requests per {RATE_LIMIT_WINDOW}s")
-logger.info(f"Pricing: ${GEMINI_INPUT_COST_PER_1K}/1K input, ${GEMINI_OUTPUT_COST_PER_1K}/1K output")
+logger.info(f"Gemini Flash Lite Pricing: ${GEMINI_INPUT_COST_PER_1K}/1K input, ${GEMINI_OUTPUT_COST_PER_1K}/1K output")

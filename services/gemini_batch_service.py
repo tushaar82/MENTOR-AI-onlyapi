@@ -71,9 +71,9 @@ DEFAULT_BATCH_TIMEOUT = 30  # Seconds to wait before auto-flushing
 MAX_BATCH_SIZE = 20  # Maximum requests in a single batch
 MIN_BATCH_SIZE = 2  # Minimum requests to form a batch
 
-# Cost tracking (Gemini Flash pricing)
-GEMINI_INPUT_COST_PER_1K = 0.000125
-GEMINI_OUTPUT_COST_PER_1K = 0.000375
+# Cost tracking (Gemini Flash Lite pricing)
+GEMINI_INPUT_COST_PER_1K = 0.000075
+GEMINI_OUTPUT_COST_PER_1K = 0.00015
 BATCH_OVERHEAD_REDUCTION = 0.15  # 15% overhead reduction from batching
 
 # Request types and their batch configurations
@@ -897,3 +897,4 @@ import re
 logger.info("Gemini batch service module loaded")
 logger.info(f"Default batch size: {DEFAULT_BATCH_SIZE}, timeout: {DEFAULT_BATCH_TIMEOUT}s")
 logger.info(f"Cost reduction target: {BATCH_OVERHEAD_REDUCTION * 100:.0f}% from batching")
+logger.info(f"Gemini Flash Lite Pricing: ${GEMINI_INPUT_COST_PER_1K}/1K input, ${GEMINI_OUTPUT_COST_PER_1K}/1K output")

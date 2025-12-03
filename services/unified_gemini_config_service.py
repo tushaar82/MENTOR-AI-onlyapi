@@ -36,9 +36,9 @@ from utils.gemini_client import GeminiClient, GeminiClientError
 # Configure logging
 logger = logging.getLogger(__name__)
 
-# Gemini Flash pricing (updated 2024)
-GEMINI_FLASH_INPUT_COST_PER_1K = 0.000125
-GEMINI_FLASH_OUTPUT_COST_PER_1K = 0.000375
+# Gemini Flash Lite pricing (updated 2024)
+GEMINI_FLASH_INPUT_COST_PER_1K = 0.000075
+GEMINI_FLASH_OUTPUT_COST_PER_1K = 0.00015
 GEMINI_FLASH_CONTEXT_WINDOW = 1_048_576  # 1M tokens
 GEMINI_FLASH_MAX_OUTPUT = 8192  # 8K tokens
 
@@ -55,7 +55,7 @@ DEFAULT_CACHE_SIZE = 1000
 class GeminiConfig:
     """Configuration for Gemini Flash operations."""
     
-    model_name: str = "gemini-1.5-flash"
+    model_name: str = "gemini-2.0-flash-lite"
     temperature: float = 0.7
     max_output_tokens: int = 8192
     top_p: float = 0.95
@@ -105,7 +105,7 @@ class CostTracker(BaseModel):
     
     date: datetime = Field(..., description="Date for cost tracking")
     user_id: Optional[str] = Field(None, description="User ID if user-specific")
-    service: str = Field(..., description="Service name (gemini_flash, etc.)")
+    service: str = Field(..., description="Service name (gemini_flash_lite, etc.)")
     total_requests: int = Field(0, description="Total requests")
     total_input_tokens: int = Field(0, description="Total input tokens")
     total_output_tokens: int = Field(0, description="Total output tokens")
@@ -116,9 +116,9 @@ class CostTracker(BaseModel):
 
 class UnifiedGeminiConfigService:
     """
-    Unified service for Gemini Flash configuration and management.
+    Unified service for Gemini Flash Lite configuration and management.
     
-    This service provides centralized management for all Gemini Flash operations,
+    This service provides centralized management for all Gemini Flash Lite operations,
     including configuration, database persistence, cost tracking, and performance monitoring.
     
     Attributes:
@@ -740,7 +740,7 @@ class UnifiedGeminiConfigService:
             self.cost_trackers[date_key] = CostTracker(
                 date=today_start,
                 user_id=user_id,
-                service="gemini_flash"
+                service="gemini_flash_lite"
             )
         
         tracker = self.cost_trackers[date_key]
@@ -764,7 +764,7 @@ class UnifiedGeminiConfigService:
             self.cost_trackers[date_key] = CostTracker(
                 date=today_start,
                 user_id=user_id,
-                service="gemini_flash"
+                service="gemini_flash_lite"
             )
         
         self.cost_trackers[date_key].cache_hits += 1
@@ -900,4 +900,4 @@ def get_unified_gemini_service(
 
 # Module initialization
 logger.info("Unified Gemini Config Service module loaded")
-logger.info(f"Gemini Flash pricing: ${GEMINI_FLASH_INPUT_COST_PER_1K}/1K input, ${GEMINI_FLASH_OUTPUT_COST_PER_1K}/1K output")
+logger.info(f"Gemini Flash Lite pricing: ${GEMINI_FLASH_INPUT_COST_PER_1K}/1K input, ${GEMINI_FLASH_OUTPUT_COST_PER_1K}/1K output")
