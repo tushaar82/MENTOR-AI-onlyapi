@@ -49,6 +49,7 @@ from routers.ai_features_router import router as ai_features_router  # AI-powere
 from routers.parent_features_router import router as parent_features_router  # Phase 2 Parent AI Features
 from routers.analytics_router import router as analytics_router  # Analytics and performance insights
 from routers.syllabus_coverage_router import router as syllabus_coverage_router  # Syllabus coverage tracking
+from routers.vidhya_router import router as vidhya_router  # Vidhya AI Agent
 
 # Vertex AI is no longer needed - using Gemini API directly
 
@@ -356,6 +357,13 @@ app.include_router(
     # Endpoints: /api/parent/insights, /api/parent/predictions, /api/parent/communications, etc.
 )
 
+# Vidhya AI Agent router - Chat interface with multilingual support
+app.include_router(
+    vidhya_router,
+    # Prefix and tags are already defined in the router
+    # Endpoints: /api/vidhya/chat/start, /api/vidhya/chat/send, /api/vidhya/chat/sessions, etc.
+)
+
 
 # Root endpoint
 @app.get("/", tags=["Root"])
@@ -387,7 +395,8 @@ async def root() -> Dict[str, Any]:
             "progress_tracking": "/api/schedule/progress",
             "payment": "/api/payment",
             "subscriptions": "/api/payment/subscription",
-            "study_center": "/api/study-center"
+            "study_center": "/api/study-center",
+            "vidhya_ai": "/api/vidhya"
         }
     }
 

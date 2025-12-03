@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { Users, GraduationCap } from 'lucide-react';
+import { Users, GraduationCap, MessageCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 
 export function DashboardNav() {
@@ -15,9 +15,10 @@ export function DashboardNav() {
   }
 
   const isParentDashboard = pathname === '/parent-dashboard';
+  const isVidhyaPage = pathname === '/vidhya';
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 flex-wrap">
       <Button
         variant={isParentDashboard ? 'default' : 'outline'}
         size="sm"
@@ -27,12 +28,20 @@ export function DashboardNav() {
         Parent View
       </Button>
       <Button
-        variant={!isParentDashboard ? 'default' : 'outline'}
+        variant={!isParentDashboard && !isVidhyaPage ? 'default' : 'outline'}
         size="sm"
         onClick={() => router.push('/dashboard')}
       >
         <GraduationCap className="mr-2 h-4 w-4" />
         Student View
+      </Button>
+      <Button
+        variant={isVidhyaPage ? 'default' : 'outline'}
+        size="sm"
+        onClick={() => router.push('/vidhya')}
+      >
+        <MessageCircle className="mr-2 h-4 w-4" />
+        Vidhya AI
       </Button>
     </div>
   );

@@ -305,9 +305,7 @@ class UnifiedGeminiConfigService:
             response_text = self.gemini_client.generate_content(
                 prompt=prompt,
                 temperature=config.temperature,
-                max_output_tokens=config.max_output_tokens,
-                top_p=config.top_p,
-                top_k=config.top_k
+                max_output_tokens=config.max_output_tokens
             )
             
             # Calculate metrics
@@ -463,9 +461,7 @@ class UnifiedGeminiConfigService:
             response_text = self.gemini_client.generate_content(
                 prompt=prompt,
                 temperature=config.temperature,
-                max_output_tokens=config.max_output_tokens,
-                top_p=config.top_p,
-                top_k=config.top_k
+                max_output_tokens=config.max_output_tokens
             )
             
             # Parse questions from response
