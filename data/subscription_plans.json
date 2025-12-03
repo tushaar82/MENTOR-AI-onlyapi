@@ -4,10 +4,15 @@
     "name": "Free Plan",
     "price": 0,
     "duration_days": 365,
+    "token_limits": {
+      "daily": 1000,
+      "monthly": 10000
+    },
     "features": [
       "1 diagnostic test",
       "Basic analytics",
       "50 practice questions per month",
+      "1000 AI tokens daily",
       "Standard support"
     ],
     "currency": "INR",
@@ -19,6 +24,10 @@
     "name": "Premium Monthly",
     "price": 99900,
     "duration_days": 30,
+    "token_limits": {
+      "daily": 10000,
+      "monthly": 100000
+    },
     "features": [
       "Unlimited diagnostic tests",
       "Advanced AI analytics",
@@ -26,6 +35,7 @@
       "Personalized study schedules",
       "Teaching resources for parents",
       "Progress tracking",
+      "10000 AI tokens daily",
       "Priority support"
     ],
     "currency": "INR",
@@ -37,8 +47,13 @@
     "name": "Premium Yearly",
     "price": 999900,
     "duration_days": 365,
+    "token_limits": {
+      "daily": 15000,
+      "monthly": 150000
+    },
     "features": [
       "All Premium Monthly features",
+      "15000 AI tokens daily",
       "Priority support",
       "Early access to new features",
       "Dedicated success manager",

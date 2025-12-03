@@ -51,6 +51,7 @@ from routers.analytics_router import router as analytics_router  # Analytics and
 from routers.syllabus_coverage_router import router as syllabus_coverage_router  # Syllabus coverage tracking
 from routers.vidhya_router import router as vidhya_router  # Vidhya AI Agent
 from routers.language_router import router as language_router  # Language management
+from routers.token_usage_router import router as token_usage_router  # Token usage tracking
 
 # Vertex AI is no longer needed - using Gemini API directly
 
@@ -154,6 +155,11 @@ app.add_middleware(
 from middleware.rate_limiter import RateLimitMiddleware
 
 app.add_middleware(RateLimitMiddleware)
+
+# Add token limiting middleware
+from middleware.token_limit_middleware import create_token_limit_middleware
+
+app.add_middleware(create_token_limit_middleware)
 
 # Add language middleware
 app.add_middleware(LanguageMiddleware)
@@ -382,6 +388,13 @@ app.include_router(
     # Endpoints: /api/vidhya/chat/start, /api/vidhya/chat/send, /api/vidhya/chat/sessions, etc.
 )
 
+# Token usage router - Token usage tracking and limits
+app.include_router(
+    token_usage_router,
+    # Prefix and tags are already defined in the router
+    # Endpoints: /api/token-usage/student/{student_id}, /api/token-usage/limits/student/{student_id}, etc.
+)
+
 # Language management router - Multilingual support
 app.include_router(
     language_router,
@@ -422,6 +435,7 @@ async def root() -> Dict[str, Any]:
             "subscriptions": "/api/payment/subscription",
             "study_center": "/api/study-center",
             "vidhya_ai": "/api/vidhya",
+            "token_usage": "/api/token-usage",
             "language": "/api/language"
         }
     }

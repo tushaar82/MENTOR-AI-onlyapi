@@ -28,6 +28,7 @@ from functools import lru_cache
 
 from services.unified_gemini_config_service import get_unified_gemini_service, GeminiConfig
 from services.gemini_service import get_gemini_service
+from services.token_usage_service import get_token_usage_service
 from utils.firebase_config import get_firestore_client
 
 # Configure logging
@@ -247,6 +248,35 @@ class VidhyaService:
         if target_language not in SUPPORTED_LANGUAGES:
             target_language = DEFAULT_LANGUAGE
         
+        # Get student ID from session
+        student_id = session.student_id
+        
+        # Estimate tokens needed
+        estimated_input_tokens = len(message) // 4
+        estimated_output_tokens = 150  # Base estimate for response
+        estimated_total_tokens = estimated_input_tokens + estimated_output_tokens
+        
+        # Check token limits if student_id is available
+        if student_id:
+            token_service = get_token_usage_service()
+            limit_check = await token_service.check_token_limit(
+                student_id=student_id,
+                tokens_requested=estimated_total_tokens
+            )
+            
+            if not limit_check["allowed"]:
+                logger.warning(
+                    f"Token limit exceeded for student {student_id}: "
+                    f"requested={estimated_total_tokens}, "
+                    f"daily_remaining={limit_check['daily_remaining']}, "
+                    f"monthly_remaining={limit_check['monthly_remaining']}"
+                )
+                raise ValueError(
+                    f"Token limit exceeded. Daily remaining: {limit_check['daily_remaining']}, "
+                    f"Monthly remaining: {limit_check['monthly_remaining']}. "
+                    f"Please upgrade your plan or try again tomorrow."
+                )
+        
         # Store user message
         user_msg = ChatMessage(
             message_id=f"{session_id}_{len(self.chat_history[session_id])}",
@@ -270,6 +300,11 @@ class VidhyaService:
             # Generate response using Gemini
             response_text = await self._generate_response(prompt, user_id, target_language)
             
+            # Calculate actual tokens used
+            actual_input_tokens = len(message) // 4
+            actual_output_tokens = len(response_text) // 4
+            actual_total_tokens = actual_input_tokens + actual_output_tokens
+            
             # Store assistant response
             assistant_msg = ChatMessage(
                 message_id=f"{session_id}_{len(self.chat_history[session_id])}",
@@ -285,20 +320,41 @@ class VidhyaService:
             session.updated_at = datetime.utcnow()
             session.message_count = len(self.chat_history[session_id])
             
+            # Track token usage if student_id is available
+            if student_id:
+                token_service = get_token_usage_service()
+                await token_service.track_token_usage(
+                    student_id=student_id,
+                    tokens_used=actual_total_tokens,
+                    interaction_type="vidhya_chat",
+                    metadata={
+                        "session_id": session_id,
+                        "message_length": len(message),
+                        "response_length": len(response_text),
+                        "language": target_language
+                    }
+                )
+            
             # Save to database if persistence is enabled
             if self.enable_persistence and self.db:
                 self._save_message_to_db(user_msg)
                 self._save_message_to_db(assistant_msg)
                 self._update_session_in_db(session)
             
-            logger.info(f"Generated response for session {session_id}: {len(response_text)} chars")
+            logger.info(f"Generated response for session {session_id}: {len(response_text)} chars, {actual_total_tokens} tokens")
             
             return {
                 "session_id": session_id,
                 "response": response_text,
                 "language": target_language,
                 "timestamp": assistant_msg.timestamp.isoformat(),
-                "message_count": session.message_count
+                "message_count": session.message_count,
+                "tokens_used": actual_total_tokens,
+                "token_breakdown": {
+                    "input": actual_input_tokens,
+                    "output": actual_output_tokens,
+                    "total": actual_total_tokens
+                }
             }
             
         except Exception as e:
@@ -316,6 +372,21 @@ class VidhyaService:
             )
             self.chat_history[session_id].append(error_msg)
             
+            # Track minimal token usage for error responses
+            if student_id:
+                token_service = get_token_usage_service()
+                error_tokens = len(error_response) // 4
+                await token_service.track_token_usage(
+                    student_id=student_id,
+                    tokens_used=error_tokens,
+                    interaction_type="vidhya_chat_error",
+                    metadata={
+                        "session_id": session_id,
+                        "error": True,
+                        "language": target_language
+                    }
+                )
+            
             # Save error message to database if persistence is enabled
             if self.enable_persistence and self.db:
                 self._save_message_to_db(error_msg)
@@ -325,7 +396,8 @@ class VidhyaService:
                 "response": error_response,
                 "language": target_language,
                 "timestamp": error_msg.timestamp.isoformat(),
-                "error": True
+                "error": True,
+                "tokens_used": error_tokens
             }
     
     async def get_chat_history(

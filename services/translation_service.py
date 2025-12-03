@@ -293,6 +293,23 @@ class TranslationService:
             True if supported, False otherwise
         """
         return language_config.is_supported(language_code)
+    
+    def get_translations(self, language_code: str) -> Dict[str, str]:
+        """
+        Get all translations for a specific language.
+        
+        Args:
+            language_code: Language code to get translations for
+        
+        Returns:
+            Dictionary of translations for the language
+        """
+        target_lang = validate_language_code(language_code or LanguageConfig.DEFAULT_LANGUAGE)
+        
+        if target_lang not in self._translations:
+            return {}
+        
+        return self._translations[target_lang]
 
 
 # Global translation service instance
