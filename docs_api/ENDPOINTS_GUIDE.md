@@ -29,7 +29,8 @@ This comprehensive guide covers all API endpoints for the Mentor AI EdTech Platf
 21. [AI Features](#ai-features)
 22. [Parent Features](#parent-features)
 23. [Payment](#payment)
-24. [Health](#health)
+24. [Token Usage](#token-usage)
+25. [Health](#health)
 
 ## Authentication
 
