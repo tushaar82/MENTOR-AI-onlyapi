@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -29,8 +30,10 @@ import {
   BookMarked,
 } from 'lucide-react';
 import { examAPI, onboardingAPI } from '@/lib/api';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 export default function DashboardPage() {
+  const { t } = useTranslation();
   const { user, logout, isLoading } = useAuth();
   const router = useRouter();
   const [diagnosticTest, setDiagnosticTest] = useState<any>(null);
@@ -136,14 +139,17 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                Welcome back, {user.full_name}!
+                {t('dashboard.welcome', { name: user.full_name })}
               </h1>
-              <p className="text-sm text-gray-600">Student Dashboard</p>
+              <p className="text-sm text-gray-600">{t('dashboard.student.title')}</p>
             </div>
-            <Button variant="outline" onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Logout
-            </Button>
+            <div className="flex items-center gap-2">
+              <LanguageSwitcher />
+              <Button variant="outline" onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                {t('dashboard.logout')}
+              </Button>
+            </div>
           </div>
         </div>
       </header>
@@ -165,13 +171,13 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg font-bold text-gray-900 mb-2">
-                      Setup In Progress
+                      {t('dashboard.setupInProgress')}
                     </h3>
                     <p className="text-sm text-gray-700 mb-4">
                       Your parent is still completing the setup process. Once they select your target exam and schedule the diagnostic test, you'll be able to access all features including practice modules, study plans, and progress tracking.
                     </p>
                     <p className="text-sm text-gray-600 italic">
-                      Please ask your parent to complete the onboarding process by selecting an exam.
+                      {t('dashboard.setupIncompleteMessage')}
                     </p>
                   </div>
                 </div>
@@ -195,17 +201,17 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex-1">
                     <h3 className="text-lg font-bold text-gray-900 mb-2">
-                      Complete Your Diagnostic Test
+                      {t('dashboard.completeDiagnosticTest')}
                     </h3>
                     <p className="text-sm text-gray-700 mb-4">
-                      Take the diagnostic test to unlock your personalized study plan, practice modules, and track your progress. This test helps us understand your strengths and areas for improvement.
+                      {t('dashboard.diagnosticTestDescription')}
                     </p>
                     <Button
                       className="bg-orange-600 hover:bg-orange-700"
                       onClick={() => router.push('/diagnostic-test/' + diagnosticTest.test_id)}
                     >
                       <PlayCircle className="mr-2 h-4 w-4" />
-                      Start Diagnostic Test Now
+                      {t('dashboard.startDiagnosticTest')}
                     </Button>
                   </div>
                 </div>
@@ -229,7 +235,7 @@ export default function DashboardPage() {
                       <Target className="w-6 h-6 text-blue-600" />
                     </div>
                     <div>
-                      <p className="text-sm text-gray-600">Target Exam</p>
+                      <p className="text-sm text-gray-600">{t('dashboard.targetExam')}</p>
                       <p className="text-lg font-bold text-gray-900">
                         {examSelection.exam_type?.replace('_', ' ')}
                       </p>
@@ -237,7 +243,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex items-center gap-4">
                     <div>
-                      <p className="text-sm text-gray-600">Exam Date</p>
+                      <p className="text-sm text-gray-600">{t('dashboard.examDate')}</p>
                       <p className="text-lg font-bold text-gray-900">
                         {examSelection.exam_date ? new Date(examSelection.exam_date).toLocaleDateString('en-US', {
                           month: 'short',
@@ -247,7 +253,7 @@ export default function DashboardPage() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm text-gray-600">Days Remaining</p>
+                      <p className="text-sm text-gray-600">{t('dashboard.daysRemaining')}</p>
                       <p className="text-2xl font-bold text-orange-600">
                         {examSelection.exam_date 
                           ? Math.ceil((new Date(examSelection.exam_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
@@ -264,10 +270,10 @@ export default function DashboardPage() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-grid">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="study-plan">Study Plan</TabsTrigger>
-            <TabsTrigger value="practice">Practice</TabsTrigger>
-            <TabsTrigger value="progress">Progress</TabsTrigger>
+            <TabsTrigger value="overview">{t('dashboard.tabs.overview')}</TabsTrigger>
+            <TabsTrigger value="study-plan">{t('dashboard.tabs.studyPlan')}</TabsTrigger>
+            <TabsTrigger value="practice">{t('dashboard.tabs.practice')}</TabsTrigger>
+            <TabsTrigger value="progress">{t('dashboard.tabs.progress')}</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}

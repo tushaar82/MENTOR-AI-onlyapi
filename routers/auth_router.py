@@ -27,6 +27,7 @@ from models.auth_models import (
     AuthResponse
 )
 from services import auth_service
+from middleware.language_middleware import get_language_from_request, get_translations_from_request
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -101,6 +102,9 @@ async def register_parent_with_email(
     try:
         logger.info(f"Registration request received for email: {request.email}")
         
+        # Get translations for response
+        translations = get_translations_from_request(request)
+        
         # Call service layer to register parent
         result = auth_service.register_parent_with_email(
             email=request.email,
@@ -109,6 +113,10 @@ async def register_parent_with_email(
         )
         
         logger.info(f"Parent registered successfully with email: {request.email}")
+        
+        # Translate success message if available
+        if "success" in translations and "register" in translations["success"]:
+            result["message"] = translations["success"]["register"]
         
         return AuthResponse(**result)
     
@@ -192,6 +200,9 @@ async def register_parent_with_phone(
     try:
         logger.info(f"Registration request received for phone: {request.phone}")
         
+        # Get translations for response
+        translations = get_translations_from_request(request)
+        
         # Call service layer to register parent
         result = auth_service.register_parent_with_phone(
             phone=request.phone,
@@ -199,6 +210,10 @@ async def register_parent_with_phone(
         )
         
         logger.info(f"Parent registered successfully with phone: {request.phone}")
+        
+        # Translate success message if available
+        if "success" in translations and "register" in translations["success"]:
+            result["message"] = translations["success"]["register"]
         
         return AuthResponse(**result)
     
@@ -286,6 +301,9 @@ async def register_parent_with_google(
     try:
         logger.info("Registration/Login request received for Google OAuth")
         
+        # Get translations for response
+        translations = get_translations_from_request(request)
+        
         # Call service layer to register/login parent
         result = auth_service.register_parent_with_google(
             id_token=request.id_token,
@@ -293,6 +311,10 @@ async def register_parent_with_google(
         )
         
         logger.info(f"Parent registered/logged in successfully via Google OAuth")
+        
+        # Translate success message if available
+        if "success" in translations and "register" in translations["success"]:
+            result["message"] = translations["success"]["register"]
         
         return AuthResponse(**result)
     

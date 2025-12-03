@@ -2,41 +2,43 @@
 
 import { motion } from 'framer-motion';
 import { Target, Zap, BarChart3, Users, Calendar, Award } from 'lucide-react';
-
-const features = [
-  {
-    icon: Target,
-    title: 'Personalized Learning Paths',
-    description: 'AI analyzes your strengths and weaknesses to create a customized study plan tailored to your needs.',
-  },
-  {
-    icon: Zap,
-    title: 'Smart Practice Tests',
-    description: 'Adaptive tests that adjust difficulty based on your performance, ensuring optimal learning.',
-  },
-  {
-    icon: BarChart3,
-    title: 'Detailed Analytics',
-    description: 'Track your progress with comprehensive insights and performance metrics across all subjects.',
-  },
-  {
-    icon: Users,
-    title: 'Parent Dashboard',
-    description: 'Parents can monitor their children\'s progress and receive regular updates on performance.',
-  },
-  {
-    icon: Calendar,
-    title: 'Study Scheduling',
-    description: 'Smart scheduling system that helps you manage your time effectively and stay on track.',
-  },
-  {
-    icon: Award,
-    title: 'Gamification',
-    description: 'Earn badges, compete on leaderboards, and stay motivated with our engaging reward system.',
-  },
-];
+import { useTranslation } from '@/contexts/LanguageContext';
 
 export function Features() {
+  const { t } = useTranslation();
+  
+  const features = [
+    {
+      icon: Target,
+      title: t('features.feature1.title'),
+      description: t('features.feature1.description'),
+    },
+    {
+      icon: Zap,
+      title: t('features.feature2.title'),
+      description: t('features.feature2.description'),
+    },
+    {
+      icon: BarChart3,
+      title: t('features.feature3.title'),
+      description: t('features.feature3.description'),
+    },
+    {
+      icon: Users,
+      title: t('features.feature4.title'),
+      description: t('features.feature4.description'),
+    },
+    {
+      icon: Calendar,
+      title: t('features.feature5.title'),
+      description: t('features.feature5.description'),
+    },
+    {
+      icon: Award,
+      title: t('features.feature6.title'),
+      description: t('features.feature6.description'),
+    },
+  ];
   return (
     <section id="features" className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -48,10 +50,10 @@ export function Features() {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Everything You Need to Succeed
+            {t('features.title')}
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Powerful features designed to accelerate your learning and help you achieve your goals.
+            {t('features.subtitle')}
           </p>
         </motion.div>
 

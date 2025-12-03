@@ -9,6 +9,8 @@ import { Separator } from '@/components/ui/separator';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Loader2, Send, Globe, Trash2, MessageCircle } from 'lucide-react';
+import { useTranslation } from '@/contexts/LanguageContext';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Message {
   message_id: string;
@@ -31,18 +33,6 @@ interface VidhyaChatProps {
   userToken?: string;
 }
 
-const SUPPORTED_LANGUAGES = {
-  en: "English",
-  hi: "हिन्दी (Hindi)",
-  bn: "বাংলা (Bengali)",
-  te: "తెలుగు (Telugu)",
-  ta: "தமிழ் (Tamil)",
-  mr: "मराठी (Marathi)",
-  gu: "ગુજરાતી (Gujarati)",
-  kn: "ಕನ್ನಡ (Kannada)",
-  ml: "മലയാളം (Malayalam)",
-  pa: "ਪੰਜਾਬੀ (Punjabi)"
-};
 
 export default function VidhyaChat({ userToken }: VidhyaChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -56,6 +46,13 @@ export default function VidhyaChat({ userToken }: VidhyaChatProps) {
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { t } = useTranslation();
+  const { currentLanguage, setLanguage, languages } = useLanguage();
+  
+  // Update selected language when global language changes
+  useEffect(() => {
+    setSelectedLanguage(currentLanguage);
+  }, [currentLanguage]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -97,7 +94,7 @@ export default function VidhyaChat({ userToken }: VidhyaChatProps) {
         },
         body: JSON.stringify({
           language: selectedLanguage,
-          title: `Chat - ${new Date().toLocaleDateString()}`
+          title: `${t('vidhya.chat.defaultTitle')} - ${new Date().toLocaleDateString()}`
         })
       });
       const data = await response.json();
@@ -222,7 +219,7 @@ export default function VidhyaChat({ userToken }: VidhyaChatProps) {
       const errorMessage: Message = {
         message_id: `error_${Date.now()}`,
         role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
+        content: t('vidhya.chat.errorMessage'),
         language: selectedLanguage,
         timestamp: new Date().toISOString()
       };
@@ -252,6 +249,14 @@ export default function VidhyaChat({ userToken }: VidhyaChatProps) {
     const rtlLanguages = ['ar', 'he', 'ur', 'fa'];
     return rtlLanguages.includes(language) ? 'rtl' : 'ltr';
   };
+  
+  // Get supported languages with native names
+  const getSupportedLanguagesWithNames = () => {
+    return languages.map((lang: any) => ({
+      code: lang.code,
+      name: lang.native_name
+    }));
+  };
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -260,7 +265,7 @@ export default function VidhyaChat({ userToken }: VidhyaChatProps) {
         <div className="p-4 border-b border-gray-200">
           <div className="flex items-center gap-2 mb-4">
             <MessageCircle className="h-6 w-6 text-blue-600" />
-            <h1 className="text-xl font-semibold">Vidhya AI</h1>
+            <h1 className="text-xl font-semibold">{t('vidhya.title')}</h1>
           </div>
           
           <Button 
@@ -268,12 +273,12 @@ export default function VidhyaChat({ userToken }: VidhyaChatProps) {
             className="w-full bg-blue-600 hover:bg-blue-700"
           >
             <MessageCircle className="h-4 w-4 mr-2" />
-            New Chat
+            {t('vidhya.chat.newChat')}
           </Button>
         </div>
         
         <div className="flex-1 overflow-y-auto p-4">
-          <h3 className="text-sm font-medium text-gray-500 mb-3">Recent Chats</h3>
+          <h3 className="text-sm font-medium text-gray-500 mb-3">{t('vidhya.chat.recentChats')}</h3>
           <div className="space-y-2">
             {sessions.map((session) => (
               <div
@@ -294,7 +299,7 @@ export default function VidhyaChat({ userToken }: VidhyaChatProps) {
                   </div>
                   <div className="flex items-center gap-1">
                     <Badge variant="outline" className="text-xs">
-                      {SUPPORTED_LANGUAGES[session.language as keyof typeof SUPPORTED_LANGUAGES]?.split(' ')[0] || session.language}
+                      {languages.find((lang: any) => lang.code === session.language)?.native_name.split(' ')[0] || session.language}
                     </Badge>
                     <Button
                       variant="ghost"
@@ -317,14 +322,17 @@ export default function VidhyaChat({ userToken }: VidhyaChatProps) {
         <div className="p-4 border-t border-gray-200">
           <div className="flex items-center gap-2">
             <Globe className="h-4 w-4 text-gray-500" />
-            <Select value={selectedLanguage} onValueChange={setSelectedLanguage}>
+            <Select value={selectedLanguage} onValueChange={(value) => {
+              setSelectedLanguage(value);
+              setLanguage(value);
+            }}>
               <SelectTrigger className="flex-1">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {Object.entries(SUPPORTED_LANGUAGES).map(([code, name]) => (
-                  <SelectItem key={code} value={code}>
-                    {name}
+                {getSupportedLanguagesWithNames().map((lang) => (
+                  <SelectItem key={lang.code} value={lang.code}>
+                    {lang.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -347,12 +355,12 @@ export default function VidhyaChat({ userToken }: VidhyaChatProps) {
                   <div>
                     <h2 className="font-semibold">{currentSession.title}</h2>
                     <p className="text-sm text-gray-500">
-                      {SUPPORTED_LANGUAGES[currentSession.language as keyof typeof SUPPORTED_LANGUAGES]}
+                      {languages.find((lang: any) => lang.code === currentSession.language)?.native_name}
                     </p>
                   </div>
                 </div>
                 <Badge variant="outline">
-                  {currentSession.message_count} messages
+                  {t('vidhya.chat.messageCount', { count: currentSession.message_count })}
                 </Badge>
               </div>
             </div>
@@ -422,7 +430,7 @@ export default function VidhyaChat({ userToken }: VidhyaChatProps) {
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Ask Vidhya anything..."
+                  placeholder={t('vidhya.chat.inputPlaceholder')}
                   className="flex-1"
                   disabled={isLoading}
                 />
@@ -447,29 +455,29 @@ export default function VidhyaChat({ userToken }: VidhyaChatProps) {
               <CardHeader className="text-center">
                 <CardTitle className="flex items-center justify-center gap-2">
                   <MessageCircle className="h-6 w-6 text-blue-600" />
-                  Welcome to Vidhya AI
+                  {t('vidhya.chat.welcomeTitle')}
                 </CardTitle>
               </CardHeader>
               <CardContent className="text-center space-y-4">
                 <p className="text-gray-600">
-                  Your AI learning assistant that speaks your language!
+                  {t('vidhya.chat.welcomeSubtitle')}
                 </p>
                 <div className="space-y-2">
                   <p className="text-sm text-gray-500">
-                    • Get help with homework and studies
+                    • {t('vidhya.chat.feature1')}
                   </p>
                   <p className="text-sm text-gray-500">
-                    • Ask questions in simple language
+                    • {t('vidhya.chat.feature2')}
                   </p>
                   <p className="text-sm text-gray-500">
-                    • Learn in your preferred language
+                    • {t('vidhya.chat.feature3')}
                   </p>
                 </div>
                 <Button
                   onClick={startNewSession}
                   className="w-full bg-blue-600 hover:bg-blue-700"
                 >
-                  Start Chatting
+                  {t('vidhya.chat.startChatting')}
                 </Button>
               </CardContent>
             </Card>

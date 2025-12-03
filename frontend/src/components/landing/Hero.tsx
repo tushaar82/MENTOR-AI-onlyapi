@@ -4,8 +4,11 @@ import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Sparkles, BookOpen, Brain, Trophy } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslation } from '@/contexts/LanguageContext';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 export function Hero() {
+  const { t } = useTranslation();
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Animated background elements */}
@@ -58,7 +61,7 @@ export function Hero() {
           >
             <Sparkles className="w-5 h-5 text-yellow-500" />
             <span className="text-sm font-medium text-gray-700">
-              AI-Powered Learning Platform
+              {t('hero.tagline')}
             </span>
           </motion.div>
 
@@ -68,9 +71,9 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-5xl md:text-7xl font-bold text-gray-900 mb-6"
           >
-            Master Your Exams with
+            {t('hero.title')}
             <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              {' '}AI Mentorship
+              {' '}{t('hero.subtitle')}
             </span>
           </motion.h1>
 
@@ -80,8 +83,7 @@ export function Hero() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto"
           >
-            Personalized learning paths, intelligent practice tests, and real-time progress tracking
-            to help you achieve your academic goals.
+            {t('hero.description')}
           </motion.p>
 
           <motion.div
@@ -92,13 +94,13 @@ export function Hero() {
           >
             <Link href="/auth">
               <Button size="lg" className="text-lg px-8 py-6 group">
-                Get Started Free
+                {t('hero.getStarted')}
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
             <Link href="#features">
               <Button size="lg" variant="outline" className="text-lg px-8 py-6">
-                Learn More
+                {t('hero.learnMore')}
               </Button>
             </Link>
           </motion.div>
@@ -113,18 +115,18 @@ export function Hero() {
             {[
               {
                 icon: Brain,
-                title: 'AI-Powered Learning',
-                description: 'Adaptive content that evolves with your progress',
+                title: t('hero.feature1.title'),
+                description: t('hero.feature1.description'),
               },
               {
                 icon: BookOpen,
-                title: 'Comprehensive Content',
-                description: 'Full syllabus coverage for all major exams',
+                title: t('hero.feature2.title'),
+                description: t('hero.feature2.description'),
               },
               {
                 icon: Trophy,
-                title: 'Track Progress',
-                description: 'Detailed analytics and performance insights',
+                title: t('hero.feature3.title'),
+                description: t('hero.feature3.description'),
               },
             ].map((feature, index) => (
               <motion.div
@@ -142,6 +144,11 @@ export function Hero() {
               </motion.div>
             ))}
           </motion.div>
+        </div>
+        
+        {/* Language Switcher */}
+        <div className="absolute top-4 right-4">
+          <LanguageSwitcher />
         </div>
       </div>
     </section>

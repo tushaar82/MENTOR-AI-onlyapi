@@ -14,11 +14,12 @@ Version: 1.0.0
 import logging
 from datetime import datetime
 from typing import List, Dict, Any, Optional
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from pydantic import BaseModel, Field
 
 from services.vidhya_service import get_vidhya_service
 from middleware.auth_middleware import get_current_user
+from middleware.language_middleware import get_language_from_request, get_translations_from_request
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -68,6 +69,9 @@ async def start_chat_session(
     try:
         vidhya_service = get_vidhya_service()
         
+        # Get translations for response
+        translations = get_translations_from_request(request)
+        
         # Start new session
         session_info = await vidhya_service.start_chat_session(
             user_id=current_user,
@@ -78,14 +82,25 @@ async def start_chat_session(
         
         logger.info(f"Started new Vidhya chat session for user: {current_user}")
         
+        # Translate success message if available
+        success_message = "Chat session started successfully"
+        if translations and "success" in translations and "chat_started" in translations["success"]:
+            success_message = translations["success"]["chat_started"]
+        
         return {
             "success": True,
-            "data": session_info
+            "data": session_info,
+            "message": success_message
         }
         
     except Exception as e:
+        # Get translated error message
+        error_message = "Failed to start chat session"
+        if translations and "errors" in translations and "general" in translations["errors"]:
+            error_message = translations["errors"]["general"]
+        
         logger.error(f"Failed to start chat session: {e}")
-        raise HTTPException(status_code=500, detail="Failed to start chat session")
+        raise HTTPException(status_code=500, detail=error_message)
 
 
 @router.post("/chat/send")
@@ -106,6 +121,9 @@ async def send_message(
     try:
         vidhya_service = get_vidhya_service()
         
+        # Get translations for response
+        translations = get_translations_from_request(request)
+        
         # Send message and get response
         response = await vidhya_service.send_message(
             message=request.message,
@@ -116,17 +134,33 @@ async def send_message(
         
         logger.info(f"Message sent to Vidhya for user: {current_user}")
         
+        # Translate success message if available
+        success_message = "Message sent successfully"
+        if translations and "success" in translations and "message_sent" in translations["success"]:
+            success_message = translations["success"]["message_sent"]
+        
         return {
             "success": True,
-            "data": response
+            "data": response,
+            "message": success_message
         }
         
     except ValueError as e:
+        # Get translated error message
+        error_message = str(e)
+        if translations and "errors" in translations and "validation" in translations["errors"]:
+            error_message = translations["errors"]["validation"]
+        
         logger.error(f"Invalid request: {e}")
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=error_message)
     except Exception as e:
+        # Get translated error message
+        error_message = "Failed to send message"
+        if translations and "errors" in translations and "general" in translations["errors"]:
+            error_message = translations["errors"]["general"]
+        
         logger.error(f"Failed to send message: {e}")
-        raise HTTPException(status_code=500, detail="Failed to send message")
+        raise HTTPException(status_code=500, detail=error_message)
 
 
 @router.get("/chat/history/{session_id}")

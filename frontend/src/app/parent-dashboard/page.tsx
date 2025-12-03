@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/contexts/LanguageContext';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -30,8 +31,10 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { examAPI, onboardingAPI } from '@/lib/api';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 export default function ParentDashboardPage() {
+  const { t } = useTranslation();
   const { user, logout, isLoading } = useAuth();
   const router = useRouter();
   const [childData, setChildData] = useState<any>(null);
@@ -104,13 +107,14 @@ export default function ParentDashboardPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
-                Parent Dashboard
+                {t('dashboard.parent.title')}
               </h1>
               <p className="text-sm text-gray-600">
-                Welcome back, {user.full_name}! Monitor and guide your child's learning journey
+                {t('dashboard.parent.welcome', { name: user.full_name })}
               </p>
             </div>
             <div className="flex items-center gap-3">
+              <LanguageSwitcher />
               <Button variant="outline" size="sm">
                 <Bell className="h-4 w-4" />
               </Button>
@@ -119,7 +123,7 @@ export default function ParentDashboardPage() {
               </Button>
               <Button variant="outline" onClick={handleLogout}>
                 <LogOut className="mr-2 h-4 w-4" />
-                Logout
+                {t('dashboard.logout')}
               </Button>
             </div>
           </div>
@@ -130,11 +134,11 @@ export default function ParentDashboardPage() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="progress">Progress</TabsTrigger>
-            <TabsTrigger value="schedule">Schedule</TabsTrigger>
-            <TabsTrigger value="guidance">Guidance</TabsTrigger>
-            <TabsTrigger value="resources">Resources</TabsTrigger>
+            <TabsTrigger value="overview">{t('dashboard.parent.tabs.overview')}</TabsTrigger>
+            <TabsTrigger value="progress">{t('dashboard.parent.tabs.progress')}</TabsTrigger>
+            <TabsTrigger value="schedule">{t('dashboard.parent.tabs.schedule')}</TabsTrigger>
+            <TabsTrigger value="guidance">{t('dashboard.parent.tabs.guidance')}</TabsTrigger>
+            <TabsTrigger value="resources">{t('dashboard.parent.tabs.resources')}</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}

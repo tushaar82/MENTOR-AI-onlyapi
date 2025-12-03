@@ -45,6 +45,12 @@ The API documentation is organized into the following sections:
 ### [08 Payments](./07_payments/)
 - [payment_router.md](./07_payments/payment_router.md) - Payment processing (Razorpay)
 
+### [09 Language Management](./09_language_management/)
+- [language_router.md](./09_language_management/language_router.md) - Language preferences and translations
+
+### [10 AI Assistant](./10_ai_assistant/)
+- [vidhya_router.md](./10_ai_assistant/vidhya_router.md) - Vidhya AI chat assistant
+
 ## Additional Resources
 
 - [MANUAL_TESTING_GUIDE.md](./MANUAL_TESTING_GUIDE.md) - Comprehensive manual testing guide for all endpoints

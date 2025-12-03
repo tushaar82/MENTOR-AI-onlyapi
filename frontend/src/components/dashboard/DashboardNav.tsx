@@ -4,11 +4,14 @@ import { useRouter, usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Users, GraduationCap, MessageCircle } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from '@/contexts/LanguageContext';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 export function DashboardNav() {
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   if (!user || user.role !== 'parent') {
     return null;
@@ -25,7 +28,7 @@ export function DashboardNav() {
         onClick={() => router.push('/parent-dashboard')}
       >
         <Users className="mr-2 h-4 w-4" />
-        Parent View
+        {t('dashboard.parent.title')}
       </Button>
       <Button
         variant={!isParentDashboard && !isVidhyaPage ? 'default' : 'outline'}
@@ -33,7 +36,7 @@ export function DashboardNav() {
         onClick={() => router.push('/dashboard')}
       >
         <GraduationCap className="mr-2 h-4 w-4" />
-        Student View
+        {t('dashboard.student.title')}
       </Button>
       <Button
         variant={isVidhyaPage ? 'default' : 'outline'}
@@ -41,8 +44,13 @@ export function DashboardNav() {
         onClick={() => router.push('/vidhya')}
       >
         <MessageCircle className="mr-2 h-4 w-4" />
-        Vidhya AI
+        {t('vidhya.title')}
       </Button>
+      
+      {/* Language Switcher */}
+      <div className="ml-auto">
+        <LanguageSwitcher />
+      </div>
     </div>
   );
 }

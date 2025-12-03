@@ -8,8 +8,11 @@ import { LoginForm } from '@/components/auth/LoginForm';
 import { RegisterForm } from '@/components/auth/RegisterForm';
 import { GraduationCap } from 'lucide-react';
 import Link from 'next/link';
+import { useTranslation } from '@/contexts/LanguageContext';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 
 export default function AuthPage() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('login');
 
   return (
@@ -64,16 +67,16 @@ export default function AuthPage() {
         >
           <Card className="backdrop-blur-sm bg-white/90 shadow-2xl">
             <CardHeader>
-              <CardTitle className="text-2xl text-center">Welcome</CardTitle>
+              <CardTitle className="text-2xl text-center">{t('auth.welcome')}</CardTitle>
               <CardDescription className="text-center">
-                Sign in to your account or create a new one
+                {t('auth.subtitle')}
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="grid w-full grid-cols-2 mb-8">
-                  <TabsTrigger value="login">Sign In</TabsTrigger>
-                  <TabsTrigger value="register">Sign Up</TabsTrigger>
+                  <TabsTrigger value="login">{t('auth.signIn')}</TabsTrigger>
+                  <TabsTrigger value="register">{t('auth.signUp')}</TabsTrigger>
                 </TabsList>
 
                 <AnimatePresence mode="wait">
@@ -100,8 +103,13 @@ export default function AuthPage() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="text-center text-sm text-gray-600 mt-6"
         >
-          By continuing, you agree to our Terms of Service and Privacy Policy
+          {t('auth.terms')}
         </motion.p>
+        
+        {/* Language Switcher */}
+        <div className="absolute top-4 right-4">
+          <LanguageSwitcher />
+        </div>
       </div>
     </div>
   );

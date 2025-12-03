@@ -11,15 +11,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-
-const loginSchema = z.object({
-  email: z.string().min(3, 'Email or username is required'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-});
-
-type LoginFormData = z.infer<typeof loginSchema>;
+import { useTranslation } from '@/contexts/LanguageContext';
 
 export function LoginForm() {
+  const { t } = useTranslation();
+  
+  const loginSchema = z.object({
+    email: z.string().min(3, t('auth.validation.emailRequired')),
+    password: z.string().min(6, t('auth.validation.passwordMin')),
+  });
+
+type LoginFormData = z.infer<typeof loginSchema>;
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const { login } = useAuth();
@@ -101,13 +103,13 @@ export function LoginForm() {
       className="space-y-6"
     >
       <div className="space-y-2">
-        <Label htmlFor="email">Email or Username</Label>
+        <Label htmlFor="email">{t('auth.emailOrUsername')}</Label>
         <div className="relative">
           <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="email"
             type="text"
-            placeholder="you@example.com or username"
+            placeholder={t('auth.emailOrUsernamePlaceholder')}
             className="pl-10"
             {...register('email')}
           />
@@ -118,7 +120,7 @@ export function LoginForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{t('auth.password')}</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
@@ -148,17 +150,17 @@ export function LoginForm() {
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Signing in...
+            {t('auth.signingIn')}
           </>
         ) : (
-          'Sign In'
+          t('auth.signIn')
         )}
       </Button>
 
       <div className="text-xs text-center text-gray-500 mt-4 p-3 bg-blue-50 rounded-md">
-        <p className="font-medium text-gray-700 mb-1">Login Instructions:</p>
-        <p><strong>Parents:</strong> Use your email address</p>
-        <p><strong>Students:</strong> Use your username (provided by parent)</p>
+        <p className="font-medium text-gray-700 mb-1">{t('auth.loginInstructions')}</p>
+        <p><strong>{t('auth.parents')}:</strong> {t('auth.parentsLogin')}</p>
+        <p><strong>{t('auth.students')}:</strong> {t('auth.studentsLogin')}</p>
       </div>
     </motion.form>
   );

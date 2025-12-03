@@ -12,21 +12,23 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-
-const registerSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
-  mobile_number: z.string().min(10, 'Mobile number must be at least 10 digits'),
-  email_address: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
-  repeat_password: z.string().min(6, 'Password confirmation must be at least 6 characters'),
-}).refine((data) => data.password === data.repeat_password, {
-  message: "Passwords don't match",
-  path: ["repeat_password"],
-});
-
-type RegisterFormData = z.infer<typeof registerSchema>;
+import { useTranslation } from '@/contexts/LanguageContext';
 
 export function RegisterForm() {
+  const { t } = useTranslation();
+  
+  const registerSchema = z.object({
+    name: z.string().min(2, t('auth.validation.nameMin')),
+    mobile_number: z.string().min(10, t('auth.validation.mobileMin')),
+    email_address: z.string().email(t('auth.validation.emailInvalid')),
+    password: z.string().min(6, t('auth.validation.passwordMin')),
+    repeat_password: z.string().min(6, t('auth.validation.passwordConfirmMin')),
+  }).refine((data) => data.password === data.repeat_password, {
+    message: t('auth.validation.passwordMismatch'),
+    path: ["repeat_password"],
+  });
+
+type RegisterFormData = z.infer<typeof registerSchema>;
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -48,7 +50,7 @@ export function RegisterForm() {
     
     try {
       await registerUser(data);
-      setSuccessMessage('Registration successful! You can now login with your credentials.');
+      setSuccessMessage(t('auth.registrationSuccess'));
       // Auto-login after successful registration
       try {
         const userData = await login(data.email_address, data.password);
@@ -73,7 +75,7 @@ export function RegisterForm() {
         }
       } catch (loginErr: any) {
         // If auto-login fails, show success message and let user login manually
-        setSuccessMessage('Registration successful! Please login with your credentials.');
+        setSuccessMessage(t('auth.registrationSuccessLogin'));
       }
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Registration failed. Please try again.');
@@ -91,13 +93,13 @@ export function RegisterForm() {
       className="space-y-6"
     >
       <div className="space-y-2">
-        <Label htmlFor="name">Full Name</Label>
+        <Label htmlFor="name">{t('auth.fullName')}</Label>
         <div className="relative">
           <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="name"
             type="text"
-            placeholder="John Doe"
+            placeholder={t('auth.fullNamePlaceholder')}
             className="pl-10"
             {...register('name')}
           />
@@ -108,13 +110,13 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="mobile_number">Mobile Number</Label>
+        <Label htmlFor="mobile_number">{t('auth.mobileNumber')}</Label>
         <div className="relative">
           <UserCircle className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="mobile_number"
             type="tel"
-            placeholder="+91XXXXXXXXXX"
+            placeholder={t('auth.mobileNumberPlaceholder')}
             className="pl-10"
             {...register('mobile_number')}
           />
@@ -125,13 +127,13 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="email_address">Email</Label>
+        <Label htmlFor="email_address">{t('auth.email')}</Label>
         <div className="relative">
           <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             id="email_address"
             type="email"
-            placeholder="you@example.com"
+            placeholder={t('auth.emailPlaceholder')}
             className="pl-10"
             {...register('email_address')}
           />
@@ -142,7 +144,7 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{t('auth.password')}</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
@@ -159,7 +161,7 @@ export function RegisterForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="repeat_password">Confirm Password</Label>
+        <Label htmlFor="repeat_password">{t('auth.confirmPassword')}</Label>
         <div className="relative">
           <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
@@ -176,7 +178,7 @@ export function RegisterForm() {
       </div>
 
       <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded-md">
-        <strong>Note:</strong> This platform is for parents only. After registration, you can add your children to your account.
+        <strong>{t('auth.note')}:</strong> {t('auth.parentPlatformNote')}
       </div>
 
       {error && (
@@ -203,10 +205,10 @@ export function RegisterForm() {
         {isLoading ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            Creating account...
+            {t('auth.creatingAccount')}
           </>
         ) : (
-          'Create Account'
+          t('auth.createAccount')
         )}
       </Button>
     </motion.form>

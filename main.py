@@ -50,11 +50,18 @@ from routers.parent_features_router import router as parent_features_router  # P
 from routers.analytics_router import router as analytics_router  # Analytics and performance insights
 from routers.syllabus_coverage_router import router as syllabus_coverage_router  # Syllabus coverage tracking
 from routers.vidhya_router import router as vidhya_router  # Vidhya AI Agent
+from routers.language_router import router as language_router  # Language management
 
 # Vertex AI is no longer needed - using Gemini API directly
 
 # Import database service for initialization
 from services.database_service import database_service
+
+# Import translation service for initialization
+from services.translation_service import get_translation_service
+
+# Import language middleware
+from middleware.language_middleware import LanguageMiddleware
 
 # Configure logging
 logging.basicConfig(
@@ -87,6 +94,14 @@ async def lifespan(app: FastAPI):
         logger.info("Database service initialized successfully")
     else:
         logger.error("Failed to initialize database service")
+    
+    # Initialize translation service
+    logger.info("Initializing translation service...")
+    translation_service = get_translation_service()
+    if translation_service:
+        logger.info("Translation service initialized successfully")
+    else:
+        logger.error("Failed to initialize translation service")
     
     logger.info("Available routes:")
     for route in app.routes:
@@ -137,8 +152,11 @@ app.add_middleware(
 
 # Add rate limiter middleware
 from middleware.rate_limiter import RateLimitMiddleware
+
 app.add_middleware(RateLimitMiddleware)
 
+# Add language middleware
+app.add_middleware(LanguageMiddleware)
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception) -> JSONResponse:
@@ -364,6 +382,13 @@ app.include_router(
     # Endpoints: /api/vidhya/chat/start, /api/vidhya/chat/send, /api/vidhya/chat/sessions, etc.
 )
 
+# Language management router - Multilingual support
+app.include_router(
+    language_router,
+    # Prefix and tags are already defined in the router
+    # Endpoints: /api/language/supported, /api/language/translations, /api/language/preference, etc.
+)
+
 
 # Root endpoint
 @app.get("/", tags=["Root"])
@@ -396,7 +421,8 @@ async def root() -> Dict[str, Any]:
             "payment": "/api/payment",
             "subscriptions": "/api/payment/subscription",
             "study_center": "/api/study-center",
-            "vidhya_ai": "/api/vidhya"
+            "vidhya_ai": "/api/vidhya",
+            "language": "/api/language"
         }
     }
 
