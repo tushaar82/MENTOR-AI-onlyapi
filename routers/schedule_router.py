@@ -176,15 +176,53 @@ def get_progress_tracker():
             "content": {
                 "application/json": {
                     "example": {
-                        "schedule_id": "schedule_student123_1234567890",
-                        "student_id": "student_123",
+                        "schedule_id": "schedule_student456_1234567890",
+                        "student_id": "student_456",
+                        "analytics_id": "analytics_test123_student456_1234567890",
                         "exam_type": "JEE_MAIN",
-                        "status": "active",
-                        "start_date": "2024-01-15",
-                        "exam_date": "2024-03-31",
+                        "exam_date": "2024-04-01",
+                        "generated_date": "2024-01-15T10:30:00Z",
+                        "total_days": 75,
                         "daily_study_hours": 5.0,
-                        "completion_percentage": 0.0,
-                        "days": []
+                        "status": "active",
+                        "days": [
+                            {
+                                "day_number": 1,
+                                "schedule_date": "2024-01-15",
+                                "subjects": ["Physics", "Mathematics"],
+                                "topics": [
+                                    {
+                                        "topic": "Thermodynamics",
+                                        "subject": "Physics",
+                                        "priority": "critical",
+                                        "estimated_hours": 3.0,
+                                        "subtopics": ["First Law of Thermodynamics", "Second Law of Thermodynamics"],
+                                        "resources": ["NCERT Physics Chapter 12", "HC Verma: Concepts of Physics Vol 2"],
+                                        "goals": ["Understand first law and its applications", "Solve 20 numerical problems"]
+                                    }
+                                ],
+                                "total_hours": 5.0,
+                                "milestones": ["Complete Thermodynamics fundamentals", "Solve 30 practice problems"],
+                                "completed": False,
+                                "completion_percentage": 0.0
+                            }
+                        ],
+                        "revision_days": [70, 71, 72],
+                        "practice_test_days": [73, 74],
+                        "buffer_days": [25, 50],
+                        "priority_topics": [
+                            {
+                                "topic": "Thermodynamics",
+                                "subject": "Physics",
+                                "priority_score": 300.0,
+                                "current_accuracy": 25.0,
+                                "target_accuracy": 70.0,
+                                "weightage": 4.0,
+                                "estimated_hours": 12.0,
+                                "difficulty": "medium",
+                                "priority_level": "critical"
+                            }
+                        ]
                     }
                 }
             }
@@ -279,7 +317,62 @@ async def generate_schedule(
     - All topic details (subtopics, resources, goals)
     """,
     responses={
-        200: {"description": "Schedule retrieved successfully"},
+        200: {
+            "description": "Schedule retrieved successfully",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "schedule_id": "schedule_student456_1234567890",
+                        "student_id": "student_456",
+                        "analytics_id": "analytics_test123_student456_1234567890",
+                        "exam_type": "JEE_MAIN",
+                        "exam_date": "2024-04-01",
+                        "generated_date": "2024-01-15T10:30:00Z",
+                        "total_days": 75,
+                        "daily_study_hours": 5.0,
+                        "status": "active",
+                        "days": [
+                            {
+                                "day_number": 1,
+                                "schedule_date": "2024-01-15",
+                                "subjects": ["Physics", "Mathematics"],
+                                "topics": [
+                                    {
+                                        "topic": "Thermodynamics",
+                                        "subject": "Physics",
+                                        "priority": "critical",
+                                        "estimated_hours": 3.0,
+                                        "subtopics": ["First Law of Thermodynamics", "Second Law of Thermodynamics"],
+                                        "resources": ["NCERT Physics Chapter 12", "HC Verma: Concepts of Physics Vol 2"],
+                                        "goals": ["Understand first law and its applications", "Solve 20 numerical problems"]
+                                    }
+                                ],
+                                "total_hours": 5.0,
+                                "milestones": ["Complete Thermodynamics fundamentals", "Solve 30 practice problems"],
+                                "completed": False,
+                                "completion_percentage": 0.0
+                            }
+                        ],
+                        "revision_days": [70, 71, 72],
+                        "practice_test_days": [73, 74],
+                        "buffer_days": [25, 50],
+                        "priority_topics": [
+                            {
+                                "topic": "Thermodynamics",
+                                "subject": "Physics",
+                                "priority_score": 300.0,
+                                "current_accuracy": 25.0,
+                                "target_accuracy": 70.0,
+                                "weightage": 4.0,
+                                "estimated_hours": 12.0,
+                                "difficulty": "medium",
+                                "priority_level": "critical"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
         404: {"description": "Schedule not found"}
     }
 )
@@ -343,7 +436,62 @@ async def get_schedule(
     - Use status query param to filter by status
     """,
     responses={
-        200: {"description": "Schedule retrieved (or null if none active)"}
+        200: {
+            "description": "Schedule retrieved (or null if none active)",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "schedule_id": "schedule_student456_1234567890",
+                        "student_id": "student_456",
+                        "analytics_id": "analytics_test123_student456_1234567890",
+                        "exam_type": "JEE_MAIN",
+                        "exam_date": "2024-04-01",
+                        "generated_date": "2024-01-15T10:30:00Z",
+                        "total_days": 75,
+                        "daily_study_hours": 5.0,
+                        "status": "active",
+                        "days": [
+                            {
+                                "day_number": 1,
+                                "schedule_date": "2024-01-15",
+                                "subjects": ["Physics", "Mathematics"],
+                                "topics": [
+                                    {
+                                        "topic": "Thermodynamics",
+                                        "subject": "Physics",
+                                        "priority": "critical",
+                                        "estimated_hours": 3.0,
+                                        "subtopics": ["First Law of Thermodynamics", "Second Law of Thermodynamics"],
+                                        "resources": ["NCERT Physics Chapter 12", "HC Verma: Concepts of Physics Vol 2"],
+                                        "goals": ["Understand first law and its applications", "Solve 20 numerical problems"]
+                                    }
+                                ],
+                                "total_hours": 5.0,
+                                "milestones": ["Complete Thermodynamics fundamentals", "Solve 30 practice problems"],
+                                "completed": False,
+                                "completion_percentage": 0.0
+                            }
+                        ],
+                        "revision_days": [70, 71, 72],
+                        "practice_test_days": [73, 74],
+                        "buffer_days": [25, 50],
+                        "priority_topics": [
+                            {
+                                "topic": "Thermodynamics",
+                                "subject": "Physics",
+                                "priority_score": 300.0,
+                                "current_accuracy": 25.0,
+                                "target_accuracy": 70.0,
+                                "weightage": 4.0,
+                                "estimated_hours": 12.0,
+                                "difficulty": "medium",
+                                "priority_level": "critical"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
     }
 )
 async def get_student_schedule(
@@ -466,7 +614,82 @@ async def get_schedule_history(
     - Performance improved/declined significantly
     """,
     responses={
-        200: {"description": "Schedule regenerated successfully"},
+        200: {
+            "description": "Schedule regenerated successfully",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "schedule_id": "schedule_student456_1234567890",
+                        "student_id": "student_456",
+                        "analytics_id": "analytics_test123_student456_1234567890",
+                        "exam_type": "JEE_MAIN",
+                        "exam_date": "2024-04-01",
+                        "generated_date": "2024-01-15T10:30:00Z",
+                        "total_days": 75,
+                        "daily_study_hours": 5.0,
+                        "status": "active",
+                        "days": [
+                            {
+                                "day_number": 1,
+                                "schedule_date": "2024-01-15",
+                                "subjects": ["Physics", "Mathematics"],
+                                "topics": [
+                                    {
+                                        "topic": "Thermodynamics",
+                                        "subject": "Physics",
+                                        "priority": "critical",
+                                        "estimated_hours": 3.0,
+                                        "subtopics": ["First Law of Thermodynamics", "Second Law of Thermodynamics"],
+                                        "resources": ["NCERT Physics Chapter 12", "HC Verma: Concepts of Physics Vol 2"],
+                                        "goals": ["Understand first law and its applications", "Solve 20 numerical problems"]
+                                    }
+                                ],
+                                "total_hours": 5.0,
+                                "milestones": ["Complete Thermodynamics fundamentals", "Solve 30 practice problems"],
+                                "completed": True,
+                                "completion_percentage": 100.0
+                            },
+                            {
+                                "day_number": 16,
+                                "schedule_date": "2024-01-30",
+                                "subjects": ["Physics", "Chemistry"],
+                                "topics": [
+                                    {
+                                        "topic": "Electrochemistry",
+                                        "subject": "Chemistry",
+                                        "priority": "high",
+                                        "estimated_hours": 2.5,
+                                        "subtopics": ["Electrochemical cells", "Nernst equation", "Conductance"],
+                                        "resources": ["NCERT Chemistry Chapter 3", "Physical Chemistry by O.P. Tandon"],
+                                        "goals": ["Understand cell potential calculations", "Solve 15 numerical problems"]
+                                    }
+                                ],
+                                "total_hours": 5.0,
+                                "milestones": ["Complete electrochemistry basics", "Solve 20 practice problems"],
+                                "completed": False,
+                                "completion_percentage": 0.0
+                            }
+                        ],
+                        "revision_days": [70, 71, 72],
+                        "practice_test_days": [73, 74],
+                        "buffer_days": [25, 50],
+                        "priority_topics": [
+                            {
+                                "topic": "Thermodynamics",
+                                "subject": "Physics",
+                                "priority_score": 300.0,
+                                "current_accuracy": 25.0,
+                                "target_accuracy": 70.0,
+                                "weightage": 4.0,
+                                "estimated_hours": 12.0,
+                                "difficulty": "medium",
+                                "priority_level": "critical"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
         400: {"description": "Invalid current day"},
         404: {"description": "Schedule not found"}
     }
@@ -698,7 +921,39 @@ async def delete_schedule(
     - Practice test accuracy < 50%
     """,
     responses={
-        200: {"description": "Progress updated successfully"},
+        200: {
+            "description": "Progress updated successfully",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "schedule_id": "schedule_student456_1234567890",
+                        "day_number": 1,
+                        "update_date": "2024-01-15",
+                        "status": "partial",
+                        "topics_completed": [
+                            {
+                                "topic": "Thermodynamics",
+                                "time_spent": 2.5,
+                                "completion_percentage": 60.0,
+                                "notes": "Completed First Law, need more time for Second Law"
+                            },
+                            {
+                                "topic": "Calculus",
+                                "time_spent": 1.5,
+                                "completion_percentage": 100.0,
+                                "notes": "All goals achieved"
+                            }
+                        ],
+                        "total_time_spent": 4.0,
+                        "completion_percentage": 75.0,
+                        "next_day_adjustments": [
+                            "Add 1 hour for Thermodynamics Second Law",
+                            "Reduce Calculus time by 0.5 hours"
+                        ]
+                    }
+                }
+            }
+        },
         400: {"description": "Invalid progress data"},
         404: {"description": "Schedule or day not found"}
     }
@@ -787,7 +1042,42 @@ async def update_daily_progress(
     - Performance analytics
     """,
     responses={
-        200: {"description": "Progress summary retrieved"}
+        200: {
+            "description": "Progress summary retrieved",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "total_days_completed": 15,
+                        "total_topics_completed": 45,
+                        "total_hours_studied": 75.5,
+                        "completion_percentage": 20.0,
+                        "days_ahead_schedule": 2,
+                        "days_behind_schedule": 0,
+                        "average_daily_study_time": 5.03,
+                        "current_study_streak": 7,
+                        "days_until_exam": 60,
+                        "on_track_percentage": 100.0,
+                        "productivity_score": 85.5,
+                        "weak_areas": [
+                            {
+                                "subject": "Physics",
+                                "topic": "Thermodynamics",
+                                "accuracy": 45.0,
+                                "recommended_action": "Extra practice on numerical problems"
+                            }
+                        ],
+                        "strong_areas": [
+                            {
+                                "subject": "Mathematics",
+                                "topic": "Calculus",
+                                "accuracy": 92.0,
+                                "mastery_level": "advanced"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
     }
 )
 async def get_progress_summary(
@@ -857,7 +1147,53 @@ async def get_progress_summary(
     - Mobile app home screen
     """,
     responses={
-        200: {"description": "Today's tasks retrieved"}
+        200: {
+            "description": "Today's tasks retrieved",
+            "content": {
+                "application/json": {
+                    "example": [
+                        {
+                            "topic": "Thermodynamics",
+                            "subject": "Physics",
+                            "estimated_hours": 3.0,
+                            "subtopics": ["First Law of Thermodynamics", "Second Law of Thermodynamics", "Entropy and Reversibility"],
+                            "resources": [
+                                "NCERT Physics Chapter 12",
+                                "HC Verma: Concepts of Physics Vol 2",
+                                "Video: Thermodynamics Fundamentals",
+                                "Practice Set: 50 Problems"
+                            ],
+                            "goals": [
+                                "Understand first law and its applications",
+                                "Solve 20 numerical problems on heat engines",
+                                "Master entropy calculations"
+                            ],
+                            "priority": "critical",
+                            "difficulty": "medium"
+                        },
+                        {
+                            "topic": "Integration",
+                            "subject": "Mathematics",
+                            "estimated_hours": 2.0,
+                            "subtopics": ["Definite integrals", "Indefinite integrals", "Integration by parts"],
+                            "resources": [
+                                "NCERT Mathematics Chapter 7",
+                                "RD Sharma: Integral Calculus",
+                                "Video: Integration Techniques",
+                                "Practice Set: 30 Problems"
+                            ],
+                            "goals": [
+                                "Master integration by parts",
+                                "Solve 15 definite integral problems",
+                                "Understand applications of integrals"
+                            ],
+                            "priority": "high",
+                            "difficulty": "medium"
+                        }
+                    ]
+                }
+            }
+        }
     }
 )
 async def get_today_tasks(
