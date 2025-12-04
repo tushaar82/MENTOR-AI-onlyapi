@@ -1391,5 +1391,655 @@ def get_predictive_analytics_service(
     
     return service
 
+    async def create_intervention_plan(
+        self,
+        student_id: str,
+        parent_id: str,
+        intervention_type: str,
+        priority: str = "medium",
+        duration_days: int = 30,
+        custom_goals: Optional[List[str]] = None
+    ) -> Dict[str, Any]:
+        """
+        Create a comprehensive intervention plan.
+        
+        Args:
+            student_id: Student ID
+            parent_id: Parent ID
+            intervention_type: Type of intervention
+            priority: Priority level (low, medium, high, critical)
+            duration_days: Duration in days
+            custom_goals: Optional custom goals
+        
+        Returns:
+            Dict with intervention plan details
+        """
+        try:
+            # Get current student data
+            current_data = await self._get_historical_data(student_id, 30)
+            
+            # Generate intervention plan
+            prompt = f"""
+Create a comprehensive intervention plan for student improvement.
+
+Student Data:
+{json.dumps(current_data, indent=2)}
+
+Intervention Type: {intervention_type}
+Priority: {priority}
+Duration: {duration_days} days
+Custom Goals: {custom_goals or []}
+
+Requirements:
+1. Create specific, measurable goals
+2. Design daily/weekly activities
+3. Include progress tracking methods
+4. Set milestones and checkpoints
+5. Provide success criteria
+6. Include parent involvement strategies
+7. Add contingency plans
+
+Format as JSON:
+{{
+    "intervention_plan_id": "plan_id",
+    "title": "Intervention Plan Title",
+    "description": "Comprehensive description",
+    "goals": [
+        {{
+            "goal_id": "goal1",
+            "title": "Goal Title",
+            "description": "Goal description",
+            "measurable_outcome": "Specific measurable outcome",
+            "target_value": 85,
+            "current_value": 65,
+            "unit": "percentage"
+        }}
+    ],
+    "activities": [
+        {{
+            "activity_id": "activity1",
+            "title": "Activity Title",
+            "description": "Activity description",
+            "frequency": "daily|weekly|custom",
+            "duration_minutes": 30,
+            "resources_needed": ["resource1", "resource2"],
+            "parent_involvement": "high|medium|low|none"
+        }}
+    ],
+    "milestones": [
+        {{
+            "milestone_id": "milestone1",
+            "title": "Milestone Title",
+            "target_date": "2024-02-15",
+            "success_criteria": ["criteria1", "criteria2"],
+            "assessment_method": "quiz|observation|test"
+        }}
+    ],
+    "progress_tracking": {{
+        "daily_checkpoints": ["checkpoint1", "checkpoint2"],
+        "weekly_reviews": true,
+        "parent_updates": "daily|weekly|biweekly",
+        "success_metrics": ["metric1", "metric2"]
+    }},
+    "parent_strategies": [
+        {{
+            "strategy_id": "strategy1",
+            "title": "Parent Strategy Title",
+            "description": "How parent can help",
+            "time_commitment": "15 minutes daily",
+            "specific_actions": ["action1", "action2"]
+        }}
+    ],
+    "contingency_plans": [
+        {{
+            "trigger_condition": "condition",
+            "alternative_approach": "alternative strategy",
+            "escalation_criteria": ["criteria1", "criteria2"]
+        }}
+    ],
+    "estimated_success_probability": 0.8,
+    "expected_outcomes": ["outcome1", "outcome2"],
+    "duration_days": {duration_days},
+    "priority_level": "{priority}"
+}}
+"""
+            
+            # Generate content using AI service
+            content_request = ContentRequest(
+                content_type=ContentType.RECOMMENDATION,
+                prompt=prompt,
+                user_id=parent_id,
+                student_id=student_id,
+                context={
+                    "current_data": current_data,
+                    "intervention_type": intervention_type,
+                    "priority": priority,
+                    "duration_days": duration_days,
+                    "custom_goals": custom_goals
+                },
+                metadata={"generation_type": "intervention_plan"}
+            )
+            
+            result = await self.ai_content_service.generate_content(content_request)
+            
+            # Parse intervention plan
+            try:
+                import json
+                intervention_plan = json.loads(result.content)
+            except json.JSONDecodeError:
+                # Fallback plan
+                intervention_plan = {
+                    "intervention_plan_id": f"plan_{student_id}_{int(time.time())}",
+                    "title": f"{intervention_type.title()} Intervention Plan",
+                    "description": result.content,
+                    "goals": [],
+                    "activities": [],
+                    "milestones": [],
+                    "progress_tracking": {},
+                    "parent_strategies": [],
+                    "contingency_plans": [],
+                    "estimated_success_probability": 0.7,
+                    "expected_outcomes": ["Improved performance"],
+                    "duration_days": duration_days,
+                    "priority_level": priority
+                }
+            
+            # Save intervention plan
+            plan_id = intervention_plan.get("intervention_plan_id", f"plan_{student_id}_{int(time.time())}")
+            intervention_record = {
+                "plan_id": plan_id,
+                "student_id": student_id,
+                "parent_id": parent_id,
+                "intervention_type": intervention_type,
+                "priority": priority,
+                "status": "active",
+                "start_date": datetime.utcnow(),
+                "end_date": datetime.utcnow() + timedelta(days=duration_days),
+                "plan_data": intervention_plan,
+                "progress_updates": [],
+                "created_at": datetime.utcnow()
+            }
+            
+            if self.enable_database_persistence:
+                await self._save_intervention_plan_to_db(intervention_record)
+            
+            logger.info(f"Created intervention plan: {plan_id} for student {student_id}")
+            
+            return {
+                "success": True,
+                "plan_id": plan_id,
+                "intervention_plan": intervention_plan,
+                "start_date": intervention_record["start_date"].isoformat(),
+                "end_date": intervention_record["end_date"].isoformat(),
+                "next_steps": [
+                    "Review intervention plan with child",
+                    "Set up progress tracking",
+                    "Begin daily activities"
+                ]
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to create intervention plan: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "student_id": student_id
+            }
+    
+    async def update_intervention_progress(
+        self,
+        plan_id: str,
+        progress_data: Dict[str, Any],
+        milestone_updates: Optional[List[Dict[str, Any]]] = None
+    ) -> Dict[str, Any]:
+        """
+        Update progress for an intervention plan.
+        
+        Args:
+            plan_id: Intervention plan ID
+            progress_data: Progress update data
+            milestone_updates: Optional milestone updates
+        
+        Returns:
+            Dict with progress update results
+        """
+        try:
+            # Get existing plan
+            plan = await self._get_intervention_plan_by_id(plan_id)
+            if not plan:
+                return {
+                    "success": False,
+                    "error": "Intervention plan not found",
+                    "plan_id": plan_id
+                }
+            
+            # Create progress update
+            progress_update = {
+                "update_id": f"progress_{plan_id}_{int(time.time())}",
+                "plan_id": plan_id,
+                "update_date": datetime.utcnow(),
+                "progress_percentage": progress_data.get("progress_percentage", 0),
+                "achievements": progress_data.get("achievements", []),
+                "challenges": progress_data.get("challenges", []),
+                "notes": progress_data.get("notes", ""),
+                "parent_observations": progress_data.get("parent_observations", ""),
+                "child_feedback": progress_data.get("child_feedback", ""),
+                "milestone_updates": milestone_updates or []
+            }
+            
+            # Update plan progress
+            plan["progress_updates"].append(progress_update)
+            
+            # Check if plan should be completed
+            if progress_data.get("progress_percentage", 0) >= 100:
+                plan["status"] = "completed"
+                plan["completion_date"] = datetime.utcnow()
+            
+            # Save updated plan
+            if self.enable_database_persistence:
+                await self._update_intervention_plan_in_db(plan_id, {
+                    "progress_updates": plan["progress_updates"],
+                    "status": plan.get("status"),
+                    "completion_date": plan.get("completion_date")
+                })
+            
+            # Generate progress insights
+            insights = await self._generate_progress_insights(plan, progress_update)
+            
+            return {
+                "success": True,
+                "plan_id": plan_id,
+                "update_id": progress_update["update_id"],
+                "progress_percentage": progress_data.get("progress_percentage", 0),
+                "status": plan.get("status"),
+                "insights": insights,
+                "next_steps": await self._generate_next_steps_for_progress(plan, progress_update)
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to update intervention progress: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "plan_id": plan_id
+            }
+    
+    async def get_intervention_analytics(
+        self,
+        student_id: Optional[str] = None,
+        parent_id: Optional[str] = None,
+        start_date: Optional[datetime] = None,
+        end_date: Optional[datetime] = None
+    ) -> Dict[str, Any]:
+        """
+        Get comprehensive intervention analytics.
+        
+        Args:
+            student_id: Optional student ID filter
+            parent_id: Optional parent ID filter
+            start_date: Optional start date filter
+            end_date: Optional end date filter
+        
+        Returns:
+            Dict with intervention analytics
+        """
+        try:
+            # Set default date range
+            if not end_date:
+                end_date = datetime.utcnow()
+            if not start_date:
+                start_date = end_date - timedelta(days=90)  # Last 90 days
+            
+            # Get intervention plans
+            plans = await self._get_intervention_plans(
+                student_id, parent_id, start_date, end_date
+            )
+            
+            # Calculate analytics
+            total_plans = len(plans)
+            completed_plans = len([p for p in plans if p.get("status") == "completed"])
+            active_plans = len([p for p in plans if p.get("status") == "active"])
+            
+            # Calculate effectiveness by type
+            effectiveness_by_type = {}
+            for plan in plans:
+                intervention_type = plan.get("intervention_type", "unknown")
+                if intervention_type not in effectiveness_by_type:
+                    effectiveness_by_type[intervention_type] = {
+                        "total": 0,
+                        "completed": 0,
+                        "average_success_rate": 0.0
+                    }
+                
+                effectiveness_by_type[intervention_type]["total"] += 1
+                if plan.get("status") == "completed":
+                    effectiveness_by_type[intervention_type]["completed"] += 1
+            
+            # Calculate average success rates
+            for intervention_type, data in effectiveness_by_type.items():
+                if data["total"] > 0:
+                    data["completion_rate"] = (data["completed"] / data["total"]) * 100
+                else:
+                    data["completion_rate"] = 0.0
+            
+            # Generate insights
+            insights = await self._generate_intervention_analytics_insights(
+                plans, effectiveness_by_type
+            )
+            
+            return {
+                "success": True,
+                "period": {
+                    "start_date": start_date.isoformat(),
+                    "end_date": end_date.isoformat()
+                },
+                "summary": {
+                    "total_plans": total_plans,
+                    "completed_plans": completed_plans,
+                    "active_plans": active_plans,
+                    "overall_completion_rate": (completed_plans / max(total_plans, 1)) * 100
+                },
+                "effectiveness_by_type": effectiveness_by_type,
+                "insights": insights,
+                "recommendations": await self._generate_intervention_recommendations(
+                    effectiveness_by_type
+                )
+            }
+            
+        except Exception as e:
+            logger.error(f"Failed to get intervention analytics: {e}")
+            return {
+                "success": False,
+                "error": str(e)
+            }
+    
+    async def _save_intervention_plan_to_db(self, plan_record: Dict[str, Any]):
+        """Save intervention plan to database."""
+        try:
+            doc_ref = self.db.collection("intervention_plans").document(plan_record["plan_id"])
+            await doc_ref.set(plan_record)
+            logger.debug(f"Saved intervention plan to database: {plan_record['plan_id']}")
+            
+        except Exception as e:
+            logger.error(f"Failed to save intervention plan to database: {e}")
+            self.metrics["database_failures"] += 1
+    
+    async def _get_intervention_plan_by_id(self, plan_id: str) -> Optional[Dict[str, Any]]:
+        """Get intervention plan by ID."""
+        try:
+            doc_ref = self.db.collection("intervention_plans").document(plan_id)
+            doc = await doc_ref.get()
+            
+            if doc.exists:
+                return doc.to_dict()
+            else:
+                return None
+                
+        except Exception as e:
+            logger.error(f"Failed to get intervention plan by ID: {e}")
+            return None
+    
+    async def _update_intervention_plan_in_db(self, plan_id: str, update_data: Dict[str, Any]):
+        """Update intervention plan in database."""
+        try:
+            doc_ref = self.db.collection("intervention_plans").document(plan_id)
+            await doc_ref.update(update_data)
+            logger.debug(f"Updated intervention plan in database: {plan_id}")
+            
+        except Exception as e:
+            logger.error(f"Failed to update intervention plan in database: {e}")
+            self.metrics["database_failures"] += 1
+    
+    async def _get_intervention_plans(
+        self,
+        student_id: Optional[str],
+        parent_id: Optional[str],
+        start_date: datetime,
+        end_date: datetime
+    ) -> List[Dict[str, Any]]:
+        """Get intervention plans with filters."""
+        try:
+            query = self.db.collection("intervention_plans")\
+                .where("start_date", ">=", start_date)\
+                .where("start_date", "<=", end_date)\
+                .order_by("start_date", direction="DESCENDING")
+            
+            if student_id:
+                query = query.where("student_id", "==", student_id)
+            
+            if parent_id:
+                query = query.where("parent_id", "==", parent_id)
+            
+            plans = []
+            async for doc in query.stream():
+                plan_data = doc.to_dict()
+                plans.append(plan_data)
+            
+            return plans
+            
+        except Exception as e:
+            logger.error(f"Failed to get intervention plans: {e}")
+            return []
+    
+    async def _generate_progress_insights(
+        self,
+        plan: Dict[str, Any],
+        progress_update: Dict[str, Any]
+    ) -> List[str]:
+        """Generate insights from progress update."""
+        try:
+            # Build prompt for progress insights
+            prompt = f"""
+Generate insights from intervention progress update.
+
+Intervention Plan:
+{json.dumps(plan.get("plan_data", {}), indent=2)}
+
+Progress Update:
+{json.dumps(progress_update, indent=2)}
+
+Requirements:
+1. Analyze progress patterns
+2. Identify achievements and challenges
+3. Assess parent involvement effectiveness
+4. Provide motivational insights
+5. Suggest adjustments if needed
+
+Format as JSON array of strings:
+["insight 1", "insight 2", ...]
+"""
+            
+            # Generate content using AI service
+            content_request = ContentRequest(
+                content_type=ContentType.INSIGHT,
+                prompt=prompt,
+                user_id=plan.get("parent_id"),
+                student_id=plan.get("student_id"),
+                context={
+                    "plan": plan,
+                    "progress_update": progress_update
+                },
+                metadata={"generation_type": "progress_insights"}
+            )
+            
+            result = await self.ai_content_service.generate_content(content_request)
+            
+            # Parse insights
+            try:
+                import json
+                insights = json.loads(result.content)
+                
+                if isinstance(insights, list):
+                    return [str(insight) for insight in insights]
+                    
+            except json.JSONDecodeError:
+                pass
+            
+            # Fallback insights
+            return [
+                "Progress update recorded successfully",
+                "Continue monitoring daily activities",
+                "Adjust strategies based on challenges encountered"
+            ]
+            
+        except Exception as e:
+            logger.error(f"Failed to generate progress insights: {e}")
+            return ["Unable to generate insights at this time"]
+    
+    async def _generate_next_steps_for_progress(
+        self,
+        plan: Dict[str, Any],
+        progress_update: Dict[str, Any]
+    ) -> List[str]:
+        """Generate next steps based on progress."""
+        try:
+            progress_percentage = progress_update.get("progress_percentage", 0)
+            challenges = progress_update.get("challenges", [])
+            
+            if progress_percentage < 25:
+                return [
+                    "Focus on establishing routine",
+                    "Increase parent involvement in initial activities",
+                    "Address any immediate barriers to engagement"
+                ]
+            elif progress_percentage < 50:
+                return [
+                    "Maintain consistency with daily activities",
+                    "Celebrate small achievements to build momentum",
+                    "Adjust activities based on child's feedback"
+                ]
+            elif progress_percentage < 75:
+                return [
+                    "Increase difficulty of activities gradually",
+                    "Focus on areas showing slower progress",
+                    "Prepare for upcoming milestones"
+                ]
+            elif progress_percentage < 100:
+                return [
+                    "Focus on final milestones",
+                    "Plan for maintenance phase after completion",
+                    "Document successful strategies for future use"
+                ]
+            else:
+                return [
+                    "Plan celebration of achievement",
+                    "Create maintenance plan for continued success",
+                    "Document lessons learned for future interventions"
+                ]
+                
+        except Exception as e:
+            logger.error(f"Failed to generate next steps: {e}")
+            return ["Continue with current plan and monitor progress"]
+    
+    async def _generate_intervention_analytics_insights(
+        self,
+        plans: List[Dict[str, Any]],
+        effectiveness_by_type: Dict[str, Any]
+    ) -> List[str]:
+        """Generate insights from intervention analytics."""
+        try:
+            # Build prompt for analytics insights
+            prompt = f"""
+Generate insights from intervention analytics.
+
+Intervention Plans Summary:
+Total Plans: {len(plans)}
+Completion Rate: {(len([p for p in plans if p.get('status') == 'completed']) / max(len(plans), 1)) * 100:.1f}%
+
+Effectiveness by Type:
+{json.dumps(effectiveness_by_type, indent=2)}
+
+Requirements:
+1. Identify most effective intervention types
+2. Analyze completion patterns
+3. Spot trends in parent involvement
+4. Provide actionable recommendations
+5. Highlight areas for improvement
+
+Format as JSON array of strings:
+["insight 1", "insight 2", ...]
+"""
+            
+            # Generate content using AI service
+            content_request = ContentRequest(
+                content_type=ContentType.INSIGHT,
+                prompt=prompt,
+                user_id="system",
+                student_id="system",
+                context={
+                    "plans": plans,
+                    "effectiveness_by_type": effectiveness_by_type
+                },
+                metadata={"generation_type": "intervention_analytics_insights"}
+            )
+            
+            result = await self.ai_content_service.generate_content(content_request)
+            
+            # Parse insights
+            try:
+                import json
+                insights = json.loads(result.content)
+                
+                if isinstance(insights, list):
+                    return [str(insight) for insight in insights]
+                    
+            except json.JSONDecodeError:
+                pass
+            
+            # Fallback insights
+            return [
+                "Analyze completion rates by intervention type",
+                "Focus on parent involvement strategies",
+                "Monitor progress tracking effectiveness"
+            ]
+            
+        except Exception as e:
+            logger.error(f"Failed to generate intervention analytics insights: {e}")
+            return ["Unable to generate analytics insights at this time"]
+    
+    async def _generate_intervention_recommendations(
+        self,
+        effectiveness_by_type: Dict[str, Any]
+    ) -> List[str]:
+        """Generate recommendations based on effectiveness analysis."""
+        try:
+            recommendations = []
+            
+            # Find most and least effective types
+            most_effective = None
+            least_effective = None
+            
+            for intervention_type, data in effectiveness_by_type.items():
+                if most_effective is None or data.get("completion_rate", 0) > most_effective.get("completion_rate", 0):
+                    most_effective = {**data, "type": intervention_type}
+                
+                if least_effective is None or data.get("completion_rate", 0) < least_effective.get("completion_rate", 100):
+                    least_effective = {**data, "type": intervention_type}
+            
+            # Generate recommendations
+            if most_effective:
+                recommendations.append(
+                    f"Focus on {most_effective['type']} interventions "
+                    f"({most_effective.get('completion_rate', 0):.1f}% completion rate)"
+                )
+            
+            if least_effective and least_effective.get("completion_rate", 0) < 50:
+                recommendations.append(
+                    f"Review and improve {least_effective['type']} intervention strategies "
+                    f"({least_effective.get('completion_rate', 0):.1f}% completion rate)"
+                )
+            
+            recommendations.extend([
+                "Increase parent training for intervention implementation",
+                "Develop standardized progress tracking methods",
+                "Create resource library for effective intervention strategies"
+            ])
+            
+            return recommendations
+            
+        except Exception as e:
+            logger.error(f"Failed to generate intervention recommendations: {e}")
+            return ["Continue monitoring and analyzing intervention effectiveness"]
+
 # Module initialization
 logger.info("Predictive Analytics Service module loaded")

@@ -644,3 +644,311 @@ class SubscriptionService:
         except Exception as e:
             logger.error(f"Failed to update subscription status: {e}")
             # Don't raise - this is a background update
+    
+    def has_feature_access(
+        self,
+        parent_id: str,
+        feature: str
+    ) -> bool:
+        """
+        Check if parent has access to a specific feature.
+        
+        Args:
+            parent_id: Firebase user ID of parent
+            feature: Feature name to check access for
+        
+        Returns:
+            True if parent has access to the feature, False otherwise
+        
+        Example:
+            >>> if service.has_feature_access("parent_abc123", "parent_training_academy"):
+            ...     print("Access granted to parent training academy")
+        """
+        logger.debug(f"Checking feature access: parent_id={parent_id}, feature={feature}")
+        
+        try:
+            # Get subscription status
+            status = self.check_subscription_status(parent_id)
+            
+            # Check if feature is in the plan's features list
+            return feature in status.features
+            
+        except Exception as e:
+            logger.error(f"Error checking feature access: {e}")
+            # Return False on error (safer to deny access)
+            return False
+    
+    def get_subscription_tier(self, parent_id: str) -> str:
+        """
+        Get the subscription tier for a parent.
+        
+        Args:
+            parent_id: Firebase user ID of parent
+        
+        Returns:
+            Subscription tier name (basic, standard, premium_plus)
+        
+        Example:
+            >>> tier = service.get_subscription_tier("parent_abc123")
+            >>> print(f"Current tier: {tier}")
+        """
+        logger.debug(f"Getting subscription tier for: {parent_id}")
+        
+        try:
+            status = self.check_subscription_status(parent_id)
+            plan_id = status.plan_id
+            
+            # Map plan IDs to tiers
+            if plan_id in ["basic", "free"]:
+                return "basic"
+            elif plan_id in ["standard_monthly", "standard_yearly"]:
+                return "standard"
+            elif plan_id in ["premium_plus_monthly", "premium_plus_yearly"]:
+                return "premium_plus"
+            else:
+                return "unknown"
+                
+        except Exception as e:
+            logger.error(f"Error getting subscription tier: {e}")
+            return "unknown"
+    
+    def can_access_feature_tier(
+        self,
+        parent_id: str,
+        required_tier: str
+    ) -> bool:
+        """
+        Check if parent can access features of a specific tier.
+        
+        Args:
+            parent_id: Firebase user ID of parent
+            required_tier: Required tier (basic, standard, premium_plus)
+        
+        Returns:
+            True if parent's tier is equal to or higher than required tier
+        
+        Example:
+            >>> if service.can_access_feature_tier("parent_abc123", "standard"):
+            ...     print("Can access standard tier features")
+        """
+        logger.debug(f"Checking tier access: parent_id={parent_id}, required_tier={required_tier}")
+        
+        try:
+            current_tier = self.get_subscription_tier(parent_id)
+            
+            # Define tier hierarchy
+            tier_hierarchy = {
+                "basic": 0,
+                "standard": 1,
+                "premium_plus": 2
+            }
+            
+            current_level = tier_hierarchy.get(current_tier, 0)
+            required_level = tier_hierarchy.get(required_tier, 0)
+            
+            return current_level >= required_level
+            
+        except Exception as e:
+            logger.error(f"Error checking tier access: {e}")
+            return False
+    
+    def get_feature_limits(
+        self,
+        parent_id: str,
+        feature: str
+    ) -> Dict[str, Any]:
+        """
+        Get usage limits for a specific feature based on subscription.
+        
+        Args:
+            parent_id: Firebase user ID of parent
+            feature: Feature name to get limits for
+        
+        Returns:
+            Dictionary containing feature limits
+        
+        Example:
+            >>> limits = service.get_feature_limits("parent_abc123", "diagnostic_tests")
+            >>> print(f"Monthly limit: {limits.get('monthly_limit', 0)}")
+        """
+        logger.debug(f"Getting feature limits: parent_id={parent_id}, feature={feature}")
+        
+        try:
+            status = self.check_subscription_status(parent_id)
+            plan_id = status.plan_id
+            
+            # Define feature limits for each plan
+            feature_limits = {
+                "basic": {
+                    "diagnostic_tests": {"monthly_limit": 1, "daily_limit": 1},
+                    "practice_questions": {"monthly_limit": 50, "daily_limit": 5},
+                    "ai_tokens": {"daily_limit": 1000, "monthly_limit": 10000},
+                    "parent_training_modules": {"total_limit": 0},
+                    "community_resources": {"access_level": "read_only"},
+                    "study_tools": {"access_level": "basic"},
+                    "analytics": {"access_level": "basic"},
+                    "whatsapp_notifications": {"enabled": False}
+                },
+                "standard": {
+                    "diagnostic_tests": {"monthly_limit": 3, "daily_limit": 1},
+                    "practice_questions": {"monthly_limit": -1, "daily_limit": 20},  # -1 = unlimited
+                    "ai_tokens": {"daily_limit": 5000, "monthly_limit": 50000},
+                    "parent_training_modules": {"total_limit": 5},
+                    "community_resources": {"access_level": "full"},
+                    "study_tools": {"access_level": "basic"},
+                    "analytics": {"access_level": "enhanced"},
+                    "whatsapp_notifications": {"enabled": True, "level": "basic"}
+                },
+                "premium_plus": {
+                    "diagnostic_tests": {"monthly_limit": -1, "daily_limit": -1},  # unlimited
+                    "practice_questions": {"monthly_limit": -1, "daily_limit": -1},  # unlimited
+                    "ai_tokens": {"daily_limit": 15000, "monthly_limit": 150000},
+                    "parent_training_modules": {"total_limit": -1},  # unlimited
+                    "community_resources": {"access_level": "full_with_contribution"},
+                    "study_tools": {"access_level": "advanced"},
+                    "analytics": {"access_level": "advanced"},
+                    "whatsapp_notifications": {"enabled": True, "level": "full"}
+                }
+            }
+            
+            # Get current tier
+            tier = self.get_subscription_tier(parent_id)
+            
+            # Return limits for the tier, or empty dict if not found
+            return feature_limits.get(tier, {})
+            
+        except Exception as e:
+            logger.error(f"Error getting feature limits: {e}")
+            return {}
+    
+    def upgrade_subscription(
+        self,
+        parent_id: str,
+        new_plan_id: str,
+        payment_id: str,
+        order_id: str
+    ) -> SubscriptionDetails:
+        """
+        Upgrade a subscription to a higher tier plan.
+        
+        Args:
+            parent_id: Firebase user ID of parent
+            new_plan_id: New plan ID to upgrade to
+            payment_id: Razorpay payment ID
+            order_id: Razorpay order ID
+        
+        Returns:
+            Updated SubscriptionDetails
+        
+        Raises:
+            PlanNotFoundError: If new plan is not found
+            SubscriptionServiceError: If upgrade fails
+        
+        Example:
+            >>> subscription = service.upgrade_subscription(
+            ...     parent_id="parent_abc123",
+            ...     plan_id="premium_plus_monthly",
+            ...     payment_id="pay_xyz789",
+            ...     order_id="order_xyz789"
+            ... )
+        """
+        logger.info(f"Upgrading subscription: parent_id={parent_id}, new_plan_id={new_plan_id}")
+        
+        try:
+            # Get current subscription
+            current_subscription = self.get_subscription(parent_id)
+            
+            if not current_subscription:
+                # No existing subscription, activate new one
+                return self.activate_subscription(parent_id, new_plan_id, payment_id, order_id)
+            
+            # Get new plan details
+            new_plan = self.get_plan_by_id(new_plan_id)
+            
+            # Check if this is actually an upgrade
+            current_tier = self.get_subscription_tier(parent_id)
+            new_tier = self.get_subscription_tier_from_plan_id(new_plan_id)
+            
+            tier_hierarchy = {"basic": 0, "standard": 1, "premium_plus": 2}
+            
+            if tier_hierarchy.get(new_tier, 0) <= tier_hierarchy.get(current_tier, 0):
+                logger.warning(f"Not an upgrade: {current_tier} -> {new_tier}")
+                # Still allow the change, but log it
+            
+            # Calculate new end date (extend from current end date)
+            current_end = current_subscription.end_date
+            if current_subscription.is_active():
+                # Extend from current end date
+                new_end_date = current_end + timedelta(days=new_plan.duration_days)
+            else:
+                # Start fresh from today
+                start_date = datetime.utcnow()
+                new_end_date = start_date + timedelta(days=new_plan.duration_days)
+            
+            # Create new subscription details
+            new_subscription = SubscriptionDetails(
+                subscription_id=f"sub_{parent_id}_{int(datetime.utcnow().timestamp())}",
+                parent_id=parent_id,
+                plan_id=new_plan.plan_id,
+                plan_name=new_plan.name,
+                status=SubscriptionStatus.ACTIVE,
+                start_date=current_subscription.start_date if current_subscription.is_active() else datetime.utcnow(),
+                end_date=new_end_date,
+                auto_renew=False,
+                amount_paid=new_plan.price,
+                currency=new_plan.currency,
+                payment_id=payment_id,
+                created_at=current_subscription.created_at,
+                updated_at=datetime.utcnow()
+            )
+            
+            # Save to Firestore
+            db = get_firestore_client()
+            
+            # Update current subscription
+            doc_ref = db.collection(SUBSCRIPTIONS_COLLECTION).document(parent_id)
+            subscription_dict = new_subscription.model_dump(mode='json')
+            doc_ref.set(subscription_dict)
+            
+            # Save to history
+            history_ref = (
+                db.collection(SUBSCRIPTIONS_COLLECTION)
+                .document(parent_id)
+                .collection(SUBSCRIPTION_HISTORY_SUBCOLLECTION)
+                .document(new_subscription.subscription_id)
+            )
+            history_ref.set(subscription_dict)
+            
+            logger.info(
+                f"Subscription upgraded successfully: {new_subscription.subscription_id}, "
+                f"new plan: {new_plan.name}, expires: {new_end_date.isoformat()}"
+            )
+            
+            return new_subscription
+            
+        except PlanNotFoundError:
+            raise
+        except Exception as e:
+            error_msg = f"Failed to upgrade subscription: {e}"
+            logger.error(error_msg)
+            logger.exception("Full traceback:")
+            raise SubscriptionServiceError(error_msg)
+    
+    def get_subscription_tier_from_plan_id(self, plan_id: str) -> str:
+        """
+        Get subscription tier from plan ID.
+        
+        Args:
+            plan_id: Plan identifier
+        
+        Returns:
+            Subscription tier name (basic, standard, premium_plus)
+        """
+        if plan_id in ["basic", "free"]:
+            return "basic"
+        elif plan_id in ["standard_monthly", "standard_yearly"]:
+            return "standard"
+        elif plan_id in ["premium_plus_monthly", "premium_plus_yearly"]:
+            return "premium_plus"
+        else:
+            return "unknown"

@@ -10,9 +10,14 @@ Features:
 - Multi-language resource support
 - Resource effectiveness tracking
 - Resource recommendation engine
-- Community-contributed resources
+- Community-contributed resources with moderation
 - Downloadable materials library
 - Resource quality assessment
+- Parent community features
+- Content rating and review system
+- Resource sharing and collaboration
+- Expert-verified content badges
+- Community challenges and competitions
 
 Author: Mentor AI Team
 Version: 1.0.0
@@ -77,6 +82,37 @@ class QualityScore(Enum):
     POOR = "poor"
 
 @dataclass
+class CommunityResource:
+    """Community-contributed resource definition."""
+    
+    resource_id: str
+    parent_id: str
+    title: str
+    description: str
+    resource_type: ResourceType
+    category: ResourceCategory
+    subject: Optional[str]
+    difficulty_level: DifficultyLevel
+    age_group: str
+    language: str
+    content: str
+    download_url: Optional[str]
+    tags: List[str]
+    quality_score: QualityScore
+    effectiveness_rating: float
+    usage_count: int
+    user_ratings: List[float]
+    reviews: List[Dict[str, Any]]
+    expert_verified: bool
+    expert_badge: Optional[str]
+    community_likes: int
+    community_shares: int
+    moderation_status: str  # "pending", "approved", "rejected"
+    moderation_notes: Optional[str]
+    created_at: datetime
+    updated_at: datetime
+
+@dataclass
 class Resource:
     """Educational resource definition."""
     
@@ -100,6 +136,42 @@ class Resource:
     community_contributed: bool
     created_at: datetime
     updated_at: datetime
+
+@dataclass
+class CommunityChallenge:
+    """Community challenge definition."""
+    
+    challenge_id: str
+    title: str
+    description: str
+    challenge_type: str  # "resource_creation", "review", "sharing"
+    category: ResourceCategory
+    subject: Optional[str]
+    difficulty_level: DifficultyLevel
+    start_date: datetime
+    end_date: datetime
+    participation_count: int
+    reward_points: int
+    reward_badge: str
+    requirements: List[str]
+    evaluation_criteria: List[str]
+    created_at: datetime
+
+@dataclass
+class ParentContribution:
+    """Parent contribution tracking."""
+    
+    contribution_id: str
+    parent_id: str
+    contribution_type: str  # "resource", "review", "challenge_participation"
+    resource_id: Optional[str]
+    challenge_id: Optional[str]
+    content: str
+    quality_score: float
+    community_impact: int
+    reward_points: int
+    badges_earned: List[str]
+    created_at: datetime
 
 @dataclass
 class ResourceRequest:
@@ -197,6 +269,9 @@ class ParentResourceLibraryService:
         self.resources_collection = "parent_resources"
         self.resource_usage_collection = "resource_usage"
         self.community_resources_collection = "community_resources"
+        self.community_challenges_collection = "community_challenges"
+        self.parent_contributions_collection = "parent_contributions"
+        self.resource_reviews_collection = "resource_reviews"
         
         # Supported languages
         self.supported_languages = [
@@ -226,7 +301,18 @@ class ParentResourceLibraryService:
             "cache_hits": 0,
             "cache_misses": 0,
             "database_saves": 0,
-            "database_failures": 0
+            "database_failures": 0,
+            # Community metrics
+            "community_resources_submitted": 0,
+            "community_resources_approved": 0,
+            "community_resources_pending": 0,
+            "community_challenges_created": 0,
+            "community_challenges_participated": 0,
+            "parent_contributions": 0,
+            "expert_verifications": 0,
+            "community_engagement_score": 0.0,
+            "total_community_likes": 0,
+            "total_community_shares": 0
         }
         
         logger.info(
@@ -1605,28 +1691,28 @@ Format as JSON array of strings:
         try:
             # Build prompt for insights
             prompt = f"""
-Generate insights about this resource's performance.
-
-Resource:
-{json.dumps(resource.__dict__, indent=2)}
-
-Analytics:
-{json.dumps(analytics, indent=2)}
-
-Requirements:
-1. Analyze usage patterns and effectiveness
-2. Identify strengths and weaknesses
-3. Compare with similar resources
-4. Suggest improvements
-5. Provide actionable recommendations
-
-Format as JSON array of strings:
-[
-    "insight 1",
-    "insight 2",
-    ...
-]
-"""
+        Generate insights about this resource's performance.
+        
+        Resource:
+        {json.dumps(resource.__dict__, indent=2)}
+        
+        Analytics:
+        {json.dumps(analytics, indent=2)}
+        
+        Requirements:
+        1. Analyze usage patterns and effectiveness
+        2. Identify strengths and weaknesses
+        3. Compare with similar resources
+        4. Suggest improvements
+        5. Provide actionable recommendations
+        
+        Format as JSON array of strings:
+        [
+            "insight 1",
+            "insight 2",
+            ...
+        ]
+        """
             
             # Generate insights using AI service
             content_request = ContentRequest(
@@ -1661,6 +1747,1174 @@ Format as JSON array of strings:
         except Exception as e:
             logger.error(f"Resource insights generation failed: {e}")
             return ["Unable to generate insights at this time"]
+    
+    # ========================================================================
+    # COMMUNITY FEATURES METHODS
+    # ========================================================================
+    
+    async def submit_community_resource(
+        self,
+        parent_id: str,
+        resource_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        Submit a community-contributed resource for moderation.
+        
+        Args:
+            parent_id: Parent ID submitting the resource
+            resource_data: Resource data including content, title, etc.
+        
+        Returns:
+            Dict with submission results and resource ID
+        """
+        try:
+            # Generate resource ID
+            resource_id = f"community_{parent_id}_{int(time.time())}_{hashlib.md5(resource_data.get('title', '').encode()).hexdigest()[:8]}"
+            
+            logger.info(f"Submitting community resource: {resource_id}")
+            
+            # Assess quality automatically
+            quality_score = await self._assess_community_resource_quality(resource_data)
+            
+            # Create community resource record
+            community_resource = CommunityResource(
+                resource_id=resource_id,
+                parent_id=parent_id,
+                title=resource_data.get("title", ""),
+                description=resource_data.get("description", ""),
+                resource_type=ResourceType(resource_data.get("resource_type", "article")),
+                category=ResourceCategory(resource_data.get("category", "study_strategies")),
+                subject=resource_data.get("subject"),
+                difficulty_level=DifficultyLevel(resource_data.get("difficulty_level", "intermediate")),
+                age_group=resource_data.get("age_group", "middle_school"),
+                language=resource_data.get("language", "english"),
+                content=resource_data.get("content", ""),
+                download_url=resource_data.get("download_url"),
+                tags=resource_data.get("tags", []),
+                quality_score=quality_score,
+                effectiveness_rating=0.0,
+                usage_count=0,
+                user_ratings=[],
+                reviews=[],
+                expert_verified=False,
+                expert_badge=None,
+                community_likes=0,
+                community_shares=0,
+                moderation_status="pending",
+                moderation_notes=None,
+                created_at=datetime.utcnow(),
+                updated_at=datetime.utcnow()
+            )
+            
+            # Save to database
+            if self.enable_database_persistence:
+                await self._save_community_resource_to_db(community_resource)
+            
+            # Track parent contribution
+            await self._track_parent_contribution(
+                parent_id, "resource", resource_id, resource_data.get("content", "")
+            )
+            
+            # Update metrics
+            self.metrics["community_resources_submitted"] += 1
+            self.metrics["community_resources_pending"] += 1
+            
+            result = {
+                "success": True,
+                "resource_id": resource_id,
+                "moderation_status": "pending",
+                "quality_score": quality_score.value,
+                "message": "Resource submitted successfully. Pending moderation review.",
+                "estimated_review_time": "24-48 hours"
+            }
+            
+            logger.info(f"Community resource submitted: {resource_id}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Community resource submission failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "message": "Failed to submit resource. Please try again."
+            }
+    
+    async def moderate_community_resource(
+        self,
+        resource_id: str,
+        moderator_id: str,
+        action: str,  # "approve", "reject", "request_changes"
+        moderation_notes: Optional[str] = None
+    ) -> Dict[str, Any]:
+        """
+        Moderate a community-submitted resource.
+        
+        Args:
+            resource_id: Resource ID to moderate
+            moderator_id: Moderator ID
+            action: Moderation action
+            moderation_notes: Optional moderation notes
+        
+        Returns:
+            Dict with moderation results
+        """
+        try:
+            # Get resource
+            resource = await self._get_community_resource_by_id(resource_id)
+            if not resource:
+                return {
+                    "success": False,
+                    "error": "Resource not found"
+                }
+            
+            # Update moderation status
+            resource.moderation_status = action
+            resource.moderation_notes = moderation_notes
+            resource.updated_at = datetime.utcnow()
+            
+            # If approved, add to main resource library
+            if action == "approve":
+                resource.expert_verified = True
+                resource.expert_badge = "community_approved"
+                
+                # Add to main resources collection
+                main_resource = {
+                    "resource_id": resource.resource_id,
+                    "parent_id": resource.parent_id,
+                    "title": resource.title,
+                    "description": resource.description,
+                    "resource_type": resource.resource_type.value,
+                    "category": resource.category.value,
+                    "subject": resource.subject,
+                    "difficulty_level": resource.difficulty_level.value,
+                    "age_group": resource.age_group,
+                    "language": resource.language,
+                    "content": resource.content,
+                    "download_url": resource.download_url,
+                    "tags": resource.tags,
+                    "quality_score": resource.quality_score.value,
+                    "effectiveness_rating": resource.effectiveness_rating,
+                    "usage_count": resource.usage_count,
+                    "user_ratings": resource.user_ratings,
+                    "ai_generated": False,
+                    "community_contributed": True,
+                    "created_at": resource.created_at,
+                    "updated_at": resource.updated_at
+                }
+                
+                if self.enable_database_persistence:
+                    await self._save_resource_to_db(main_resource)
+                
+                # Update metrics
+                self.metrics["community_resources_approved"] += 1
+                self.metrics["community_resources_pending"] -= 1
+                self.metrics["expert_verifications"] += 1
+                
+                # Notify resource contributor
+                await self._notify_resource_approval(resource.parent_id, resource_id)
+                
+            elif action == "reject":
+                # Update metrics
+                self.metrics["community_resources_pending"] -= 1
+                
+                # Notify resource contributor
+                await self._notify_resource_rejection(resource.parent_id, resource_id, moderation_notes)
+            
+            # Save updated community resource
+            if self.enable_database_persistence:
+                await self._update_community_resource_in_db(resource_id, resource.__dict__)
+            
+            result = {
+                "success": True,
+                "resource_id": resource_id,
+                "action": action,
+                "moderation_notes": moderation_notes,
+                "message": f"Resource {action}d successfully"
+            }
+            
+            logger.info(f"Community resource moderated: {resource_id} - {action}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Resource moderation failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "message": "Failed to moderate resource"
+            }
+    
+    async def create_community_challenge(
+        self,
+        challenge_data: Dict[str, Any],
+        creator_id: str
+    ) -> Dict[str, Any]:
+        """
+        Create a community challenge.
+        
+        Args:
+            challenge_data: Challenge details
+            creator_id: Creator's parent ID
+        
+        Returns:
+            Dict with challenge creation results
+        """
+        try:
+            # Generate challenge ID
+            challenge_id = f"challenge_{creator_id}_{int(time.time())}_{hashlib.md5(challenge_data.get('title', '').encode()).hexdigest()[:8]}"
+            
+            logger.info(f"Creating community challenge: {challenge_id}")
+            
+            # Create challenge record
+            challenge = CommunityChallenge(
+                challenge_id=challenge_id,
+                title=challenge_data.get("title", ""),
+                description=challenge_data.get("description", ""),
+                challenge_type=challenge_data.get("challenge_type", "resource_creation"),
+                category=ResourceCategory(challenge_data.get("category", "study_strategies")),
+                subject=challenge_data.get("subject"),
+                difficulty_level=DifficultyLevel(challenge_data.get("difficulty_level", "intermediate")),
+                start_date=datetime.fromisoformat(challenge_data.get("start_date", datetime.utcnow().isoformat())),
+                end_date=datetime.fromisoformat(challenge_data.get("end_date", (datetime.utcnow() + timedelta(days=30)).isoformat())),
+                participation_count=0,
+                reward_points=challenge_data.get("reward_points", 100),
+                reward_badge=challenge_data.get("reward_badge", "challenge_winner"),
+                requirements=challenge_data.get("requirements", []),
+                evaluation_criteria=challenge_data.get("evaluation_criteria", []),
+                created_at=datetime.utcnow()
+            )
+            
+            # Save to database
+            if self.enable_database_persistence:
+                await self._save_community_challenge_to_db(challenge)
+            
+            # Update metrics
+            self.metrics["community_challenges_created"] += 1
+            
+            result = {
+                "success": True,
+                "challenge_id": challenge_id,
+                "title": challenge.title,
+                "start_date": challenge.start_date.isoformat(),
+                "end_date": challenge.end_date.isoformat(),
+                "reward_points": challenge.reward_points,
+                "message": "Community challenge created successfully"
+            }
+            
+            logger.info(f"Community challenge created: {challenge_id}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Community challenge creation failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "message": "Failed to create challenge"
+            }
+    
+    async def participate_in_challenge(
+        self,
+        parent_id: str,
+        challenge_id: str,
+        participation_data: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """
+        Participate in a community challenge.
+        
+        Args:
+            parent_id: Parent ID participating
+            challenge_id: Challenge ID
+            participation_data: Participation details
+        
+        Returns:
+            Dict with participation results
+        """
+        try:
+            # Get challenge
+            challenge = await self._get_community_challenge_by_id(challenge_id)
+            if not challenge:
+                return {
+                    "success": False,
+                    "error": "Challenge not found"
+                }
+            
+            # Check if challenge is still active
+            if datetime.utcnow() > challenge.end_date:
+                return {
+                    "success": False,
+                    "error": "Challenge has ended"
+                }
+            
+            # Track participation
+            contribution_id = f"participation_{parent_id}_{challenge_id}_{int(time.time())}"
+            
+            contribution = ParentContribution(
+                contribution_id=contribution_id,
+                parent_id=parent_id,
+                contribution_type="challenge_participation",
+                resource_id=None,
+                challenge_id=challenge_id,
+                content=participation_data.get("content", ""),
+                quality_score=0.0,  # Will be evaluated later
+                community_impact=0,  # Will be calculated later
+                reward_points=0,  # Will be awarded based on performance
+                badges_earned=[],
+                created_at=datetime.utcnow()
+            )
+            
+            # Save to database
+            if self.enable_database_persistence:
+                await self._save_parent_contribution_to_db(contribution)
+            
+            # Update challenge participation count
+            challenge.participation_count += 1
+            await self._update_community_challenge_in_db(challenge_id, {"participation_count": challenge.participation_count})
+            
+            # Update metrics
+            self.metrics["community_challenges_participated"] += 1
+            self.metrics["parent_contributions"] += 1
+            
+            result = {
+                "success": True,
+                "contribution_id": contribution_id,
+                "challenge_id": challenge_id,
+                "challenge_title": challenge.title,
+                "message": "Successfully joined the challenge",
+                "next_steps": [
+                    "Complete the challenge requirements",
+                    "Submit your work before deadline",
+                    "Wait for evaluation and results"
+                ]
+            }
+            
+            logger.info(f"Parent {parent_id} joined challenge {challenge_id}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Challenge participation failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "message": "Failed to join challenge"
+            }
+    
+    async def like_community_resource(
+        self,
+        parent_id: str,
+        resource_id: str
+    ) -> Dict[str, Any]:
+        """
+        Like a community resource.
+        
+        Args:
+            parent_id: Parent ID liking the resource
+            resource_id: Resource ID to like
+        
+        Returns:
+            Dict with like results
+        """
+        try:
+            # Get resource
+            resource = await self._get_community_resource_by_id(resource_id)
+            if not resource:
+                return {
+                    "success": False,
+                    "error": "Resource not found"
+                }
+            
+            # Check if already liked
+            like_key = f"like_{parent_id}_{resource_id}"
+            existing_like = await self._check_existing_like(like_key)
+            
+            if existing_like:
+                # Unlike if already liked
+                resource.community_likes -= 1
+                await self._remove_like_record(like_key)
+                action = "unliked"
+            else:
+                # Add like
+                resource.community_likes += 1
+                await self._save_like_record(like_key, parent_id, resource_id)
+                action = "liked"
+            
+            # Update resource in database
+            if self.enable_database_persistence:
+                await self._update_community_resource_in_db(resource_id, {"community_likes": resource.community_likes})
+            
+            # Update metrics
+            self.metrics["total_community_likes"] = resource.community_likes
+            
+            result = {
+                "success": True,
+                "resource_id": resource_id,
+                "action": action,
+                "total_likes": resource.community_likes,
+                "message": f"Resource {action} successfully"
+            }
+            
+            logger.info(f"Parent {parent_id} {action} resource {resource_id}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Resource like failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "message": "Failed to like resource"
+            }
+    
+    async def share_community_resource(
+        self,
+        parent_id: str,
+        resource_id: str,
+        share_platform: str
+    ) -> Dict[str, Any]:
+        """
+        Share a community resource.
+        
+        Args:
+            parent_id: Parent ID sharing the resource
+            resource_id: Resource ID to share
+            share_platform: Platform where resource is shared
+        
+        Returns:
+            Dict with share results
+        """
+        try:
+            # Get resource
+            resource = await self._get_community_resource_by_id(resource_id)
+            if not resource:
+                return {
+                    "success": False,
+                    "error": "Resource not found"
+                }
+            
+            # Track share
+            share_record = {
+                "share_id": f"share_{parent_id}_{resource_id}_{int(time.time())}",
+                "parent_id": parent_id,
+                "resource_id": resource_id,
+                "platform": share_platform,
+                "shared_at": datetime.utcnow()
+            }
+            
+            # Save share record
+            if self.enable_database_persistence:
+                await self._save_share_record(share_record)
+            
+            # Update resource share count
+            resource.community_shares += 1
+            await self._update_community_resource_in_db(resource_id, {"community_shares": resource.community_shares})
+            
+            # Update metrics
+            self.metrics["total_community_shares"] = resource.community_shares
+            
+            result = {
+                "success": True,
+                "resource_id": resource_id,
+                "share_platform": share_platform,
+                "total_shares": resource.community_shares,
+                "share_url": f"https://mentor.ai/resources/{resource_id}",
+                "message": "Resource shared successfully"
+            }
+            
+            logger.info(f"Parent {parent_id} shared resource {resource_id} on {share_platform}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Resource share failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "message": "Failed to share resource"
+            }
+    
+    async def get_community_leaderboard(
+        self,
+        category: Optional[str] = None,
+        time_period: str = "monthly",  # "weekly", "monthly", "all_time"
+        limit: int = 20
+    ) -> Dict[str, Any]:
+        """
+        Get community leaderboard.
+        
+        Args:
+            category: Optional category filter
+            time_period: Time period for leaderboard
+            limit: Maximum number of results
+        
+        Returns:
+            Dict with leaderboard data
+        """
+        try:
+            # Calculate date range
+            end_date = datetime.utcnow()
+            if time_period == "weekly":
+                start_date = end_date - timedelta(weeks=1)
+            elif time_period == "monthly":
+                start_date = end_date - timedelta(days=30)
+            else:  # all_time
+                start_date = datetime(2020, 1, 1)  # Far past date
+            
+            # Get top contributors
+            contributors = await self._get_top_contributors(start_date, end_date, category, limit)
+            
+            # Get top resources
+            top_resources = await self._get_top_community_resources(start_date, end_date, category, limit)
+            
+            # Calculate engagement scores
+            leaderboard_data = []
+            for contributor in contributors:
+                engagement_score = self._calculate_engagement_score(contributor)
+                leaderboard_data.append({
+                    "parent_id": contributor["parent_id"],
+                    "contributions_count": contributor["contributions_count"],
+                    "likes_received": contributor["likes_received"],
+                    "shares_generated": contributor["shares_generated"],
+                    "engagement_score": engagement_score,
+                    "badges_earned": contributor.get("badges_earned", []),
+                    "rank": 0  # Will be set after sorting
+                })
+            
+            # Sort by engagement score and assign ranks
+            leaderboard_data.sort(key=lambda x: x["engagement_score"], reverse=True)
+            for i, entry in enumerate(leaderboard_data, 1):
+                entry["rank"] = i
+            
+            result = {
+                "success": True,
+                "time_period": time_period,
+                "category": category,
+                "leaderboard": leaderboard_data[:limit],
+                "top_resources": top_resources,
+                "generated_at": datetime.utcnow().isoformat(),
+                "total_participants": len(leaderboard_data)
+            }
+            
+            logger.info(f"Generated community leaderboard: {len(leaderboard_data)} participants")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Community leaderboard generation failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "message": "Failed to generate leaderboard"
+            }
+    
+    async def get_parent_community_profile(
+        self,
+        parent_id: str
+    ) -> Dict[str, Any]:
+        """
+        Get parent's community profile and contributions.
+        
+        Args:
+            parent_id: Parent ID
+        
+        Returns:
+            Dict with parent's community profile
+        """
+        try:
+            # Get parent contributions
+            contributions = await self._get_parent_contributions(parent_id)
+            
+            # Get parent's submitted resources
+            submitted_resources = await self._get_parent_submitted_resources(parent_id)
+            
+            # Get parent's challenge participations
+            challenge_participations = await self._get_parent_challenge_participations(parent_id)
+            
+            # Calculate community metrics
+            total_contributions = len(contributions)
+            total_likes_received = sum(c.get("likes_received", 0) for c in contributions)
+            total_shares_generated = sum(c.get("shares_generated", 0) for c in contributions)
+            badges_earned = list(set([badge for c in contributions for badge in c.get("badges_earned", [])]))
+            
+            # Calculate engagement score
+            engagement_score = self._calculate_engagement_score({
+                "parent_id": parent_id,
+                "contributions_count": total_contributions,
+                "likes_received": total_likes_received,
+                "shares_generated": total_shares_generated,
+                "badges_earned": badges_earned
+            })
+            
+            result = {
+                "success": True,
+                "parent_id": parent_id,
+                "community_stats": {
+                    "total_contributions": total_contributions,
+                    "submitted_resources": len(submitted_resources),
+                    "challenge_participations": len(challenge_participations),
+                    "total_likes_received": total_likes_received,
+                    "total_shares_generated": total_shares_generated,
+                    "badges_earned": badges_earned,
+                    "engagement_score": engagement_score
+                },
+                "recent_contributions": contributions[:5],
+                "submitted_resources": submitted_resources[:10],
+                "challenge_participations": challenge_participations[:5],
+                "achievements": await self._get_parent_achievements(parent_id),
+                "community_rank": await self._get_parent_community_rank(parent_id),
+                "profile_updated_at": datetime.utcnow().isoformat()
+            }
+            
+            logger.info(f"Generated community profile for parent {parent_id}")
+            return result
+            
+        except Exception as e:
+            logger.error(f"Community profile generation failed: {e}")
+            return {
+                "success": False,
+                "error": str(e),
+                "message": "Failed to generate community profile"
+            }
+    
+    # ========================================================================
+    # COMMUNITY HELPER METHODS
+    # ========================================================================
+    
+    async def _assess_community_resource_quality(self, resource_data: Dict[str, Any]) -> QualityScore:
+        """Assess quality of community-submitted resource."""
+        try:
+            # Build prompt for quality assessment
+            prompt = f"""
+Assess the quality of this community-submitted educational resource.
+
+Resource Content:
+{json.dumps(resource_data, indent=2)}
+
+Quality Criteria:
+- Content Accuracy (30%): Factual correctness
+- Educational Value (25%): Learning effectiveness
+- Engagement Level (20%): Interest and interaction
+- Appropriateness (15%): Age and level suitability
+- Clarity (10%): Clear explanations
+- Originality (5%): Unique contribution
+
+Requirements:
+1. Assess each criterion on a scale of 1-10
+2. Calculate weighted overall score
+3. Provide quality level (excellent/good/average/poor)
+4. Include specific feedback
+
+Format as JSON:
+{{
+    "content_accuracy": 8,
+    "educational_value": 7,
+    "engagement_level": 6,
+    "appropriateness": 8,
+    "clarity": 7,
+    "originality": 7,
+    "overall_score": 7.1,
+    "quality_level": "good",
+    "feedback": "Specific feedback for improvement"
+}}
+"""
+            
+            # Generate quality assessment using AI service
+            content_request = ContentRequest(
+                content_type=ContentType.ANALYSIS,
+                prompt=prompt,
+                user_id="system",
+                student_id="system",
+                context={"resource": resource_data},
+                metadata={"generation_type": "community_quality_assessment"}
+            )
+            
+            result = await self.ai_content_service.generate_content(content_request)
+            
+            # Parse quality assessment
+            try:
+                quality_data = json.loads(result.content)
+                
+                if isinstance(quality_data, dict):
+                    overall_score = quality_data.get("overall_score", 5.0)
+                    
+                    if overall_score >= 8.5:
+                        return QualityScore.EXCELLENT
+                    elif overall_score >= 6.5:
+                        return QualityScore.GOOD
+                    elif overall_score >= 4.5:
+                        return QualityScore.AVERAGE
+                    else:
+                        return QualityScore.POOR
+                        
+            except json.JSONDecodeError:
+                pass
+            
+            # Default to average if assessment fails
+            return QualityScore.AVERAGE
+            
+        except Exception as e:
+            logger.error(f"Failed to assess community resource quality: {e}")
+            return QualityScore.AVERAGE
+    
+    async def _save_community_resource_to_db(self, resource: CommunityResource):
+        """Save community resource to database."""
+        try:
+            doc_ref = self.db.collection(self.community_resources_collection).document(resource.resource_id)
+            await doc_ref.set(resource.__dict__)
+            logger.debug(f"Saved community resource to database: {resource.resource_id}")
+            
+        except Exception as e:
+            logger.error(f"Failed to save community resource to database: {e}")
+            self.metrics["database_failures"] += 1
+    
+    async def _track_parent_contribution(
+        self,
+        parent_id: str,
+        contribution_type: str,
+        resource_id: Optional[str],
+        content: str
+    ):
+        """Track parent contribution for metrics."""
+        try:
+            contribution_id = f"contrib_{parent_id}_{contribution_type}_{int(time.time())}"
+            
+            contribution = ParentContribution(
+                contribution_id=contribution_id,
+                parent_id=parent_id,
+                contribution_type=contribution_type,
+                resource_id=resource_id,
+                challenge_id=None,
+                content=content,
+                quality_score=0.0,  # Will be evaluated later
+                community_impact=0,  # Will be calculated later
+                reward_points=0,  # Will be awarded based on performance
+                badges_earned=[],
+                created_at=datetime.utcnow()
+            )
+            
+            if self.enable_database_persistence:
+                await self._save_parent_contribution_to_db(contribution)
+            
+            # Update metrics
+            self.metrics["parent_contributions"] += 1
+            
+        except Exception as e:
+            logger.error(f"Failed to track parent contribution: {e}")
+    
+    async def _get_community_resource_by_id(self, resource_id: str) -> Optional[CommunityResource]:
+        """Get community resource by ID."""
+        try:
+            doc_ref = self.db.collection(self.community_resources_collection).document(resource_id)
+            doc = await doc_ref.get()
+            
+            if doc.exists:
+                resource_data = doc.to_dict()
+                return CommunityResource(**resource_data)
+            else:
+                return None
+                
+        except Exception as e:
+            logger.error(f"Failed to get community resource by ID: {e}")
+            return None
+    
+    async def _update_community_resource_in_db(self, resource_id: str, update_data: Dict[str, Any]):
+        """Update community resource in database."""
+        try:
+            doc_ref = self.db.collection(self.community_resources_collection).document(resource_id)
+            await doc_ref.update(update_data)
+            logger.debug(f"Updated community resource in database: {resource_id}")
+            
+        except Exception as e:
+            logger.error(f"Failed to update community resource in database: {e}")
+            self.metrics["database_failures"] += 1
+    
+    async def _notify_resource_approval(self, parent_id: str, resource_id: str):
+        """Notify parent about resource approval."""
+        try:
+            # This would typically send a notification via email, push notification, etc.
+            logger.info(f"Notified parent {parent_id} about resource approval: {resource_id}")
+            
+        except Exception as e:
+            logger.error(f"Failed to notify resource approval: {e}")
+    
+    async def _notify_resource_rejection(self, parent_id: str, resource_id: str, notes: Optional[str]):
+        """Notify parent about resource rejection."""
+        try:
+            # This would typically send a notification via email, push notification, etc.
+            logger.info(f"Notified parent {parent_id} about resource rejection: {resource_id} - {notes}")
+            
+        except Exception as e:
+            logger.error(f"Failed to notify resource rejection: {e}")
+    
+    async def _save_community_challenge_to_db(self, challenge: CommunityChallenge):
+        """Save community challenge to database."""
+        try:
+            doc_ref = self.db.collection(self.community_challenges_collection).document(challenge.challenge_id)
+            await doc_ref.set(challenge.__dict__)
+            logger.debug(f"Saved community challenge to database: {challenge.challenge_id}")
+            
+        except Exception as e:
+            logger.error(f"Failed to save community challenge to database: {e}")
+            self.metrics["database_failures"] += 1
+    
+    async def _get_community_challenge_by_id(self, challenge_id: str) -> Optional[CommunityChallenge]:
+        """Get community challenge by ID."""
+        try:
+            doc_ref = self.db.collection(self.community_challenges_collection).document(challenge_id)
+            doc = await doc_ref.get()
+            
+            if doc.exists:
+                challenge_data = doc.to_dict()
+                return CommunityChallenge(**challenge_data)
+            else:
+                return None
+                
+        except Exception as e:
+            logger.error(f"Failed to get community challenge by ID: {e}")
+            return None
+    
+    async def _update_community_challenge_in_db(self, challenge_id: str, update_data: Dict[str, Any]):
+        """Update community challenge in database."""
+        try:
+            doc_ref = self.db.collection(self.community_challenges_collection).document(challenge_id)
+            await doc_ref.update(update_data)
+            logger.debug(f"Updated community challenge in database: {challenge_id}")
+            
+        except Exception as e:
+            logger.error(f"Failed to update community challenge in database: {e}")
+            self.metrics["database_failures"] += 1
+    
+    async def _save_parent_contribution_to_db(self, contribution: ParentContribution):
+        """Save parent contribution to database."""
+        try:
+            doc_ref = self.db.collection(self.parent_contributions_collection).document(contribution.contribution_id)
+            await doc_ref.set(contribution.__dict__)
+            logger.debug(f"Saved parent contribution to database: {contribution.contribution_id}")
+            
+        except Exception as e:
+            logger.error(f"Failed to save parent contribution to database: {e}")
+            self.metrics["database_failures"] += 1
+    
+    async def _check_existing_like(self, like_key: str) -> bool:
+        """Check if like already exists."""
+        try:
+            doc_ref = self.db.collection("resource_likes").document(like_key)
+            doc = await doc_ref.get()
+            return doc.exists
+            
+        except Exception as e:
+            logger.error(f"Failed to check existing like: {e}")
+            return False
+    
+    async def _save_like_record(self, like_key: str, parent_id: str, resource_id: str):
+        """Save like record to database."""
+        try:
+            like_record = {
+                "like_key": like_key,
+                "parent_id": parent_id,
+                "resource_id": resource_id,
+                "liked_at": datetime.utcnow()
+            }
+            
+            doc_ref = self.db.collection("resource_likes").document(like_key)
+            await doc_ref.set(like_record)
+            logger.debug(f"Saved like record: {like_key}")
+            
+        except Exception as e:
+            logger.error(f"Failed to save like record: {e}")
+            self.metrics["database_failures"] += 1
+    
+    async def _remove_like_record(self, like_key: str):
+        """Remove like record from database."""
+        try:
+            doc_ref = self.db.collection("resource_likes").document(like_key)
+            await doc_ref.delete()
+            logger.debug(f"Removed like record: {like_key}")
+            
+        except Exception as e:
+            logger.error(f"Failed to remove like record: {e}")
+            self.metrics["database_failures"] += 1
+    
+    async def _save_share_record(self, share_record: Dict[str, Any]):
+        """Save share record to database."""
+        try:
+            doc_ref = self.db.collection("resource_shares").document(share_record["share_id"])
+            await doc_ref.set(share_record)
+            logger.debug(f"Saved share record: {share_record['share_id']}")
+            
+        except Exception as e:
+            logger.error(f"Failed to save share record: {e}")
+            self.metrics["database_failures"] += 1
+    
+    async def _get_top_contributors(
+        self,
+        start_date: datetime,
+        end_date: datetime,
+        category: Optional[str],
+        limit: int
+    ) -> List[Dict[str, Any]]:
+        """Get top contributors for leaderboard."""
+        try:
+            # Query contributions in date range
+            query = self.db.collection(self.parent_contributions_collection)\
+                .where("created_at", ">=", start_date)\
+                .where("created_at", "<=", end_date)\
+                .order_by("created_at", direction="DESCENDING")
+            
+            # Aggregate contributions by parent
+            parent_contributions = {}
+            async for doc in query.stream():
+                contribution = doc.to_dict()
+                parent_id = contribution["parent_id"]
+                
+                if parent_id not in parent_contributions:
+                    parent_contributions[parent_id] = {
+                        "parent_id": parent_id,
+                        "contributions_count": 0,
+                        "likes_received": 0,
+                        "shares_generated": 0,
+                        "badges_earned": []
+                    }
+                
+                parent_contributions[parent_id]["contributions_count"] += 1
+                
+                # Add badges earned
+                badges = contribution.get("badges_earned", [])
+                parent_contributions[parent_id]["badges_earned"].extend(badges)
+            
+            # Get likes and shares for each parent's resources
+            for parent_id in parent_contributions:
+                # Get likes received
+                likes_query = self.db.collection(self.community_resources_collection)\
+                    .where("parent_id", "==", parent_id)\
+                    .where("moderation_status", "==", "approved")
+                
+                total_likes = 0
+                total_shares = 0
+                async for doc in likes_query.stream():
+                    resource = doc.to_dict()
+                    total_likes += resource.get("community_likes", 0)
+                    total_shares += resource.get("community_shares", 0)
+                
+                parent_contributions[parent_id]["likes_received"] = total_likes
+                parent_contributions[parent_id]["shares_generated"] = total_shares
+                
+                # Remove duplicate badges
+                parent_contributions[parent_id]["badges_earned"] = list(set(
+                    parent_contributions[parent_id]["badges_earned"]
+                ))
+            
+            # Sort by contributions count and return top contributors
+            contributors = sorted(
+                parent_contributions.values(),
+                key=lambda x: x["contributions_count"],
+                reverse=True
+            )
+            
+            return contributors[:limit]
+            
+        except Exception as e:
+            logger.error(f"Failed to get top contributors: {e}")
+            return []
+    
+    async def _get_top_community_resources(
+        self,
+        start_date: datetime,
+        end_date: datetime,
+        category: Optional[str],
+        limit: int
+    ) -> List[Dict[str, Any]]:
+        """Get top community resources for leaderboard."""
+        try:
+            # Query approved resources in date range
+            query = self.db.collection(self.community_resources_collection)\
+                .where("moderation_status", "==", "approved")\
+                .where("created_at", ">=", start_date)\
+                .where("created_at", "<=", end_date)
+            
+            if category:
+                query = query.where("category", "==", category)
+            
+            # Order by community engagement (likes + shares)
+            resources = []
+            async for doc in query.stream():
+                resource = doc.to_dict()
+                engagement_score = (
+                    resource.get("community_likes", 0) +
+                    resource.get("community_shares", 0) * 2  # Weight shares more
+                )
+                resource["engagement_score"] = engagement_score
+                resources.append(resource)
+            
+            # Sort by engagement score and return top resources
+            top_resources = sorted(
+                resources,
+                key=lambda x: x["engagement_score"],
+                reverse=True
+            )
+            
+            return top_resources[:limit]
+            
+        except Exception as e:
+            logger.error(f"Failed to get top community resources: {e}")
+            return []
+    
+    def _calculate_engagement_score(self, contributor: Dict[str, Any]) -> float:
+        """Calculate engagement score for a contributor."""
+        try:
+            contributions = contributor.get("contributions_count", 0)
+            likes = contributor.get("likes_received", 0)
+            shares = contributor.get("shares_generated", 0)
+            badges = len(contributor.get("badges_earned", []))
+            
+            # Weighted engagement score
+            engagement_score = (
+                contributions * 10 +      # Base points for contributions
+                likes * 2 +               # Points for likes received
+                shares * 5 +              # Higher points for shares
+                badges * 20               # Bonus points for badges
+            )
+            
+            return float(engagement_score)
+            
+        except Exception as e:
+            logger.error(f"Failed to calculate engagement score: {e}")
+            return 0.0
+    
+    async def _get_parent_contributions(self, parent_id: str) -> List[Dict[str, Any]]:
+        """Get parent's contributions."""
+        try:
+            query = self.db.collection(self.parent_contributions_collection)\
+                .where("parent_id", "==", parent_id)\
+                .order_by("created_at", direction="DESCENDING")
+            
+            contributions = []
+            async for doc in query.stream():
+                contribution = doc.to_dict()
+                contributions.append(contribution)
+            
+            return contributions
+            
+        except Exception as e:
+            logger.error(f"Failed to get parent contributions: {e}")
+            return []
+    
+    async def _get_parent_submitted_resources(self, parent_id: str) -> List[Dict[str, Any]]:
+        """Get parent's submitted resources."""
+        try:
+            query = self.db.collection(self.community_resources_collection)\
+                .where("parent_id", "==", parent_id)\
+                .order_by("created_at", direction="DESCENDING")
+            
+            resources = []
+            async for doc in query.stream():
+                resource = doc.to_dict()
+                resources.append(resource)
+            
+            return resources
+            
+        except Exception as e:
+            logger.error(f"Failed to get parent submitted resources: {e}")
+            return []
+    
+    async def _get_parent_challenge_participations(self, parent_id: str) -> List[Dict[str, Any]]:
+        """Get parent's challenge participations."""
+        try:
+            query = self.db.collection(self.parent_contributions_collection)\
+                .where("parent_id", "==", parent_id)\
+                .where("contribution_type", "==", "challenge_participation")\
+                .order_by("created_at", direction="DESCENDING")
+            
+            participations = []
+            async for doc in query.stream():
+                participation = doc.to_dict()
+                participations.append(participation)
+            
+            return participations
+            
+        except Exception as e:
+            logger.error(f"Failed to get parent challenge participations: {e}")
+            return []
+    
+    async def _get_parent_achievements(self, parent_id: str) -> List[Dict[str, Any]]:
+        """Get parent's achievements."""
+        try:
+            # This would typically query an achievements collection
+            # For now, return basic achievements based on contributions
+            contributions = await self._get_parent_contributions(parent_id)
+            
+            achievements = []
+            
+            # Contribution-based achievements
+            if len(contributions) >= 1:
+                achievements.append({
+                    "achievement_id": "first_contribution",
+                    "title": "First Contribution",
+                    "description": "Made your first community contribution",
+                    "badge": "contributor_starter",
+                    "earned_at": contributions[0]["created_at"]
+                })
+            
+            if len(contributions) >= 10:
+                achievements.append({
+                    "achievement_id": "active_contributor",
+                    "title": "Active Contributor",
+                    "description": "Made 10+ community contributions",
+                    "badge": "contributor_active",
+                    "earned_at": contributions[9]["created_at"]
+                })
+            
+            if len(contributions) >= 50:
+                achievements.append({
+                    "achievement_id": "expert_contributor",
+                    "title": "Expert Contributor",
+                    "description": "Made 50+ community contributions",
+                    "badge": "contributor_expert",
+                    "earned_at": contributions[49]["created_at"]
+                })
+            
+            return achievements
+            
+        except Exception as e:
+            logger.error(f"Failed to get parent achievements: {e}")
+            return []
+    
+    async def _get_parent_community_rank(self, parent_id: str) -> Dict[str, Any]:
+        """Get parent's community rank."""
+        try:
+            # Get all parents' engagement scores
+            all_contributors = await self._get_top_contributors(
+                datetime(2020, 1, 1),
+                datetime.utcnow(),
+                None,
+                1000  # Get a large sample
+            )
+            
+            # Find the parent in the list
+            parent_rank = None
+            for i, contributor in enumerate(all_contributors, 1):
+                if contributor["parent_id"] == parent_id:
+                    parent_rank = {
+                        "rank": i,
+                        "total_parents": len(all_contributors),
+                        "percentile": (i / len(all_contributors)) * 100,
+                        "engagement_score": self._calculate_engagement_score(contributor)
+                    }
+                    break
+            
+            if not parent_rank:
+                # Parent not found in top contributors
+                parent_rank = {
+                    "rank": len(all_contributors) + 1,
+                    "total_parents": len(all_contributors) + 1,
+                    "percentile": 100,
+                    "engagement_score": 0.0
+                }
+            
+            return parent_rank
+            
+        except Exception as e:
+            logger.error(f"Failed to get parent community rank: {e}")
+            return {
+                "rank": 0,
+                "total_parents": 0,
+                "percentile": 0,
+                "engagement_score": 0.0
+            }
 
 # Service instance
 _parent_resource_library_service_instance = None

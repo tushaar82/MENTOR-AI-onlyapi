@@ -1,7 +1,7 @@
 [
   {
-    "plan_id": "free",
-    "name": "Free Plan",
+    "plan_id": "basic",
+    "name": "Basic Plan",
     "price": 0,
     "duration_days": 365,
     "token_limits": {
@@ -9,58 +9,130 @@
       "monthly": 10000
     },
     "features": [
-      "1 diagnostic test",
-      "Basic analytics",
+      "1 diagnostic test per month",
+      "Basic analytics dashboard",
       "50 practice questions per month",
       "1000 AI tokens daily",
-      "Standard support"
+      "Standard support",
+      "Access to free parent resources",
+      "Basic progress tracking",
+      "Community forum access (read-only)"
     ],
     "currency": "INR",
     "is_active": true,
-    "description": "Get started with basic features to explore the platform"
+    "description": "Get started with basic features to explore the platform",
+    "target_audience": "Parents exploring the platform",
+    "popular": false
   },
   {
-    "plan_id": "premium_monthly",
-    "name": "Premium Monthly",
-    "price": 99900,
+    "plan_id": "standard_monthly",
+    "name": "Standard Monthly",
+    "price": 49900,
     "duration_days": 30,
     "token_limits": {
-      "daily": 10000,
-      "monthly": 100000
+      "daily": 5000,
+      "monthly": 50000
     },
     "features": [
-      "Unlimited diagnostic tests",
-      "Advanced AI analytics",
+      "3 diagnostic tests per month",
+      "Enhanced analytics dashboard",
       "Unlimited practice questions",
       "Personalized study schedules",
-      "Teaching resources for parents",
-      "Progress tracking",
-      "10000 AI tokens daily",
-      "Priority support"
+      "Basic parent training modules (5 modules)",
+      "Community resource library access",
+      "Progress tracking & insights",
+      "5000 AI tokens daily",
+      "Email support",
+      "WhatsApp notifications (basic)",
+      "Parent-child study tools (basic)",
+      "Monthly progress reports"
     ],
     "currency": "INR",
     "is_active": true,
-    "description": "Complete access to all premium features - ₹999 per month"
+    "description": "Perfect for parents who want to actively support their child's learning - ₹499 per month",
+    "target_audience": "Engaged parents seeking guided support",
+    "popular": true
   },
   {
-    "plan_id": "premium_yearly",
-    "name": "Premium Yearly",
-    "price": 999900,
+    "plan_id": "standard_yearly",
+    "name": "Standard Yearly",
+    "price": 499900,
     "duration_days": 365,
+    "token_limits": {
+      "daily": 6000,
+      "monthly": 60000
+    },
+    "features": [
+      "All Standard Monthly features",
+      "6000 AI tokens daily",
+      "Priority email support",
+      "Quarterly progress reports",
+      "Save ₹999 compared to monthly"
+    ],
+    "currency": "INR",
+    "is_active": true,
+    "description": "Best value for engaged parents - ₹4,999 per year (Save ₹999)",
+    "target_audience": "Committed parents seeking long-term value",
+    "popular": false
+  },
+  {
+    "plan_id": "premium_plus_monthly",
+    "name": "Premium Plus Monthly",
+    "price": 99900,
+    "duration_days": 30,
     "token_limits": {
       "daily": 15000,
       "monthly": 150000
     },
     "features": [
-      "All Premium Monthly features",
+      "Unlimited diagnostic tests",
+      "Advanced analytics dashboard with AI insights",
+      "Unlimited practice questions",
+      "Personalized study schedules with AI optimization",
+      "Complete parent training academy (all modules)",
+      "Community resource library with contribution access",
+      "Predictive intervention system",
+      "Advanced parent-child study tools",
+      "WhatsApp integration (full features)",
+      "Comparative analytics & benchmarking",
+      "Predictive insights & recommendations",
       "15000 AI tokens daily",
-      "Priority support",
-      "Early access to new features",
-      "Dedicated success manager",
-      "Annual progress reports"
+      "Priority support (24-48 hour response)",
+      "Weekly progress reports",
+      "Monthly expert consultation (1 session)",
+      "Custom learning paths for children",
+      "Early access to new features"
     ],
     "currency": "INR",
     "is_active": true,
-    "description": "Best value - ₹9,999 per year (Save ₹2,889 compared to monthly)"
+    "description": "Complete solution for maximum parent effectiveness - ₹999 per month",
+    "target_audience": "Parents seeking comprehensive support and maximum results",
+    "popular": false
+  },
+  {
+    "plan_id": "premium_plus_yearly",
+    "name": "Premium Plus Yearly",
+    "price": 999900,
+    "duration_days": 365,
+    "token_limits": {
+      "daily": 20000,
+      "monthly": 200000
+    },
+    "features": [
+      "All Premium Plus Monthly features",
+      "20000 AI tokens daily",
+      "Dedicated support manager",
+      "Bi-weekly expert consultations (2 per month)",
+      "Annual comprehensive learning report",
+      "Custom content creation service",
+      "Save ₹1,989 compared to monthly",
+      "Family account management (up to 3 children)",
+      "Exclusive parent community access"
+    ],
+    "currency": "INR",
+    "is_active": true,
+    "description": "Ultimate value for dedicated parents - ₹9,999 per year (Save ₹1,989)",
+    "target_audience": "Parents committed to excellence in their child's education",
+    "popular": false
   }
 ]

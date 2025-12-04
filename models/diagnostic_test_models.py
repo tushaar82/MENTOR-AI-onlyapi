@@ -107,7 +107,7 @@ class TestGenerationRequest(BaseModel):
     
     class Config:
         use_enum_values = True
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "exam_type": "JEE_MAIN",
                 "student_id": "student_12345",
@@ -161,7 +161,7 @@ class TestSubmission(BaseModel):
         return v
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "test_id": "test_uuid_123",
                 "student_id": "student_12345",
@@ -233,7 +233,7 @@ class TestGenerationResult(BaseModel):
         return v
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "test_id": "test_uuid_123",
                 "status": "success",
@@ -278,7 +278,7 @@ class GenerationStatusResponse(BaseModel):
     
     class Config:
         use_enum_values = True
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "job_id": "job_uuid_456",
                 "status": "in_progress",
@@ -329,7 +329,7 @@ class TestMetadata(BaseModel):
     
     class Config:
         use_enum_values = True
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "test_id": "test_uuid_123",
                 "exam_type": "JEE_MAIN",
@@ -409,7 +409,7 @@ class Question(BaseModel):
     
     class Config:
         use_enum_values = True
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "question_id": "q_001",
                 "question_number": 1,
@@ -470,7 +470,7 @@ class Section(BaseModel):
         return self
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "section_name": "Section A - Physics",
                 "subject": "Physics",
@@ -521,7 +521,7 @@ class DiagnosticTest(BaseModel):
         return self
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "test_id": "test_uuid_123",
                 "metadata": {
@@ -570,7 +570,7 @@ class SectionScore(BaseModel):
         return self
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "section_name": "Section A - Physics",
                 "score": 96,
@@ -632,7 +632,7 @@ class TestResults(BaseModel):
         return self
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "test_id": "test_uuid_123",
                 "student_id": "student_12345",
@@ -667,7 +667,7 @@ class ErrorResponse(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.utcnow, description="Error timestamp")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "error": "Test not found",
                 "detail": "No test found with ID: test_uuid_123",
@@ -683,7 +683,7 @@ class SuccessResponse(BaseModel):
     timestamp: datetime = Field(default_factory=datetime.utcnow, description="Response timestamp")
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "message": "Test generated successfully",
                 "data": {"test_id": "test_uuid_123"},
