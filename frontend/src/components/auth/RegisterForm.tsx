@@ -32,6 +32,7 @@ type RegisterFormData = z.infer<typeof registerSchema>;
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [language, setLanguage] = useState('en');
   const { register: registerUser, login } = useAuth();
   const router = useRouter();
 
@@ -49,7 +50,7 @@ type RegisterFormData = z.infer<typeof registerSchema>;
     setSuccessMessage('');
     
     try {
-      await registerUser(data);
+      await registerUser({ ...data, language });
       setSuccessMessage(t('auth.registrationSuccess'));
       // Auto-login after successful registration
       try {

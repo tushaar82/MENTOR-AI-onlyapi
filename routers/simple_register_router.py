@@ -26,6 +26,7 @@ class SimpleRegisterRequest(BaseModel):
     password: str = Field(..., min_length=8, description="Account password")
     repeat_password: str = Field(..., min_length=8, description="Password confirmation")
     mobile_number: str = Field(default="+91XXXXXXXXXX", description="Mobile number")
+    language: str = Field(default="en", description="Preferred language")
 
 
 @router.post(
@@ -81,7 +82,8 @@ async def register_simple(
             mobile_number=request.mobile_number,
             email_address=request.email_address,
             password=request.password,
-            repeat_password=request.repeat_password
+            repeat_password=request.repeat_password,
+            language=request.language
         )
         
         logger.info(f"User registered successfully: {request.email_address}")

@@ -15,8 +15,10 @@ Version: 1.0.0
 """
 
 import logging
+import os
 from datetime import datetime
 from typing import Dict, Any, Optional
+import uuid
 
 import firebase_admin
 from firebase_admin import auth
@@ -27,6 +29,10 @@ from utils.firebase_config import get_firestore_client, get_auth_client
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+# Check if mock services are enabled
+USE_MOCK_SERVICES = os.getenv("USE_MOCK_SERVICES", "false").lower() == "true"
+TESTING_MODE = os.getenv("TESTING_MODE", "false").lower() == "true"
 
 
 def register_parent_with_email(
@@ -67,6 +73,18 @@ def register_parent_with_email(
         >>> print(result['parent_id'])
         'parent_abc123xyz'
     """
+    # Mock mode for testing
+    if USE_MOCK_SERVICES or TESTING_MODE:
+        logger.info(f"MOCK: Registering parent with email: {email}")
+        mock_parent_id = f"mock_parent_{uuid.uuid4().hex[:8]}"
+        return {
+            "parent_id": mock_parent_id,
+            "email": email,
+            "phone": None,
+            "verification_required": True,
+            "message": "MOCK: Registration successful. Please verify your email to continue."
+        }
+    
     try:
         logger.info(f"Attempting to register parent with email: {email}")
         

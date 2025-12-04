@@ -20,7 +20,8 @@ def register_user_simple(
     email_address: str,
     password: str,
     repeat_password: str,
-    mobile_number: str = "+91XXXXXXXXXX"  # Default value since it's not required in frontend
+    mobile_number: str = "+91XXXXXXXXXX",  # Default value since it's not required in frontend
+    language: str = "en"  # Default language
 ) -> Dict[str, Any]:
     """
     Register a new user without email verification.
@@ -64,7 +65,7 @@ def register_user_simple(
             "name": name,
             "mobile_number": mobile_number,
             "email_address": email_address,
-            "language": "en",  # Default language
+            "language": language,  # Use provided language
             "role": "parent",
             "created_at": SERVER_TIMESTAMP,
             "email_verified": False,

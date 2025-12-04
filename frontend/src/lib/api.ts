@@ -34,7 +34,13 @@ export const authAPI = {
     email_address: string;
     password: string;
     repeat_password: string;
-  }) => api.post('/api/auth/register/simple', null, { params: data }),
+  }) => api.post('/api/auth/register/simple', {
+    name: data.name,
+    mobile_number: data.mobile_number,
+    email_address: data.email_address,
+    password: data.password,
+    repeat_password: data.repeat_password
+  }),
   
   verifyEmail: (token: string) =>
     api.post('/api/auth/verify/email/confirm', { token }),

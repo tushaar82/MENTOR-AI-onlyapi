@@ -17,7 +17,7 @@ Version: 1.0.0
 import logging
 from typing import Dict, Any
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Request
 from firebase_admin.auth import EmailAlreadyExistsError
 
 from models.auth_models import (
@@ -63,7 +63,8 @@ router = APIRouter(
     """
 )
 async def register_parent_with_email(
-    request: ParentEmailRegisterRequest
+    request: ParentEmailRegisterRequest,
+    http_request: Request
 ) -> AuthResponse:
     """
     Register a new parent using email and password.
@@ -103,7 +104,7 @@ async def register_parent_with_email(
         logger.info(f"Registration request received for email: {request.email}")
         
         # Get translations for response
-        translations = get_translations_from_request(request)
+        translations = get_translations_from_request(http_request)
         
         # Call service layer to register parent
         result = auth_service.register_parent_with_email(
@@ -162,7 +163,8 @@ async def register_parent_with_email(
     """
 )
 async def register_parent_with_phone(
-    request: ParentPhoneRegisterRequest
+    request: ParentPhoneRegisterRequest,
+    http_request: Request
 ) -> AuthResponse:
     """
     Register a new parent using phone number.
@@ -201,7 +203,7 @@ async def register_parent_with_phone(
         logger.info(f"Registration request received for phone: {request.phone}")
         
         # Get translations for response
-        translations = get_translations_from_request(request)
+        translations = get_translations_from_request(http_request)
         
         # Call service layer to register parent
         result = auth_service.register_parent_with_phone(
@@ -263,7 +265,8 @@ async def register_parent_with_phone(
     """
 )
 async def register_parent_with_google(
-    request: ParentGoogleRegisterRequest
+    request: ParentGoogleRegisterRequest,
+    http_request: Request
 ) -> AuthResponse:
     """
     Register or login a parent using Google OAuth.
@@ -302,7 +305,7 @@ async def register_parent_with_google(
         logger.info("Registration/Login request received for Google OAuth")
         
         # Get translations for response
-        translations = get_translations_from_request(request)
+        translations = get_translations_from_request(http_request)
         
         # Call service layer to register/login parent
         result = auth_service.register_parent_with_google(
