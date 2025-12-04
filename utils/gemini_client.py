@@ -55,7 +55,7 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 # Constants
-DEFAULT_MODEL = "gemini-2.5-flash-lite"
+DEFAULT_MODEL = "gemini-2.0-flash-lite"
 DEFAULT_TEMPERATURE = 0.7
 DEFAULT_TOP_P = 0.9
 DEFAULT_TOP_K = 40
