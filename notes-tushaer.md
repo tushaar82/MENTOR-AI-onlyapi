@@ -75,3 +75,9 @@ Registered a new user using POST /api/auth/register/simple
 Logged in to get an access token using POST /api/auth/login/email
 Sent a verification code using POST /verify/email/send (which requires authentication)
 Finally confirmed the email using POST /verify/email/confirm
+
+##UI LIBRARIES
+
+https://magicui.design/
+https://www.cult-ui.com/docs/components/neumorph-button
+https://ui.aceternity.com/components
