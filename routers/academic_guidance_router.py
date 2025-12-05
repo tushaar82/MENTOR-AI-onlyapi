@@ -34,6 +34,31 @@ from services.academic_guidance_service import (
 )
 from middleware.testing_auth import get_current_user_testing as get_current_user
 
+# ============================================================================
+# HEALTH CHECK ENDPOINT
+# ============================================================================
+
+@router.get(
+    "/health",
+    summary="Health Check",
+    description=f"Check if the guidance service is operational",
+    tags=["Health"]
+)
+async def health_check():
+    """
+    Health check endpoint.
+    
+    Returns:
+        Service health status
+    """
+    from datetime import datetime
+    return {
+        "status": "healthy",
+        "service": "guidance",
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+
 # Configure logging
 logger = logging.getLogger(__name__)
 

@@ -33,6 +33,31 @@ from datetime import datetime
 from fastapi import APIRouter, HTTPException, status, Request
 from fastapi.responses import JSONResponse
 
+# ============================================================================
+# HEALTH CHECK ENDPOINT
+# ============================================================================
+
+@router.get(
+    "/health",
+    summary="Health Check",
+    description=f"Check if the rag service is operational",
+    tags=["Health"]
+)
+async def health_check():
+    """
+    Health check endpoint.
+    
+    Returns:
+        Service health status
+    """
+    from datetime import datetime
+    return {
+        "status": "healthy",
+        "service": "rag",
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+
 # Import models
 from models.rag_models import (
     RAGRequest,

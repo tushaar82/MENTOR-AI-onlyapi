@@ -22,16 +22,13 @@ import statistics
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional, Tuple, Any
 from collections import defaultdict, Counter
-import numpy as np
-from sklearn.cluster import KMeans
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import silhouette_score
 
 from models.learning_analytics_models import (
     TopicAccess, QuizAttempt, QuestionError, LearningSequence,
     LearningPattern, KnowledgeGap, LearningStrength, LearningProgress,
     ErrorType, DifficultyLevel, LearningActivityType
 )
+from services.gemini_learning_analysis_service import gemini_learning_analysis_service
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -68,7 +65,7 @@ class LearningAnalysisService:
         learning_sequences: List[LearningSequence]
     ) -> List[LearningPattern]:
         """
-        Analyze learning patterns from student activity data.
+        Analyze learning patterns from student activity data using Gemini AI.
         
         Args:
             student_id: Student identifier
@@ -79,32 +76,42 @@ class LearningAnalysisService:
         Returns:
             List of identified learning patterns
         """
-        logger.info(f"Analyzing learning patterns for student: {student_id}")
+        logger.info(f"Analyzing learning patterns using Gemini for student: {student_id}")
         
-        patterns = []
-        
-        # Analyze time management patterns
-        time_patterns = self._analyze_time_patterns(topic_accesses, quiz_attempts)
-        patterns.extend(time_patterns)
-        
-        # Analyze difficulty preference patterns
-        difficulty_patterns = self._analyze_difficulty_patterns(quiz_attempts)
-        patterns.extend(difficulty_patterns)
-        
-        # Analyze subject transition patterns
-        transition_patterns = self._analyze_transition_patterns(learning_sequences)
-        patterns.extend(transition_patterns)
-        
-        # Analyze error patterns
-        error_patterns = await self._analyze_error_patterns(student_id, quiz_attempts)
-        patterns.extend(error_patterns)
-        
-        # Analyze learning sequence patterns
-        sequence_patterns = self._analyze_sequence_patterns(learning_sequences)
-        patterns.extend(sequence_patterns)
-        
-        logger.info(f"Identified {len(patterns)} learning patterns for student: {student_id}")
-        return patterns
+        try:
+            # Use Gemini-based analysis
+            patterns = await gemini_learning_analysis_service.analyze_learning_patterns(
+                student_id, topic_accesses, quiz_attempts, learning_sequences
+            )
+            logger.info(f"Gemini identified {len(patterns)} learning patterns for student: {student_id}")
+            return patterns
+        except Exception as e:
+            logger.error(f"Gemini pattern analysis failed for student {student_id}: {e}")
+            # Fallback to rule-based analysis
+            patterns = []
+            
+            # Analyze time management patterns
+            time_patterns = self._analyze_time_patterns(topic_accesses, quiz_attempts)
+            patterns.extend(time_patterns)
+            
+            # Analyze difficulty preference patterns
+            difficulty_patterns = self._analyze_difficulty_patterns(quiz_attempts)
+            patterns.extend(difficulty_patterns)
+            
+            # Analyze subject transition patterns
+            transition_patterns = self._analyze_transition_patterns(learning_sequences)
+            patterns.extend(transition_patterns)
+            
+            # Analyze error patterns
+            error_patterns = await self._analyze_error_patterns(student_id, quiz_attempts)
+            patterns.extend(error_patterns)
+            
+            # Analyze learning sequence patterns
+            sequence_patterns = self._analyze_sequence_patterns(learning_sequences)
+            patterns.extend(sequence_patterns)
+            
+            logger.info(f"Fallback analysis identified {len(patterns)} learning patterns for student: {student_id}")
+            return patterns
     
     def _analyze_time_patterns(
         self,
@@ -306,7 +313,7 @@ class LearningAnalysisService:
         topic_accesses: List[TopicAccess]
     ) -> List[KnowledgeGap]:
         """
-        Identify knowledge gaps based on performance data.
+        Identify knowledge gaps using Gemini AI.
         
         Args:
             student_id: Student identifier
@@ -316,55 +323,65 @@ class LearningAnalysisService:
         Returns:
             List of identified knowledge gaps
         """
-        logger.info(f"Identifying knowledge gaps for student: {student_id}")
+        logger.info(f"Identifying knowledge gaps using Gemini for student: {student_id}")
         
-        gaps = []
-        
-        # Group quiz attempts by topic
-        topic_performance = defaultdict(list)
-        for attempt in quiz_attempts:
-            topic_performance[attempt.topic_id].append(attempt.score_percentage)
-        
-        # Identify gaps based on performance
-        for topic_id, scores in topic_performance.items():
-            if len(scores) >= 2:  # Need at least 2 attempts
-                avg_score = statistics.mean(scores)
-                
-                # Determine gap severity
-                if avg_score < 30:
-                    severity = "critical"
-                elif avg_score < 50:
-                    severity = "moderate"
-                elif avg_score < 70:
-                    severity = "minor"
-                else:
-                    continue  # No gap
-                
-                # Find corresponding topic access for context
-                topic_info = next(
-                    (access for access in topic_accesses if access.topic_id == topic_id),
-                    None
-                )
-                
-                if topic_info:
-                    gaps.append(KnowledgeGap(
-                        gap_id=f"gap_{topic_id}_{datetime.utcnow().timestamp()}",
-                        student_id=student_id,
-                        topic_id=topic_id,
-                        subject=topic_info.subject,
-                        gap_type="conceptual" if avg_score < 50 else "procedural",
-                        severity=severity,
-                        evidence=[
-                            f"Average quiz score: {avg_score:.1f}%",
-                            f"Number of attempts: {len(scores)}",
-                            f"Score range: {min(scores):.1f}% - {max(scores):.1f}%"
-                        ],
-                        estimated_hours_to_close=self._estimate_hours_to_close_gap(avg_score),
-                        prerequisite_topics=self._identify_prerequisites(topic_id, topic_info.subject)
-                    ))
-        
-        logger.info(f"Identified {len(gaps)} knowledge gaps for student: {student_id}")
-        return gaps
+        try:
+            # Use Gemini-based analysis
+            gaps = await gemini_learning_analysis_service.identify_knowledge_gaps(
+                student_id, quiz_attempts, topic_accesses
+            )
+            logger.info(f"Gemini identified {len(gaps)} knowledge gaps for student: {student_id}")
+            return gaps
+        except Exception as e:
+            logger.error(f"Gemini knowledge gap analysis failed for student {student_id}: {e}")
+            # Fallback to rule-based analysis
+            gaps = []
+            
+            # Group quiz attempts by topic
+            topic_performance = defaultdict(list)
+            for attempt in quiz_attempts:
+                topic_performance[attempt.topic_id].append(attempt.score_percentage)
+            
+            # Identify gaps based on performance
+            for topic_id, scores in topic_performance.items():
+                if len(scores) >= 2:  # Need at least 2 attempts
+                    avg_score = statistics.mean(scores)
+                    
+                    # Determine gap severity
+                    if avg_score < 30:
+                        severity = "critical"
+                    elif avg_score < 50:
+                        severity = "moderate"
+                    elif avg_score < 70:
+                        severity = "minor"
+                    else:
+                        continue  # No gap
+                    
+                    # Find corresponding topic access for context
+                    topic_info = next(
+                        (access for access in topic_accesses if access.topic_id == topic_id),
+                        None
+                    )
+                    
+                    if topic_info:
+                        gaps.append(KnowledgeGap(
+                            gap_id=f"gap_{topic_id}_{datetime.utcnow().timestamp()}",
+                            student_id=student_id,
+                            topic_id=topic_id,
+                            subject=topic_info.subject,
+                            gap_type="conceptual" if avg_score < 50 else "procedural",
+                            severity=severity,
+                            evidence=[
+                                f"Average quiz score: {avg_score:.1f}%",
+                                f"Number of attempts: {len(scores)}",
+                                f"Score range: {min(scores):.1f}% - {max(scores):.1f}%"
+                            ],
+                            estimated_hours_to_close=self._estimate_hours_to_close_gap(avg_score),
+                            prerequisite_topics=self._identify_prerequisites(topic_id, topic_info.subject)
+                        ))
+            
+            logger.info(f"Fallback analysis identified {len(gaps)} knowledge gaps for student: {student_id}")
+            return gaps
     
     def _estimate_hours_to_close_gap(self, current_score: float) -> float:
         """Estimate hours needed to close a knowledge gap."""
@@ -410,7 +427,7 @@ class LearningAnalysisService:
         topic_accesses: List[TopicAccess]
     ) -> List[LearningStrength]:
         """
-        Identify learning strengths based on performance data.
+        Identify learning strengths using Gemini AI.
         
         Args:
             student_id: Student identifier
@@ -420,52 +437,62 @@ class LearningAnalysisService:
         Returns:
             List of identified learning strengths
         """
-        logger.info(f"Identifying learning strengths for student: {student_id}")
+        logger.info(f"Identifying learning strengths using Gemini for student: {student_id}")
         
-        strengths = []
-        
-        # Group quiz attempts by topic
-        topic_performance = defaultdict(list)
-        for attempt in quiz_attempts:
-            topic_performance[attempt.topic_id].append(attempt.score_percentage)
-        
-        # Identify strengths based on consistent high performance
-        for topic_id, scores in topic_performance.items():
-            if len(scores) >= 3:  # Need at least 3 attempts
-                avg_score = statistics.mean(scores)
-                score_std = statistics.stdev(scores) if len(scores) > 1 else 0
-                
-                # High average score with low variance indicates strength
-                if avg_score >= 80 and score_std < 15:
-                    # Find corresponding topic access for context
-                    topic_info = next(
-                        (access for access in topic_accesses if access.topic_id == topic_id),
-                        None
-                    )
+        try:
+            # Use Gemini-based analysis
+            strengths = await gemini_learning_analysis_service.identify_learning_strengths(
+                student_id, quiz_attempts, topic_accesses
+            )
+            logger.info(f"Gemini identified {len(strengths)} learning strengths for student: {student_id}")
+            return strengths
+        except Exception as e:
+            logger.error(f"Gemini learning strength analysis failed for student {student_id}: {e}")
+            # Fallback to rule-based analysis
+            strengths = []
+            
+            # Group quiz attempts by topic
+            topic_performance = defaultdict(list)
+            for attempt in quiz_attempts:
+                topic_performance[attempt.topic_id].append(attempt.score_percentage)
+            
+            # Identify strengths based on consistent high performance
+            for topic_id, scores in topic_performance.items():
+                if len(scores) >= 3:  # Need at least 3 attempts
+                    avg_score = statistics.mean(scores)
+                    score_std = statistics.stdev(scores) if len(scores) > 1 else 0
                     
-                    if topic_info:
-                        # Determine strength type based on performance characteristics
-                        strength_type = "application" if avg_score >= 90 else "procedural"
-                        mastery_level = "advanced" if avg_score >= 95 else "proficient"
+                    # High average score with low variance indicates strength
+                    if avg_score >= 80 and score_std < 15:
+                        # Find corresponding topic access for context
+                        topic_info = next(
+                            (access for access in topic_accesses if access.topic_id == topic_id),
+                            None
+                        )
                         
-                        strengths.append(LearningStrength(
-                            strength_id=f"strength_{topic_id}_{datetime.utcnow().timestamp()}",
-                            student_id=student_id,
-                            topic_id=topic_id,
-                            subject=topic_info.subject,
-                            strength_type=strength_type,
-                            mastery_level=mastery_level,
-                            evidence=[
-                                f"Average quiz score: {avg_score:.1f}%",
-                                f"Score consistency: ±{score_std:.1f}%",
-                                f"Number of attempts: {len(scores)}",
-                                f"Best score: {max(scores):.1f}%"
-                            ],
-                            consistency_score=1.0 - (score_std / 100)  # Normalize to 0-1
-                        ))
-        
-        logger.info(f"Identified {len(strengths)} learning strengths for student: {student_id}")
-        return strengths
+                        if topic_info:
+                            # Determine strength type based on performance characteristics
+                            strength_type = "application" if avg_score >= 90 else "procedural"
+                            mastery_level = "advanced" if avg_score >= 95 else "proficient"
+                            
+                            strengths.append(LearningStrength(
+                                strength_id=f"strength_{topic_id}_{datetime.utcnow().timestamp()}",
+                                student_id=student_id,
+                                topic_id=topic_id,
+                                subject=topic_info.subject,
+                                strength_type=strength_type,
+                                mastery_level=mastery_level,
+                                evidence=[
+                                    f"Average quiz score: {avg_score:.1f}%",
+                                    f"Score consistency: ±{score_std:.1f}%",
+                                    f"Number of attempts: {len(scores)}",
+                                    f"Best score: {max(scores):.1f}%"
+                                ],
+                                consistency_score=1.0 - (score_std / 100)  # Normalize to 0-1
+                            ))
+            
+            logger.info(f"Fallback analysis identified {len(strengths)} learning strengths for student: {student_id}")
+            return strengths
     
     def analyze_learning_progress(
         self,

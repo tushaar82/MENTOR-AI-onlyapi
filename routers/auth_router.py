@@ -29,6 +29,31 @@ from models.auth_models import (
 from services import auth_service
 from middleware.language_middleware import get_language_from_request, get_translations_from_request
 
+# ============================================================================
+# HEALTH CHECK ENDPOINT
+# ============================================================================
+
+@router.get(
+    "/health",
+    summary="Health Check",
+    description=f"Check if the auth service is operational",
+    tags=["Health"]
+)
+async def health_check():
+    """
+    Health check endpoint.
+    
+    Returns:
+        Service health status
+    """
+    from datetime import datetime
+    return {
+        "status": "healthy",
+        "service": "auth",
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+
 # Configure logging
 logger = logging.getLogger(__name__)
 

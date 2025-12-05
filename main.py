@@ -211,6 +211,23 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
     )
 
 
+
+@app.get("/api/health")
+async def main_health_check():
+    """
+    Main health check endpoint.
+    
+    Returns:
+        Overall system health status
+    """
+    from datetime import datetime
+    return {
+        "status": "healthy",
+        "service": "mentor-ai-api",
+        "timestamp": datetime.utcnow().isoformat(),
+        "version": "1.0.0"
+    }
+
 @app.get("/health", tags=["Health Check"])
 async def health_check() -> Dict[str, str]:
     """

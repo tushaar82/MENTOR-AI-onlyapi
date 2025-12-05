@@ -1,0 +1,1383 @@
+{
+  "summary": {
+    "total_tests": 149,
+    "passed": 56,
+    "failed": 93,
+    "success_rate": 37.58389261744966,
+    "total_time": 186.19351506233215,
+    "avg_response_time": 1249.281409395973
+  },
+  "status_codes": {
+    "200": 18,
+    "500": 12,
+    "404": 50,
+    "401": 37,
+    "400": 2,
+    "422": 20,
+    "0": 6,
+    "403": 2,
+    "405": 1,
+    "201": 1
+  },
+  "categories": {
+    "health": {
+      "passed": 1,
+      "failed": 0
+    },
+    "": {
+      "passed": 1,
+      "failed": 0
+    },
+    "api": {
+      "passed": 52,
+      "failed": 91
+    },
+    "verify": {
+      "passed": 2,
+      "failed": 2
+    }
+  },
+  "detailed_results": [
+    {
+      "endpoint": "/health",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 22.39,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:27:56.283514"
+    },
+    {
+      "endpoint": "/",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 4.93,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:27:56.288592"
+    },
+    {
+      "endpoint": "/api/docs",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 4.73,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:27:56.293467"
+    },
+    {
+      "endpoint": "/api/redoc",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 4.76,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:27:56.298552"
+    },
+    {
+      "endpoint": "/api/openapi.json",
+      "method": "GET",
+      "status_code": 500,
+      "response_time_ms": 896.51,
+      "success": false,
+      "error": "{'success': False, 'error': {'type': 'PydanticSerializationError', 'message': \"Unable to serialize unknown type: <class 'ellipsis'>\", 'detail': 'An internal server error occurred. Please try again later.'}}",
+      "timestamp": "2025-12-05T15:27:57.195249"
+    },
+    {
+      "endpoint": "/api/auth/register-simple",
+      "method": "POST",
+      "status_code": 404,
+      "response_time_ms": 5.33,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:27:57.200942"
+    },
+    {
+      "endpoint": "/api/auth/login/email",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 1079.41,
+      "success": false,
+      "error": "Invalid email or password",
+      "timestamp": "2025-12-05T15:27:58.280526"
+    },
+    {
+      "endpoint": "/api/auth/current-parent",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 7.42,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:27:58.288242"
+    },
+    {
+      "endpoint": "/api/auth/refresh",
+      "method": "POST",
+      "status_code": 404,
+      "response_time_ms": 5.39,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:27:58.293872"
+    },
+    {
+      "endpoint": "/api/auth/logout",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 4.85,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:27:58.298956"
+    },
+    {
+      "endpoint": "/verify/email/send",
+      "method": "POST",
+      "status_code": 200,
+      "response_time_ms": 650.63,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:27:58.950167"
+    },
+    {
+      "endpoint": "/verify/email/confirm",
+      "method": "POST",
+      "status_code": 400,
+      "response_time_ms": 222.36,
+      "success": false,
+      "error": "Invalid verification code",
+      "timestamp": "2025-12-05T15:27:59.173003"
+    },
+    {
+      "endpoint": "/verify/phone/send",
+      "method": "POST",
+      "status_code": 200,
+      "response_time_ms": 157.86,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:27:59.331436"
+    },
+    {
+      "endpoint": "/verify/phone/confirm",
+      "method": "POST",
+      "status_code": 422,
+      "response_time_ms": 13.14,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['body', 'otp'], 'msg': 'Field required', 'input': {'phone': '+919876543210', 'code': '123456'}, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:27:59.345014"
+    },
+    {
+      "endpoint": "/api/onboarding/child",
+      "method": "POST",
+      "status_code": 422,
+      "response_time_ms": 13.51,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'parent_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}, {'type': 'missing', 'loc': ['body', 'current_level'], 'msg': 'Field required', 'input': {'name': 'Test Child', 'age': 15, 'grade': 10}, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}, {'type': 'missing', 'loc': ['body', 'username'], 'msg': 'Field required', 'input': {'name': 'Test Child', 'age': 15, 'grade': 10}, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}, {'type': 'missing', 'loc': ['body', 'password'], 'msg': 'Field required', 'input': {'name': 'Test Child', 'age': 15, 'grade': 10}, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:27:59.359394"
+    },
+    {
+      "endpoint": "/api/onboarding/child",
+      "method": "GET",
+      "status_code": 422,
+      "response_time_ms": 10.47,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'parent_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:27:59.370573"
+    },
+    {
+      "endpoint": "/api/onboarding/child/test123",
+      "method": "PUT",
+      "status_code": 422,
+      "response_time_ms": 10.49,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'parent_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:27:59.381839"
+    },
+    {
+      "endpoint": "/api/onboarding/child/test123",
+      "method": "DELETE",
+      "status_code": 422,
+      "response_time_ms": 8.86,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'parent_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:27:59.391150"
+    },
+    {
+      "endpoint": "/api/onboarding/exams/available",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 8.19,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:27:59.399884"
+    },
+    {
+      "endpoint": "/api/onboarding/preferences",
+      "method": "POST",
+      "status_code": 422,
+      "response_time_ms": 11.56,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'parent_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}, {'type': 'missing', 'loc': ['body', 'language'], 'msg': 'Field required', 'input': {}, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}, {'type': 'missing', 'loc': ['body', 'teaching_involvement'], 'msg': 'Field required', 'input': {}, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:27:59.411822"
+    },
+    {
+      "endpoint": "/api/onboarding/preferences",
+      "method": "GET",
+      "status_code": 422,
+      "response_time_ms": 11.79,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'parent_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:27:59.424260"
+    },
+    {
+      "endpoint": "/api/onboarding/preferences",
+      "method": "PUT",
+      "status_code": 422,
+      "response_time_ms": 6.88,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'parent_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:27:59.431630"
+    },
+    {
+      "endpoint": "/api/onboarding/exam/select",
+      "method": "POST",
+      "status_code": 422,
+      "response_time_ms": 8.58,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'parent_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}, {'type': 'missing', 'loc': ['query', 'child_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}, {'type': 'literal_error', 'loc': ['body', 'exam_type'], 'msg': \"Input should be 'JEE_MAIN', 'JEE_ADVANCED', 'JEE_COMBO' or 'NEET'\", 'input': 'JEE', 'ctx': {'expected': \"'JEE_MAIN', 'JEE_ADVANCED', 'JEE_COMBO' or 'NEET'\"}, 'url': 'https://errors.pydantic.dev/2.4/v/literal_error'}, {'type': 'missing', 'loc': ['body', 'exam_date'], 'msg': 'Field required', 'input': {'exam_type': 'JEE', 'subjects': ['Physics', 'Chemistry', 'Mathematics']}, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}, {'type': 'missing', 'loc': ['body', 'subject_preferences'], 'msg': 'Field required', 'input': {'exam_type': 'JEE', 'subjects': ['Physics', 'Chemistry', 'Mathematics']}, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:27:59.440667"
+    },
+    {
+      "endpoint": "/api/onboarding/exam/preferences",
+      "method": "GET",
+      "status_code": 422,
+      "response_time_ms": 6.09,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'child_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:27:59.447265"
+    },
+    {
+      "endpoint": "/api/onboarding/exam/preferences",
+      "method": "PUT",
+      "status_code": 422,
+      "response_time_ms": 7.44,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'child_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}, {'type': 'missing', 'loc': ['query', 'parent_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:27:59.455037"
+    },
+    {
+      "endpoint": "/api/onboarding/status",
+      "method": "GET",
+      "status_code": 422,
+      "response_time_ms": 6.51,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'parent_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:27:59.461902"
+    },
+    {
+      "endpoint": "/api/vector-search/query",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 6.75,
+      "success": false,
+      "error": "Authorization header required",
+      "timestamp": "2025-12-05T15:27:59.468975"
+    },
+    {
+      "endpoint": "/api/vector-search/index/status",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 7.2,
+      "success": false,
+      "error": "Authorization header required",
+      "timestamp": "2025-12-05T15:27:59.476562"
+    },
+    {
+      "endpoint": "/api/vector-search/syllabus/JEE_MAIN/Physics",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 5.54,
+      "success": false,
+      "error": "Authorization header required",
+      "timestamp": "2025-12-05T15:27:59.482319"
+    },
+    {
+      "endpoint": "/api/vector-search/syllabus/stats",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 9.03,
+      "success": false,
+      "error": "Authorization header required",
+      "timestamp": "2025-12-05T15:27:59.491601"
+    },
+    {
+      "endpoint": "/api/vector-search/embeddings",
+      "method": "POST",
+      "status_code": 404,
+      "response_time_ms": 6.4,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:27:59.498283"
+    },
+    {
+      "endpoint": "/api/vector-search/embeddings/batch",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 8.19,
+      "success": false,
+      "error": "Authorization header required",
+      "timestamp": "2025-12-05T15:27:59.506735"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/generate",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 30032.56,
+      "success": false,
+      "error": "",
+      "timestamp": "2025-12-05T15:28:29.539675"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/test123",
+      "method": "GET",
+      "status_code": 500,
+      "response_time_ms": 64.0,
+      "success": false,
+      "error": "{'success': False, 'error': {'type': 'TypeError', 'message': \"string indices must be integers, not 'str'\", 'detail': 'An internal server error occurred. Please try again later.'}}",
+      "timestamp": "2025-12-05T15:28:29.604047"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/test123/metadata",
+      "method": "GET",
+      "status_code": 500,
+      "response_time_ms": 34.24,
+      "success": false,
+      "error": "{'success': False, 'error': {'type': 'TypeError', 'message': \"string indices must be integers, not 'str'\", 'detail': 'An internal server error occurred. Please try again later.'}}",
+      "timestamp": "2025-12-05T15:28:29.638708"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/student",
+      "method": "GET",
+      "status_code": 500,
+      "response_time_ms": 24.54,
+      "success": false,
+      "error": "{'success': False, 'error': {'type': 'TypeError', 'message': \"string indices must be integers, not 'str'\", 'detail': 'An internal server error occurred. Please try again later.'}}",
+      "timestamp": "2025-12-05T15:28:29.663538"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/schedule",
+      "method": "POST",
+      "status_code": 400,
+      "response_time_ms": 5.91,
+      "success": false,
+      "error": "Missing required field: exam_type",
+      "timestamp": "2025-12-05T15:28:29.669653"
+    },
+    {
+      "endpoint": "/api/rag/generate-questions",
+      "method": "POST",
+      "status_code": 500,
+      "response_time_ms": 6.22,
+      "success": false,
+      "error": "Failed to generate questions: 'dict' object has no attribute 'dict'",
+      "timestamp": "2025-12-05T15:28:29.676219"
+    },
+    {
+      "endpoint": "/api/rag/generate-batch",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 30032.13,
+      "success": false,
+      "error": "",
+      "timestamp": "2025-12-05T15:28:59.708695"
+    },
+    {
+      "endpoint": "/api/rag/build-context",
+      "method": "POST",
+      "status_code": 404,
+      "response_time_ms": 19.2,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:28:59.728283"
+    },
+    {
+      "endpoint": "/api/rag/pipeline-status",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 12.43,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:28:59.741151"
+    },
+    {
+      "endpoint": "/api/rag/metrics",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 13.51,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:28:59.755083"
+    },
+    {
+      "endpoint": "/api/questions/question123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 13.53,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:28:59.768906"
+    },
+    {
+      "endpoint": "/api/questions/topic/Physics",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 10.73,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:28:59.779884"
+    },
+    {
+      "endpoint": "/api/questions/validate",
+      "method": "POST",
+      "status_code": 404,
+      "response_time_ms": 10.08,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:28:59.790336"
+    },
+    {
+      "endpoint": "/api/study-center/topics",
+      "method": "GET",
+      "status_code": 422,
+      "response_time_ms": 8.0,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'student_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:28:59.798792"
+    },
+    {
+      "endpoint": "/api/study-center/topic/Physics",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 7.14,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:28:59.806339"
+    },
+    {
+      "endpoint": "/api/study-center/materials/Physics",
+      "method": "GET",
+      "status_code": 500,
+      "response_time_ms": 12.79,
+      "success": false,
+      "error": "Failed to retrieve learning materials. Please try again later.",
+      "timestamp": "2025-12-05T15:28:59.819326"
+    },
+    {
+      "endpoint": "/api/study-center/generate-materials",
+      "method": "POST",
+      "status_code": 404,
+      "response_time_ms": 5.82,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:28:59.825461"
+    },
+    {
+      "endpoint": "/api/study-center/mind-map/Physics",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 9.13,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:28:59.834832"
+    },
+    {
+      "endpoint": "/api/study-center/teaching/Physics",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 6.23,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:28:59.841314"
+    },
+    {
+      "endpoint": "/api/study-center/progress/student123",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 137.95,
+      "success": false,
+      "error": "{'success': True, 'message': 'Progress retrieved successfully', 'data': {'student_id': 'student123', 'total_topics': 0, 'completed_topics': 0, 'completion_percentage': 0.0, 'total_study_time_hours': 0.0, 'current_streak_days': 0, 'topics_by_subject': {}}}",
+      "timestamp": "2025-12-05T15:28:59.979493"
+    },
+    {
+      "endpoint": "/api/schedule/generate",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 10.09,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:28:59.990121"
+    },
+    {
+      "endpoint": "/api/schedule/schedule123",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 3.76,
+      "success": false,
+      "error": "Authorization header required",
+      "timestamp": "2025-12-05T15:28:59.994009"
+    },
+    {
+      "endpoint": "/api/schedule/student/student123",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 5.17,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:28:59.999323"
+    },
+    {
+      "endpoint": "/api/schedule/history/student123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 4.32,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:29:00.003777"
+    },
+    {
+      "endpoint": "/api/schedule/progress/update",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 5.14,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:29:00.009032"
+    },
+    {
+      "endpoint": "/api/schedule/progress/summary/student123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 5.85,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:29:00.015023"
+    },
+    {
+      "endpoint": "/api/schedule/today/student123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 6.42,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:29:00.021675"
+    },
+    {
+      "endpoint": "/api/payment/plans",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 5.92,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:29:00.027818"
+    },
+    {
+      "endpoint": "/api/payment/create-order",
+      "method": "POST",
+      "status_code": 403,
+      "response_time_ms": 8.68,
+      "success": false,
+      "error": "You can only create payment orders for your own account",
+      "timestamp": "2025-12-05T15:29:00.036658"
+    },
+    {
+      "endpoint": "/api/payment/verify",
+      "method": "POST",
+      "status_code": 500,
+      "response_time_ms": 11.93,
+      "success": false,
+      "error": "Unable to verify payment. Please contact support.",
+      "timestamp": "2025-12-05T15:29:00.048871"
+    },
+    {
+      "endpoint": "/api/payment/subscription/status",
+      "method": "GET",
+      "status_code": 403,
+      "response_time_ms": 5.94,
+      "success": false,
+      "error": "You can only access your own subscription information",
+      "timestamp": "2025-12-05T15:29:00.055120"
+    },
+    {
+      "endpoint": "/api/payment/transactions",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 4.09,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:29:00.059353"
+    },
+    {
+      "endpoint": "/api/payment/subscription/cancel",
+      "method": "POST",
+      "status_code": 405,
+      "response_time_ms": 4.49,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:29:00.063989"
+    },
+    {
+      "endpoint": "/api/parent/dashboard",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 5.09,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:29:00.069384"
+    },
+    {
+      "endpoint": "/api/parent/reports/weekly",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 3.72,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:29:00.073287"
+    },
+    {
+      "endpoint": "/api/parent/goals",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 4.4,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:29:00.077883"
+    },
+    {
+      "endpoint": "/api/parent/goals",
+      "method": "POST",
+      "status_code": 404,
+      "response_time_ms": 4.93,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:29:00.083003"
+    },
+    {
+      "endpoint": "/api/student/today",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 5.62,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:29:00.088879"
+    },
+    {
+      "endpoint": "/api/student/topic-resources/Physics",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 3.47,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:29:00.092499"
+    },
+    {
+      "endpoint": "/api/student/practice/quick",
+      "method": "POST",
+      "status_code": 201,
+      "response_time_ms": 825.6,
+      "success": false,
+      "error": "{'practice_id': 'practice_student123_1764908940', 'questions': [], 'total_questions': 0, 'estimated_duration': 15, 'focus_area': 'revision'}",
+      "timestamp": "2025-12-05T15:29:00.918304"
+    },
+    {
+      "endpoint": "/api/student/doubts",
+      "method": "POST",
+      "status_code": 422,
+      "response_time_ms": 10.65,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['body', 'subject'], 'msg': 'Field required', 'input': {'student_id': 'student123', 'topic': \"Newton's Laws\", 'doubt_text': \"What is Newton's first law?\"}, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:29:00.929564"
+    },
+    {
+      "endpoint": "/api/student/doubts/doubt123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 6.78,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:29:00.936667"
+    },
+    {
+      "endpoint": "/api/student/revision-due",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 7.42,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:29:00.944596"
+    },
+    {
+      "endpoint": "/api/student/bookmarks",
+      "method": "GET",
+      "status_code": 422,
+      "response_time_ms": 9.31,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'student_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:29:00.954251"
+    },
+    {
+      "endpoint": "/api/gamification/achievements",
+      "method": "GET",
+      "status_code": 422,
+      "response_time_ms": 6.74,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'student_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:29:00.961454"
+    },
+    {
+      "endpoint": "/api/gamification/achievements/achievement123/claim",
+      "method": "POST",
+      "status_code": 404,
+      "response_time_ms": 5.59,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:29:00.967294"
+    },
+    {
+      "endpoint": "/api/gamification/challenge/daily",
+      "method": "GET",
+      "status_code": 500,
+      "response_time_ms": 28.31,
+      "success": false,
+      "error": "{'success': False, 'error': {'type': 'ValidationError', 'message': \"1 validation error for DailyChallenge\\nchallenge_date\\n  Field required [type=missing, input_value={'challenge_id': 'challen...s', 'topic': 'Calculus'}, input_type=dict]\\n    For further information visit https://errors.pydantic.dev/2.4/v/missing\", 'detail': 'An internal server error occurred. Please try again later.'}}",
+      "timestamp": "2025-12-05T15:29:00.995966"
+    },
+    {
+      "endpoint": "/api/gamification/challenge/daily/submit",
+      "method": "POST",
+      "status_code": 200,
+      "response_time_ms": 8.25,
+      "success": false,
+      "error": "{'challenge_id': 'challenge123', 'correct': False, 'points_earned': 0, 'correct_answer': 'B', 'explanation': 'Using chain rule: d/dx[sin(2x)] = cos(2x) \u00d7 2 = 2cos(2x)', 'rank': None, 'total_participants': 150}",
+      "timestamp": "2025-12-05T15:29:01.004514"
+    },
+    {
+      "endpoint": "/api/gamification/leaderboard",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 5.9,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:29:01.010643"
+    },
+    {
+      "endpoint": "/api/gamification/streak",
+      "method": "GET",
+      "status_code": 422,
+      "response_time_ms": 4.62,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['query', 'student_id'], 'msg': 'Field required', 'input': None, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:29:01.015477"
+    },
+    {
+      "endpoint": "/api/gamification/points",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 5.21,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:29:01.020866"
+    },
+    {
+      "endpoint": "/api/analytics/generate",
+      "method": "POST",
+      "status_code": 0,
+      "response_time_ms": 30032.05,
+      "success": false,
+      "error": "",
+      "timestamp": "2025-12-05T15:29:31.053156"
+    },
+    {
+      "endpoint": "/api/analytics/analytics123",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 30038.14,
+      "success": false,
+      "error": "",
+      "timestamp": "2025-12-05T15:30:01.091672"
+    },
+    {
+      "endpoint": "/api/analytics/student/student123",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 30033.77,
+      "success": false,
+      "error": "",
+      "timestamp": "2025-12-05T15:30:31.125674"
+    },
+    {
+      "endpoint": "/api/analytics/test/test123",
+      "method": "GET",
+      "status_code": 0,
+      "response_time_ms": 30035.93,
+      "success": false,
+      "error": "",
+      "timestamp": "2025-12-05T15:31:01.161910"
+    },
+    {
+      "endpoint": "/api/analytics/insights/analytics123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 16.24,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:01.178467"
+    },
+    {
+      "endpoint": "/api/analytics/weak-topics/analytics123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 10.79,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:01.189534"
+    },
+    {
+      "endpoint": "/api/ai/interactions",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 11.31,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:01.201412"
+    },
+    {
+      "endpoint": "/api/ai/interactions/summary",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 10.23,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:01.212154"
+    },
+    {
+      "endpoint": "/api/ai/insights",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 8.13,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:01.220644"
+    },
+    {
+      "endpoint": "/api/ai/engagement-metrics",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 10.2,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:01.231548"
+    },
+    {
+      "endpoint": "/api/ai/tutor/ask",
+      "method": "POST",
+      "status_code": 404,
+      "response_time_ms": 11.84,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:01.243865"
+    },
+    {
+      "endpoint": "/api/ai/recommend/topics",
+      "method": "POST",
+      "status_code": 404,
+      "response_time_ms": 10.53,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:01.254860"
+    },
+    {
+      "endpoint": "/api/ai/readiness",
+      "method": "POST",
+      "status_code": 404,
+      "response_time_ms": 10.25,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:01.265590"
+    },
+    {
+      "endpoint": "/api/language/supported",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 9.31,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:01.275360"
+    },
+    {
+      "endpoint": "/api/language/info/en",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 10.33,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:01.285914"
+    },
+    {
+      "endpoint": "/api/language/translations/en",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 8.83,
+      "success": false,
+      "error": "Authorization header required",
+      "timestamp": "2025-12-05T15:31:01.295032"
+    },
+    {
+      "endpoint": "/api/language/rtl",
+      "method": "GET",
+      "status_code": 500,
+      "response_time_ms": 10.25,
+      "success": false,
+      "error": "Failed to retrieve RTL languages",
+      "timestamp": "2025-12-05T15:31:01.305624"
+    },
+    {
+      "endpoint": "/api/language/validate/en",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 7.87,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:01.313923"
+    },
+    {
+      "endpoint": "/api/language/health",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 9.28,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:01.323391"
+    },
+    {
+      "endpoint": "/api/language/preference",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 9.41,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:01.333008"
+    },
+    {
+      "endpoint": "/api/language/preference",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 8.95,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:01.342169"
+    },
+    {
+      "endpoint": "/api/language/translate?text=Hello&target=hi",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 8.26,
+      "success": false,
+      "error": "Authorization header required",
+      "timestamp": "2025-12-05T15:31:01.350701"
+    },
+    {
+      "endpoint": "/api/token-usage/student/student123",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 10.45,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:01.361516"
+    },
+    {
+      "endpoint": "/api/token-usage/limits/student/student123",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 7.25,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:01.368952"
+    },
+    {
+      "endpoint": "/api/token-usage/parent",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 8.27,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:01.377402"
+    },
+    {
+      "endpoint": "/api/token-usage/reset/daily/student123",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 7.41,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:01.384992"
+    },
+    {
+      "endpoint": "/api/token-usage/summary/parent",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 7.92,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:01.393090"
+    },
+    {
+      "endpoint": "/api/guidance/activity/log",
+      "method": "POST",
+      "status_code": 500,
+      "response_time_ms": 132.46,
+      "success": false,
+      "error": "Failed to log activity. Please try again later.",
+      "timestamp": "2025-12-05T15:31:01.525867"
+    },
+    {
+      "endpoint": "/api/guidance/activity/topic-access",
+      "method": "POST",
+      "status_code": 422,
+      "response_time_ms": 11.96,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['body', 'topic_id'], 'msg': 'Field required', 'input': {'student_id': 'student123', 'subject': 'Physics', 'topic': \"Newton's Laws\", 'time_spent_minutes': 30, 'completion_percentage': 80, 'activity_type': 'study'}, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}, {'type': 'enum', 'loc': ['body', 'activity_type'], 'msg': \"Input should be 'topic_study', 'quiz_attempt', 'practice_problems', 'video_watch', 'revision' or 'doubt_resolution'\", 'input': 'study', 'ctx': {'expected': \"'topic_study', 'quiz_attempt', 'practice_problems', 'video_watch', 'revision' or 'doubt_resolution'\"}}]",
+      "timestamp": "2025-12-05T15:31:01.538529"
+    },
+    {
+      "endpoint": "/api/guidance/activity/quiz-attempt",
+      "method": "POST",
+      "status_code": 422,
+      "response_time_ms": 12.86,
+      "success": false,
+      "error": "[{'type': 'missing', 'loc': ['body', 'topic_id'], 'msg': 'Field required', 'input': {'student_id': 'student123', 'subject': 'Physics', 'topic': \"Newton's Laws\", 'quiz_id': 'quiz123', 'difficulty': 'medium', 'start_time': '2024-01-01T10:00:00Z', 'end_time': '2024-01-01T11:00:00Z', 'total_time_minutes': 60, 'attempted_questions': 10, 'correct_answers': 8, 'score_percentage': 80}, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}, {'type': 'missing', 'loc': ['body', 'total_questions'], 'msg': 'Field required', 'input': {'student_id': 'student123', 'subject': 'Physics', 'topic': \"Newton's Laws\", 'quiz_id': 'quiz123', 'difficulty': 'medium', 'start_time': '2024-01-01T10:00:00Z', 'end_time': '2024-01-01T11:00:00Z', 'total_time_minutes': 60, 'attempted_questions': 10, 'correct_answers': 8, 'score_percentage': 80}, 'url': 'https://errors.pydantic.dev/2.4/v/missing'}]",
+      "timestamp": "2025-12-05T15:31:01.552196"
+    },
+    {
+      "endpoint": "/api/guidance/activity/learning-sequence",
+      "method": "POST",
+      "status_code": 422,
+      "response_time_ms": 13.05,
+      "success": false,
+      "error": "[{'type': 'datetime_parsing', 'loc': ['body', 'session_date'], 'msg': 'Input should be a valid datetime, invalid datetime separator, expected `T`, `t`, `_` or space', 'input': '2024-01-01', 'ctx': {'error': 'invalid datetime separator, expected `T`, `t`, `_` or space'}, 'url': 'https://errors.pydantic.dev/2.4/v/datetime_parsing'}]",
+      "timestamp": "2025-12-05T15:31:01.565815"
+    },
+    {
+      "endpoint": "/api/guidance/analysis/trigger",
+      "method": "POST",
+      "status_code": 404,
+      "response_time_ms": 11.87,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:01.578189"
+    },
+    {
+      "endpoint": "/api/progress/student123",
+      "method": "GET",
+      "status_code": 500,
+      "response_time_ms": 530.39,
+      "success": false,
+      "error": "Failed to retrieve progress report. Please try again later.",
+      "timestamp": "2025-12-05T15:31:02.109056"
+    },
+    {
+      "endpoint": "/api/progress/summary/student123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 11.03,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:02.120574"
+    },
+    {
+      "endpoint": "/api/insights/student123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 11.44,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:02.132540"
+    },
+    {
+      "endpoint": "/api/insights/patterns/student123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 12.97,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:02.146031"
+    },
+    {
+      "endpoint": "/api/insights/gaps/student123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 10.78,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:02.157386"
+    },
+    {
+      "endpoint": "/api/insights/strengths/student123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 11.5,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:02.169546"
+    },
+    {
+      "endpoint": "/api/recommendations/student123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 11.2,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:02.181269"
+    },
+    {
+      "endpoint": "/api/vidhya/chat/start",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 13.11,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.195021"
+    },
+    {
+      "endpoint": "/api/vidhya/chat/send",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 11.84,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.207112"
+    },
+    {
+      "endpoint": "/api/vidhya/chat/history/session123",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 11.55,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.218961"
+    },
+    {
+      "endpoint": "/api/vidhya/chat/sessions",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 11.23,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.230452"
+    },
+    {
+      "endpoint": "/api/vidhya/chat/session/session123",
+      "method": "DELETE",
+      "status_code": 401,
+      "response_time_ms": 10.31,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.241125"
+    },
+    {
+      "endpoint": "/api/vidhya/languages",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 10.53,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.251924"
+    },
+    {
+      "endpoint": "/api/vidhya/health",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 8.68,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.260831"
+    },
+    {
+      "endpoint": "/api/parent/insights/generate",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 9.36,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.270576"
+    },
+    {
+      "endpoint": "/api/parent/insights",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 9.22,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.280039"
+    },
+    {
+      "endpoint": "/api/parent/insights/conversation-starters",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 9.4,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.289659"
+    },
+    {
+      "endpoint": "/api/parent/analytics/predict",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 7.71,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.297665"
+    },
+    {
+      "endpoint": "/api/parent/communication/generate",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 9.4,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.307284"
+    },
+    {
+      "endpoint": "/api/parent/engagement/track",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 8.57,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.316138"
+    },
+    {
+      "endpoint": "/api/parent/resources/generate",
+      "method": "POST",
+      "status_code": 401,
+      "response_time_ms": 9.56,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.325907"
+    },
+    {
+      "endpoint": "/api/parent/metrics/insights",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 8.27,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.334386"
+    },
+    {
+      "endpoint": "/api/parent/metrics/analytics",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 9.8,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.344405"
+    },
+    {
+      "endpoint": "/api/parent/metrics/communication",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 7.58,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.352188"
+    },
+    {
+      "endpoint": "/api/parent/metrics/engagement",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 9.0,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.361393"
+    },
+    {
+      "endpoint": "/api/parent/metrics/resource-library",
+      "method": "GET",
+      "status_code": 401,
+      "response_time_ms": 7.13,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.368788"
+    },
+    {
+      "endpoint": "/api/parent/health",
+      "method": "GET",
+      "status_code": 200,
+      "response_time_ms": 10.24,
+      "success": true,
+      "error": null,
+      "timestamp": "2025-12-05T15:31:02.379239"
+    },
+    {
+      "endpoint": "/api/syllabus/coverage/student123?exam_type=JEE_MAIN",
+      "method": "GET",
+      "status_code": 500,
+      "response_time_ms": 31.6,
+      "success": false,
+      "error": "{'success': False, 'error': {'type': 'TypeError', 'message': \"string indices must be integers, not 'str'\", 'detail': 'An internal server error occurred. Please try again later.'}}",
+      "timestamp": "2025-12-05T15:31:02.411199"
+    },
+    {
+      "endpoint": "/api/syllabus/untested/student123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 7.58,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:02.419065"
+    },
+    {
+      "endpoint": "/api/syllabus/weak/student123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 6.01,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:02.425323"
+    },
+    {
+      "endpoint": "/api/syllabus/recommendations/student123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 6.27,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:02.431885"
+    },
+    {
+      "endpoint": "/api/syllabus/progress/student123",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 6.12,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:02.438270"
+    },
+    {
+      "endpoint": "/api/syllabus/topic/Physics/Newton's Laws",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 8.14,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:02.446704"
+    },
+    {
+      "endpoint": "/api/syllabus/health",
+      "method": "GET",
+      "status_code": 404,
+      "response_time_ms": 7.27,
+      "success": false,
+      "error": "Not Found",
+      "timestamp": "2025-12-05T15:31:02.454305"
+    }
+  ]
+}

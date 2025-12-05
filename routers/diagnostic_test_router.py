@@ -794,6 +794,7 @@ async def health_check():
     Returns:
         Service health status
     """
+    from datetime import datetime
     return {
         "status": "healthy",
         "service": "diagnostic-test",

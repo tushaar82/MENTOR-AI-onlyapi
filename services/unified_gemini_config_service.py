@@ -823,7 +823,8 @@ Generate exactly {num_questions} questions.
         """Save interaction to Firestore asynchronously."""
         try:
             doc_ref = self.db.collection(self.interactions_collection).document(interaction.interaction_id)
-            await doc_ref.set(interaction.model_dump())
+            # Firestore set() returns a WriteResult, not a future, so don't await it
+            doc_ref.set(interaction.model_dump())
         except Exception as e:
             logger.error(f"Failed to save interaction: {e}")
     
@@ -831,7 +832,8 @@ Generate exactly {num_questions} questions.
         """Update interaction in Firestore asynchronously."""
         try:
             doc_ref = self.db.collection(self.interactions_collection).document(interaction.interaction_id)
-            await doc_ref.update(interaction.model_dump(exclude_none=True))
+            # Firestore update() returns a WriteResult, not a future, so don't await it
+            doc_ref.update(interaction.model_dump(exclude_none=True))
         except Exception as e:
             logger.error(f"Failed to update interaction: {e}")
     

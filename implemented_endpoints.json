@@ -1,0 +1,2523 @@
+{
+  "summary": {
+    "total_endpoints": 414,
+    "unique_combinations": 208,
+    "router_counts": {
+      "login_router.py": 20,
+      "exam_router.py": 10,
+      "simple_register_router.py": 2,
+      "syllabus_coverage_router.py": 14,
+      "rag_router.py": 12,
+      "language_router.py": 18,
+      "question_router.py": 12,
+      "verification_router.py": 8,
+      "gamification_router.py": 14,
+      "auth_router.py": 6,
+      "ai_features_router.py": 28,
+      "vector_search_router.py": 10,
+      "payment_router.py": 12,
+      "diagnostic_test_router.py": 18,
+      "academic_guidance_router.py": 10,
+      "vidhya_router.py": 14,
+      "child_router.py": 8,
+      "token_usage_router.py": 10,
+      "progress_insights_router.py": 14,
+      "analytics_router.py": 12,
+      "preferences_router.py": 6,
+      "parent_features_router.py": 54,
+      "test_management_router.py": 12,
+      "schedule_router.py": 20,
+      "study_center_router.py": 22,
+      "embedding_router.py": 6,
+      "parent_dashboard_router.py": 16,
+      "student_dashboard_router.py": 24,
+      "main.py": 2
+    }
+  },
+  "endpoints": [
+    {
+      "method": "GET",
+      "path": "/",
+      "router_file": "main.py",
+      "prefix": ""
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/alerts",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/alerts",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai-features/alerts/{alert_id}/status",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai-features/alerts/{alert_id}/status",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/communications",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/communications",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/dashboard",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/dashboard",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/dashboard/config",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/dashboard/config",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai-features/dashboard/config",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai-features/dashboard/config",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/engagement-metrics",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/engagement-metrics",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai-features/engagement-metrics/track",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai-features/engagement-metrics/track",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/health",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/health",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/insights",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/insights",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/insights/generate",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/insights/generate",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai-features/insights/{insight_id}/status",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "POST",
+      "path": "/api/ai-features/insights/{insight_id}/status",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/interactions",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/interactions",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/interactions/summary",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "GET",
+      "path": "/api/ai-features/interactions/summary",
+      "router_file": "ai_features_router.py",
+      "prefix": "/api/ai-features"
+    },
+    {
+      "method": "POST",
+      "path": "/api/analytics/generate",
+      "router_file": "analytics_router.py",
+      "prefix": "/api/analytics"
+    },
+    {
+      "method": "POST",
+      "path": "/api/analytics/generate",
+      "router_file": "analytics_router.py",
+      "prefix": "/api/analytics"
+    },
+    {
+      "method": "GET",
+      "path": "/api/analytics/student/{student_id}",
+      "router_file": "analytics_router.py",
+      "prefix": "/api/analytics"
+    },
+    {
+      "method": "GET",
+      "path": "/api/analytics/student/{student_id}",
+      "router_file": "analytics_router.py",
+      "prefix": "/api/analytics"
+    },
+    {
+      "method": "GET",
+      "path": "/api/analytics/test/{test_id}",
+      "router_file": "analytics_router.py",
+      "prefix": "/api/analytics"
+    },
+    {
+      "method": "GET",
+      "path": "/api/analytics/test/{test_id}",
+      "router_file": "analytics_router.py",
+      "prefix": "/api/analytics"
+    },
+    {
+      "method": "GET",
+      "path": "/api/analytics/{analytics_id}",
+      "router_file": "analytics_router.py",
+      "prefix": "/api/analytics"
+    },
+    {
+      "method": "GET",
+      "path": "/api/analytics/{analytics_id}",
+      "router_file": "analytics_router.py",
+      "prefix": "/api/analytics"
+    },
+    {
+      "method": "GET",
+      "path": "/api/analytics/{analytics_id}/insights",
+      "router_file": "analytics_router.py",
+      "prefix": "/api/analytics"
+    },
+    {
+      "method": "GET",
+      "path": "/api/analytics/{analytics_id}/insights",
+      "router_file": "analytics_router.py",
+      "prefix": "/api/analytics"
+    },
+    {
+      "method": "GET",
+      "path": "/api/analytics/{analytics_id}/weak-topics",
+      "router_file": "analytics_router.py",
+      "prefix": "/api/analytics"
+    },
+    {
+      "method": "GET",
+      "path": "/api/analytics/{analytics_id}/weak-topics",
+      "router_file": "analytics_router.py",
+      "prefix": "/api/analytics"
+    },
+    {
+      "method": "POST",
+      "path": "/api/diagnostic-test/generate",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "POST",
+      "path": "/api/diagnostic-test/generate",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "POST",
+      "path": "/api/diagnostic-test/generate-async",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "POST",
+      "path": "/api/diagnostic-test/generate-async",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/generation/status/{job_id}",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/generation/status/{job_id}",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/health",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/health",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/management/health",
+      "router_file": "test_management_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/management/health",
+      "router_file": "test_management_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "POST",
+      "path": "/api/diagnostic-test/schedule",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "POST",
+      "path": "/api/diagnostic-test/schedule",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/student/{student_id}",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/student/{student_id}",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/diagnostic-test/{test_id}",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/diagnostic-test/{test_id}",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/{test_id}",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/{test_id}",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/{test_id}/metadata",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/{test_id}/metadata",
+      "router_file": "diagnostic_test_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/{test_id}/results",
+      "router_file": "test_management_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/{test_id}/results",
+      "router_file": "test_management_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "POST",
+      "path": "/api/diagnostic-test/{test_id}/start",
+      "router_file": "test_management_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "POST",
+      "path": "/api/diagnostic-test/{test_id}/start",
+      "router_file": "test_management_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/{test_id}/status",
+      "router_file": "test_management_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/diagnostic-test/{test_id}/status",
+      "router_file": "test_management_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/diagnostic-test/{test_id}/status",
+      "router_file": "test_management_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/diagnostic-test/{test_id}/status",
+      "router_file": "test_management_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "POST",
+      "path": "/api/diagnostic-test/{test_id}/submit",
+      "router_file": "test_management_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "POST",
+      "path": "/api/diagnostic-test/{test_id}/submit",
+      "router_file": "test_management_router.py",
+      "prefix": "/api/diagnostic-test"
+    },
+    {
+      "method": "GET",
+      "path": "/api/gamification/achievements",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/gamification/achievements",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "POST",
+      "path": "/api/gamification/achievements/claim/{achievement_id}",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "POST",
+      "path": "/api/gamification/achievements/claim/{achievement_id}",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/gamification/challenge/daily",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/gamification/challenge/daily",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "POST",
+      "path": "/api/gamification/challenge/daily/submit",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "POST",
+      "path": "/api/gamification/challenge/daily/submit",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/gamification/challenge/leaderboard",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/gamification/challenge/leaderboard",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/gamification/points/history",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/gamification/points/history",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/gamification/streak",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "GET",
+      "path": "/api/gamification/streak",
+      "router_file": "gamification_router.py",
+      "prefix": "/api/gamification"
+    },
+    {
+      "method": "POST",
+      "path": "/api/guidance/activity/learning-sequence",
+      "router_file": "academic_guidance_router.py",
+      "prefix": "/api/guidance"
+    },
+    {
+      "method": "POST",
+      "path": "/api/guidance/activity/learning-sequence",
+      "router_file": "academic_guidance_router.py",
+      "prefix": "/api/guidance"
+    },
+    {
+      "method": "POST",
+      "path": "/api/guidance/activity/log",
+      "router_file": "academic_guidance_router.py",
+      "prefix": "/api/guidance"
+    },
+    {
+      "method": "POST",
+      "path": "/api/guidance/activity/log",
+      "router_file": "academic_guidance_router.py",
+      "prefix": "/api/guidance"
+    },
+    {
+      "method": "POST",
+      "path": "/api/guidance/activity/quiz-attempt",
+      "router_file": "academic_guidance_router.py",
+      "prefix": "/api/guidance"
+    },
+    {
+      "method": "POST",
+      "path": "/api/guidance/activity/quiz-attempt",
+      "router_file": "academic_guidance_router.py",
+      "prefix": "/api/guidance"
+    },
+    {
+      "method": "POST",
+      "path": "/api/guidance/activity/topic-access",
+      "router_file": "academic_guidance_router.py",
+      "prefix": "/api/guidance"
+    },
+    {
+      "method": "POST",
+      "path": "/api/guidance/activity/topic-access",
+      "router_file": "academic_guidance_router.py",
+      "prefix": "/api/guidance"
+    },
+    {
+      "method": "POST",
+      "path": "/api/guidance/analyze/{student_id}",
+      "router_file": "academic_guidance_router.py",
+      "prefix": "/api/guidance"
+    },
+    {
+      "method": "POST",
+      "path": "/api/guidance/analyze/{student_id}",
+      "router_file": "academic_guidance_router.py",
+      "prefix": "/api/guidance"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/health",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/health",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/info/{language_code}",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/info/{language_code}",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/preference",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/preference",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "POST",
+      "path": "/api/language/preference",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "POST",
+      "path": "/api/language/preference",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/rtl",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/rtl",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/supported",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/supported",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/translate",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/translate",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/translations/{language_code}",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/translations/{language_code}",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/validate/{language_code}",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/language/validate/{language_code}",
+      "router_file": "language_router.py",
+      "prefix": "/api/language"
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/child",
+      "router_file": "child_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/child",
+      "router_file": "child_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "POST",
+      "path": "/api/onboarding/child",
+      "router_file": "child_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "POST",
+      "path": "/api/onboarding/child",
+      "router_file": "child_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/onboarding/child/{child_id}",
+      "router_file": "child_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/onboarding/child/{child_id}",
+      "router_file": "child_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/onboarding/child/{child_id}",
+      "router_file": "child_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/onboarding/child/{child_id}",
+      "router_file": "child_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/exam/preferences",
+      "router_file": "exam_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/exam/preferences",
+      "router_file": "exam_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/onboarding/exam/preferences",
+      "router_file": "exam_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/onboarding/exam/preferences",
+      "router_file": "exam_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "POST",
+      "path": "/api/onboarding/exam/select",
+      "router_file": "exam_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "POST",
+      "path": "/api/onboarding/exam/select",
+      "router_file": "exam_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/exams/available",
+      "router_file": "exam_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/exams/available",
+      "router_file": "exam_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/preferences",
+      "router_file": "preferences_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/preferences",
+      "router_file": "preferences_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "POST",
+      "path": "/api/onboarding/preferences",
+      "router_file": "preferences_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "POST",
+      "path": "/api/onboarding/preferences",
+      "router_file": "preferences_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/onboarding/preferences",
+      "router_file": "preferences_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/onboarding/preferences",
+      "router_file": "preferences_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/status",
+      "router_file": "exam_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "GET",
+      "path": "/api/onboarding/status",
+      "router_file": "exam_router.py",
+      "prefix": "/api/onboarding"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/analytics/intervention-recommendations",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/analytics/intervention-recommendations",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/analytics/predict",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/analytics/predict",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/analytics/what-if",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/analytics/what-if",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/communication/conversation-starters",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/communication/conversation-starters",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/communication/effectiveness",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/communication/effectiveness",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/communication/follow-up-reminders",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/communication/follow-up-reminders",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/communication/generate",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/communication/generate",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/dashboard/{child_id}",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/dashboard/{child_id}",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/engagement/analytics",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/engagement/analytics",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/engagement/complete-challenge",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/engagement/complete-challenge",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/engagement/leaderboard",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/engagement/leaderboard",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/engagement/track",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/engagement/track",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/engagement/weekly-challenge",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/engagement/weekly-challenge",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/goals/{child_id}",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/goals/{child_id}",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/goals/{child_id}",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/goals/{child_id}",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/parent/goals/{child_id}/{goal_id}",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/parent/goals/{child_id}/{goal_id}",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/health",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/health",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/insights",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/insights",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/insights/activity-suggestions",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/insights/activity-suggestions",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/insights/conversation-starters",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/insights/conversation-starters",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/insights/generate",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/insights/generate",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/metrics/analytics",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/metrics/analytics",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/metrics/communication",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/metrics/communication",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/metrics/engagement",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/metrics/engagement",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/metrics/insights",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/metrics/insights",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/metrics/resource-library",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/metrics/resource-library",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/notifications/settings",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/notifications/settings",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/parent/notifications/settings",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/parent/notifications/settings",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/reports/email-schedule",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/reports/email-schedule",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/reports/weekly/{child_id}",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/reports/weekly/{child_id}",
+      "router_file": "parent_dashboard_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/resources/analytics/{resource_id}",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "GET",
+      "path": "/api/parent/resources/analytics/{resource_id}",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/resources/generate",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/resources/generate",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/resources/rate",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/resources/rate",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/resources/recommend",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/resources/recommend",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/resources/search",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/parent/resources/search",
+      "router_file": "parent_features_router.py",
+      "prefix": "/api/parent"
+    },
+    {
+      "method": "POST",
+      "path": "/api/payment/cancel/{parent_id}",
+      "router_file": "payment_router.py",
+      "prefix": "/api/payment"
+    },
+    {
+      "method": "POST",
+      "path": "/api/payment/cancel/{parent_id}",
+      "router_file": "payment_router.py",
+      "prefix": "/api/payment"
+    },
+    {
+      "method": "POST",
+      "path": "/api/payment/create-order",
+      "router_file": "payment_router.py",
+      "prefix": "/api/payment"
+    },
+    {
+      "method": "POST",
+      "path": "/api/payment/create-order",
+      "router_file": "payment_router.py",
+      "prefix": "/api/payment"
+    },
+    {
+      "method": "GET",
+      "path": "/api/payment/plans",
+      "router_file": "payment_router.py",
+      "prefix": "/api/payment"
+    },
+    {
+      "method": "GET",
+      "path": "/api/payment/plans",
+      "router_file": "payment_router.py",
+      "prefix": "/api/payment"
+    },
+    {
+      "method": "GET",
+      "path": "/api/payment/subscription/{parent_id}",
+      "router_file": "payment_router.py",
+      "prefix": "/api/payment"
+    },
+    {
+      "method": "GET",
+      "path": "/api/payment/subscription/{parent_id}",
+      "router_file": "payment_router.py",
+      "prefix": "/api/payment"
+    },
+    {
+      "method": "GET",
+      "path": "/api/payment/transactions/{parent_id}",
+      "router_file": "payment_router.py",
+      "prefix": "/api/payment"
+    },
+    {
+      "method": "GET",
+      "path": "/api/payment/transactions/{parent_id}",
+      "router_file": "payment_router.py",
+      "prefix": "/api/payment"
+    },
+    {
+      "method": "POST",
+      "path": "/api/payment/verify",
+      "router_file": "payment_router.py",
+      "prefix": "/api/payment"
+    },
+    {
+      "method": "POST",
+      "path": "/api/payment/verify",
+      "router_file": "payment_router.py",
+      "prefix": "/api/payment"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/insights/{student_id}",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/insights/{student_id}",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/insights/{student_id}/gaps",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/insights/{student_id}/gaps",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/insights/{student_id}/patterns",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/insights/{student_id}/patterns",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/insights/{student_id}/strengths",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/insights/{student_id}/strengths",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/recommendations/{student_id}",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/recommendations/{student_id}",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/{student_id}",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/{student_id}",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/{student_id}/summary",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/progress/{student_id}/summary",
+      "router_file": "progress_insights_router.py",
+      "prefix": "/api/progress"
+    },
+    {
+      "method": "GET",
+      "path": "/api/questions/by-topic/{topic}",
+      "router_file": "question_router.py",
+      "prefix": "/api/questions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/questions/by-topic/{topic}",
+      "router_file": "question_router.py",
+      "prefix": "/api/questions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/questions/generate",
+      "router_file": "question_router.py",
+      "prefix": "/api/questions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/questions/generate",
+      "router_file": "question_router.py",
+      "prefix": "/api/questions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/questions/search",
+      "router_file": "question_router.py",
+      "prefix": "/api/questions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/questions/search",
+      "router_file": "question_router.py",
+      "prefix": "/api/questions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/questions/stats",
+      "router_file": "question_router.py",
+      "prefix": "/api/questions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/questions/stats",
+      "router_file": "question_router.py",
+      "prefix": "/api/questions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/questions/validate",
+      "router_file": "question_router.py",
+      "prefix": "/api/questions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/questions/validate",
+      "router_file": "question_router.py",
+      "prefix": "/api/questions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/questions/{question_id}",
+      "router_file": "question_router.py",
+      "prefix": "/api/questions"
+    },
+    {
+      "method": "GET",
+      "path": "/api/questions/{question_id}",
+      "router_file": "question_router.py",
+      "prefix": "/api/questions"
+    },
+    {
+      "method": "POST",
+      "path": "/api/rag/context/build",
+      "router_file": "rag_router.py",
+      "prefix": "/api/rag"
+    },
+    {
+      "method": "POST",
+      "path": "/api/rag/context/build",
+      "router_file": "rag_router.py",
+      "prefix": "/api/rag"
+    },
+    {
+      "method": "POST",
+      "path": "/api/rag/context/preview",
+      "router_file": "rag_router.py",
+      "prefix": "/api/rag"
+    },
+    {
+      "method": "POST",
+      "path": "/api/rag/context/preview",
+      "router_file": "rag_router.py",
+      "prefix": "/api/rag"
+    },
+    {
+      "method": "POST",
+      "path": "/api/rag/generate-batch",
+      "router_file": "rag_router.py",
+      "prefix": "/api/rag"
+    },
+    {
+      "method": "POST",
+      "path": "/api/rag/generate-batch",
+      "router_file": "rag_router.py",
+      "prefix": "/api/rag"
+    },
+    {
+      "method": "POST",
+      "path": "/api/rag/generate-questions",
+      "router_file": "rag_router.py",
+      "prefix": "/api/rag"
+    },
+    {
+      "method": "POST",
+      "path": "/api/rag/generate-questions",
+      "router_file": "rag_router.py",
+      "prefix": "/api/rag"
+    },
+    {
+      "method": "GET",
+      "path": "/api/rag/metrics",
+      "router_file": "rag_router.py",
+      "prefix": "/api/rag"
+    },
+    {
+      "method": "GET",
+      "path": "/api/rag/metrics",
+      "router_file": "rag_router.py",
+      "prefix": "/api/rag"
+    },
+    {
+      "method": "GET",
+      "path": "/api/rag/pipeline/status",
+      "router_file": "rag_router.py",
+      "prefix": "/api/rag"
+    },
+    {
+      "method": "GET",
+      "path": "/api/rag/pipeline/status",
+      "router_file": "rag_router.py",
+      "prefix": "/api/rag"
+    },
+    {
+      "method": "POST",
+      "path": "/api/schedule/generate",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "POST",
+      "path": "/api/schedule/generate",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedule/progress/today",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedule/progress/today",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "POST",
+      "path": "/api/schedule/progress/update",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "POST",
+      "path": "/api/schedule/progress/update",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedule/progress/{schedule_id}",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedule/progress/{schedule_id}",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedule/student/{student_id}",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedule/student/{student_id}",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedule/student/{student_id}/history",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedule/student/{student_id}/history",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/schedule/{schedule_id}",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/schedule/{schedule_id}",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedule/{schedule_id}",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "GET",
+      "path": "/api/schedule/{schedule_id}",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/schedule/{schedule_id}",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/schedule/{schedule_id}",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "POST",
+      "path": "/api/schedule/{schedule_id}/regenerate",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "POST",
+      "path": "/api/schedule/{schedule_id}/regenerate",
+      "router_file": "schedule_router.py",
+      "prefix": "/api/schedule"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/bookmarks",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/bookmarks",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "POST",
+      "path": "/api/student/bookmarks",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "POST",
+      "path": "/api/student/bookmarks",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/student/bookmarks/{bookmark_id}",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/student/bookmarks/{bookmark_id}",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/compare/percentile",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/compare/percentile",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "POST",
+      "path": "/api/student/doubts",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "POST",
+      "path": "/api/student/doubts",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/doubts/{doubt_id}/explanation",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/doubts/{doubt_id}/explanation",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/insights/{student_id}",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/insights/{student_id}",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "POST",
+      "path": "/api/student/practice/quick",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "POST",
+      "path": "/api/student/practice/quick",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/revision/due",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/revision/due",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "POST",
+      "path": "/api/student/revision/mark-complete/{topic_id}",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "POST",
+      "path": "/api/student/revision/mark-complete/{topic_id}",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/today/{student_id}",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/today/{student_id}",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/topic/{topic_id}/resources",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/student/topic/{topic_id}/resources",
+      "router_file": "student_dashboard_router.py",
+      "prefix": "/api/student"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/journey/{student_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/journey/{student_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "POST",
+      "path": "/api/study-center/materials/generate",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "POST",
+      "path": "/api/study-center/materials/generate",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/materials/{topic_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/materials/{topic_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/mindmap/{topic_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/mindmap/{topic_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/parent-progress/{child_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/parent-progress/{child_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "POST",
+      "path": "/api/study-center/progress/complete",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "POST",
+      "path": "/api/study-center/progress/complete",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "POST",
+      "path": "/api/study-center/progress/start",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "POST",
+      "path": "/api/study-center/progress/start",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/progress/{student_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/progress/{student_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/teach/{topic_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/teach/{topic_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/topics",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/topics",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/topics/{topic_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/study-center/topics/{topic_id}",
+      "router_file": "study_center_router.py",
+      "prefix": "/api/study-center"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/health",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/health",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/{student_id}",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/{student_id}",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/{student_id}/progress",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/{student_id}/progress",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/{student_id}/recommendations",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/{student_id}/recommendations",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/{student_id}/topic/{topic_id}",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/{student_id}/topic/{topic_id}",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/{student_id}/untested",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/{student_id}/untested",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/{student_id}/weak",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/syllabus/coverage/{student_id}/weak",
+      "router_file": "syllabus_coverage_router.py",
+      "prefix": "/api/syllabus/coverage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/token-usage/limits/student/{student_id}",
+      "router_file": "token_usage_router.py",
+      "prefix": "/api/token-usage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/token-usage/limits/student/{student_id}",
+      "router_file": "token_usage_router.py",
+      "prefix": "/api/token-usage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/token-usage/parent",
+      "router_file": "token_usage_router.py",
+      "prefix": "/api/token-usage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/token-usage/parent",
+      "router_file": "token_usage_router.py",
+      "prefix": "/api/token-usage"
+    },
+    {
+      "method": "POST",
+      "path": "/api/token-usage/reset/daily/{student_id}",
+      "router_file": "token_usage_router.py",
+      "prefix": "/api/token-usage"
+    },
+    {
+      "method": "POST",
+      "path": "/api/token-usage/reset/daily/{student_id}",
+      "router_file": "token_usage_router.py",
+      "prefix": "/api/token-usage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/token-usage/student/{student_id}",
+      "router_file": "token_usage_router.py",
+      "prefix": "/api/token-usage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/token-usage/student/{student_id}",
+      "router_file": "token_usage_router.py",
+      "prefix": "/api/token-usage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/token-usage/summary/parent",
+      "router_file": "token_usage_router.py",
+      "prefix": "/api/token-usage"
+    },
+    {
+      "method": "GET",
+      "path": "/api/token-usage/summary/parent",
+      "router_file": "token_usage_router.py",
+      "prefix": "/api/token-usage"
+    },
+    {
+      "method": "POST",
+      "path": "/api/vector-search/embeddings/batch",
+      "router_file": "embedding_router.py",
+      "prefix": "/api/vector-search/embeddings"
+    },
+    {
+      "method": "POST",
+      "path": "/api/vector-search/embeddings/batch",
+      "router_file": "embedding_router.py",
+      "prefix": "/api/vector-search/embeddings"
+    },
+    {
+      "method": "POST",
+      "path": "/api/vector-search/embeddings/generate",
+      "router_file": "embedding_router.py",
+      "prefix": "/api/vector-search/embeddings"
+    },
+    {
+      "method": "POST",
+      "path": "/api/vector-search/embeddings/generate",
+      "router_file": "embedding_router.py",
+      "prefix": "/api/vector-search/embeddings"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vector-search/embeddings/status",
+      "router_file": "embedding_router.py",
+      "prefix": "/api/vector-search/embeddings"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vector-search/embeddings/status",
+      "router_file": "embedding_router.py",
+      "prefix": "/api/vector-search/embeddings"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vector-search/index/status",
+      "router_file": "vector_search_router.py",
+      "prefix": "/api/vector-search"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vector-search/index/status",
+      "router_file": "vector_search_router.py",
+      "prefix": "/api/vector-search"
+    },
+    {
+      "method": "POST",
+      "path": "/api/vector-search/query",
+      "router_file": "vector_search_router.py",
+      "prefix": "/api/vector-search"
+    },
+    {
+      "method": "POST",
+      "path": "/api/vector-search/query",
+      "router_file": "vector_search_router.py",
+      "prefix": "/api/vector-search"
+    },
+    {
+      "method": "POST",
+      "path": "/api/vector-search/query/batch",
+      "router_file": "vector_search_router.py",
+      "prefix": "/api/vector-search"
+    },
+    {
+      "method": "POST",
+      "path": "/api/vector-search/query/batch",
+      "router_file": "vector_search_router.py",
+      "prefix": "/api/vector-search"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vector-search/syllabus/stats",
+      "router_file": "vector_search_router.py",
+      "prefix": "/api/vector-search"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vector-search/syllabus/stats",
+      "router_file": "vector_search_router.py",
+      "prefix": "/api/vector-search"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vector-search/syllabus/{exam}/{subject}",
+      "router_file": "vector_search_router.py",
+      "prefix": "/api/vector-search"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vector-search/syllabus/{exam}/{subject}",
+      "router_file": "vector_search_router.py",
+      "prefix": "/api/vector-search"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vidhya/chat/history/{session_id}",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vidhya/chat/history/{session_id}",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "POST",
+      "path": "/api/vidhya/chat/send",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "POST",
+      "path": "/api/vidhya/chat/send",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/vidhya/chat/session/{session_id}",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/vidhya/chat/session/{session_id}",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vidhya/chat/sessions",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vidhya/chat/sessions",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "POST",
+      "path": "/api/vidhya/chat/start",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "POST",
+      "path": "/api/vidhya/chat/start",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vidhya/health",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vidhya/health",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vidhya/languages",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "GET",
+      "path": "/api/vidhya/languages",
+      "router_file": "vidhya_router.py",
+      "prefix": "/api/vidhya"
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "router_file": "main.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/login/child",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/login/child",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/login/email",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/login/email",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/login/google",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/login/google",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/login/phone",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/login/phone",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/logout",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/logout",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/logout/child",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/logout/child",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "GET",
+      "path": "/me",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "GET",
+      "path": "/me",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "GET",
+      "path": "/me/child",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "GET",
+      "path": "/me/child",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/register/parent/email",
+      "router_file": "auth_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/register/parent/email",
+      "router_file": "auth_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/register/parent/google",
+      "router_file": "auth_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/register/parent/google",
+      "router_file": "auth_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/register/parent/phone",
+      "router_file": "auth_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/register/parent/phone",
+      "router_file": "auth_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/register/simple",
+      "router_file": "simple_register_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/register/simple",
+      "router_file": "simple_register_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/token/refresh",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/token/refresh",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/token/refresh/child",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/token/refresh/child",
+      "router_file": "login_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/verify/email/confirm",
+      "router_file": "verification_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/verify/email/confirm",
+      "router_file": "verification_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/verify/email/send",
+      "router_file": "verification_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/verify/email/send",
+      "router_file": "verification_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/verify/phone/confirm",
+      "router_file": "verification_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/verify/phone/confirm",
+      "router_file": "verification_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/verify/phone/send",
+      "router_file": "verification_router.py",
+      "prefix": ""
+    },
+    {
+      "method": "POST",
+      "path": "/verify/phone/send",
+      "router_file": "verification_router.py",
+      "prefix": ""
+    }
+  ]
+}

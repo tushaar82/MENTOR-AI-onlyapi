@@ -25,6 +25,31 @@ from services.token_usage_service import get_token_usage_service
 from middleware.auth_middleware import get_current_user
 from services.child_service import ChildService
 
+# ============================================================================
+# HEALTH CHECK ENDPOINT
+# ============================================================================
+
+@router.get(
+    "/health",
+    summary="Health Check",
+    description=f"Check if the token-usage service is operational",
+    tags=["Health"]
+)
+async def health_check():
+    """
+    Health check endpoint.
+    
+    Returns:
+        Service health status
+    """
+    from datetime import datetime
+    return {
+        "status": "healthy",
+        "service": "token-usage",
+        "timestamp": datetime.utcnow().isoformat()
+    }
+
+
 # Configure logging
 logger = logging.getLogger(__name__)
 
