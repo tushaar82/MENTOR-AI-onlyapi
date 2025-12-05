@@ -30,7 +30,7 @@ from sklearn.metrics import silhouette_score
 from models.learning_analytics_models import (
     TopicAccess, QuizAttempt, QuestionError, LearningSequence,
     LearningPattern, KnowledgeGap, LearningStrength, LearningProgress,
-    ErrorType, DifficultyLevel
+    ErrorType, DifficultyLevel, LearningActivityType
 )
 
 # Configure logging

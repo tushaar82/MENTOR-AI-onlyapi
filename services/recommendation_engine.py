@@ -27,7 +27,8 @@ from models.learning_analytics_models import (
     LearningPattern, KnowledgeGap, LearningStrength, Recommendation,
     RecommendationType, DifficultyLevel
 )
-from services.learning_analysis_service import LearningAnalysisService
+# from services.learning_analysis_service import LearningAnalysisService
+# Removed circular dependency - not needed in this module
 
 # Configure logging
 logger = logging.getLogger(__name__)
