@@ -34,6 +34,11 @@ httpx==0.25.2
 # Vector Database (for later days)
 faiss-cpu
 
+# Machine Learning for Academic Guidance System
+scikit-learn>=1.3.0
+numpy>=1.24.0
+pandas>=2.0.0
+
 # Payment Integration (for later days)
 razorpay==1.3.0
 

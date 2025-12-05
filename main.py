@@ -53,6 +53,10 @@ from routers.vidhya_router import router as vidhya_router  # Vidhya AI Agent
 from routers.language_router import router as language_router  # Language management
 from routers.token_usage_router import router as token_usage_router  # Token usage tracking
 
+# AI-Powered Academic Guidance System routers
+from routers.academic_guidance_router import router as academic_guidance_router  # Student activity logging and analysis
+from routers.progress_insights_router import router as progress_insights_router  # Progress reports and insights
+
 # Vertex AI is no longer needed - using Gemini API directly
 
 # Import database service for initialization
@@ -400,6 +404,19 @@ app.include_router(
     language_router,
     # Prefix and tags are already defined in the router
     # Endpoints: /api/language/supported, /api/language/translations, /api/language/preference, etc.
+)
+
+# AI-Powered Academic Guidance System routers
+app.include_router(
+    academic_guidance_router,
+    # Prefix and tags are already defined in the router
+    # Endpoints: /api/guidance/activity/log, /api/guidance/activity/topic-access, etc.
+)
+
+app.include_router(
+    progress_insights_router,
+    # Prefix and tags are already defined in the router
+    # Endpoints: /api/progress/{student_id}, /api/insights/{student_id}, etc.
 )
 
 
