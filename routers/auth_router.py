@@ -29,6 +29,15 @@ from models.auth_models import (
 from services import auth_service
 from middleware.language_middleware import get_language_from_request, get_translations_from_request
 
+# Configure logging
+logger = logging.getLogger(__name__)
+
+# Create API router
+router = APIRouter(
+    prefix="",
+    tags=["Authentication"]
+)
+
 # ============================================================================
 # HEALTH CHECK ENDPOINT
 # ============================================================================
@@ -52,16 +61,6 @@ async def health_check():
         "service": "auth",
         "timestamp": datetime.utcnow().isoformat()
     }
-
-
-# Configure logging
-logger = logging.getLogger(__name__)
-
-# Create API router
-router = APIRouter(
-    prefix="",
-    tags=["Authentication"]
-)
 
 
 @router.post(

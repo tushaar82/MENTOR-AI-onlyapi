@@ -202,10 +202,13 @@ async def generate_test(
     )
     
     # Verify student_id matches authenticated user
-    if request.student_id != current_user["parent_id"]:
+    # current_user is a string in testing mode (parent_id)
+    parent_id = current_user if isinstance(current_user, str) else current_user.get("parent_id")
+    
+    if request.student_id != parent_id:
         logger.warning(
             f"Student ID mismatch: request={request.student_id}, "
-            f"auth={current_user['parent_id']}"
+            f"auth={parent_id}"
         )
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -325,7 +328,10 @@ async def generate_test_async(
     )
     
     # Verify student_id matches authenticated user
-    if request.student_id != current_user["parent_id"]:
+    # current_user is a string in testing mode (parent_id)
+    parent_id = current_user if isinstance(current_user, str) else current_user.get("parent_id")
+    
+    if request.student_id != parent_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Student ID does not match authenticated user"
@@ -494,10 +500,14 @@ async def get_test(
     Raises:
         HTTPException: If test not found or access denied
     """
-    logger.info(f"Retrieving test: {test_id} for user: {current_user['student_id']}")
+    # current_user is a string in testing mode (parent_id)
+    parent_id = current_user if isinstance(current_user, str) else current_user.get("parent_id")
+    student_id = current_user if isinstance(current_user, str) else current_user.get("student_id", parent_id)
+    
+    logger.info(f"Retrieving test: {test_id} for user: {student_id}")
     
     # Verify access
-    await verify_student_access(test_id, current_user["parent_id"])
+    await verify_student_access(test_id, parent_id)
     
     try:
         # In production, retrieve from database
@@ -563,8 +573,11 @@ async def get_test_metadata(
     """
     logger.info(f"Retrieving metadata for test: {test_id}")
     
+    # current_user is a string in testing mode (parent_id)
+    parent_id = current_user if isinstance(current_user, str) else current_user.get("parent_id")
+    
     # Verify access
-    await verify_student_access(test_id, current_user["parent_id"])
+    await verify_student_access(test_id, parent_id)
     
     try:
         # In production, retrieve from database
@@ -575,7 +588,7 @@ async def get_test_metadata(
         return TestMetadata(
             test_id=test_id,
             exam_type=ExamType.JEE_MAIN,
-            student_id=current_user["student_id"],
+            student_id=current_user if isinstance(current_user, str) else current_user.get("student_id", "test_student_123"),
             generation_date=datetime.utcnow(),
             start_date=None,
             submission_date=None,
@@ -648,10 +661,13 @@ async def get_student_tests(
         f"status={status}, limit={limit}, offset={offset}"
     )
     
+    # current_user is a string in testing mode (parent_id)
+    parent_id = current_user if isinstance(current_user, str) else current_user.get("parent_id")
+    
     # Verify student can only access their own tests
-    if student_id != current_user["parent_id"]:
+    if student_id != parent_id:
         logger.warning(
-            f"Access denied: student {current_user['parent_id']} "
+            f"Access denied: student {parent_id} "
             f"attempted to access tests for {student_id}"
         )
         raise HTTPException(
@@ -745,8 +761,11 @@ async def delete_test(
     """
     logger.info(f"Delete request for test: {test_id}")
     
+    # current_user is a string in testing mode (parent_id)
+    parent_id = current_user if isinstance(current_user, str) else current_user.get("parent_id")
+    
     # Verify access
-    await verify_student_access(test_id, current_user["parent_id"])
+    await verify_student_access(test_id, parent_id)
     
     try:
         # In production, check test status and delete

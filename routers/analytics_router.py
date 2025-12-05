@@ -22,31 +22,6 @@ from typing import List, Optional
 from fastapi import APIRouter, HTTPException, status, Depends, Query
 from google.cloud.firestore_v1 import FieldFilter
 
-# ============================================================================
-# HEALTH CHECK ENDPOINT
-# ============================================================================
-
-@router.get(
-    "/health",
-    summary="Health Check",
-    description=f"Check if the analytics service is operational",
-    tags=["Health"]
-)
-async def health_check():
-    """
-    Health check endpoint.
-    
-    Returns:
-        Service health status
-    """
-    from datetime import datetime
-    return {
-        "status": "healthy",
-        "service": "analytics",
-        "timestamp": datetime.utcnow().isoformat()
-    }
-
-
 # Import models
 from models.analytics_models import (
     AnalyticsRequest,
@@ -72,6 +47,30 @@ router = APIRouter(
     prefix="/api/analytics",
     tags=["Analytics"]
 )
+
+# ============================================================================
+# HEALTH CHECK ENDPOINT
+# ============================================================================
+
+@router.get(
+    "/health",
+    summary="Health Check",
+    description=f"Check if the analytics service is operational",
+    tags=["Health"]
+)
+async def health_check():
+    """
+    Health check endpoint.
+    
+    Returns:
+        Service health status
+    """
+    from datetime import datetime
+    return {
+        "status": "healthy",
+        "service": "analytics",
+        "timestamp": datetime.utcnow().isoformat()
+    }
 
 
 def get_analytics_service():

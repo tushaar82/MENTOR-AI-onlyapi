@@ -34,6 +34,15 @@ from services.academic_guidance_service import (
 )
 from middleware.testing_auth import get_current_user_testing as get_current_user
 
+# Configure logging
+logger = logging.getLogger(__name__)
+
+# Create API router
+router = APIRouter(
+    prefix="/api/guidance",
+    tags=["Academic Guidance"]
+)
+
 # ============================================================================
 # HEALTH CHECK ENDPOINT
 # ============================================================================
@@ -57,16 +66,6 @@ async def health_check():
         "service": "guidance",
         "timestamp": datetime.utcnow().isoformat()
     }
-
-
-# Configure logging
-logger = logging.getLogger(__name__)
-
-# Create API router
-router = APIRouter(
-    prefix="/api/guidance",
-    tags=["Academic Guidance"]
-)
 
 
 class ActivityLogRequest(BaseModel):

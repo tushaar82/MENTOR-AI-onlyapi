@@ -25,6 +25,15 @@ from services.token_usage_service import get_token_usage_service
 from middleware.auth_middleware import get_current_user
 from services.child_service import ChildService
 
+# Configure logging
+logger = logging.getLogger(__name__)
+
+# Create router
+router = APIRouter(
+    prefix="/api/token-usage",
+    tags=["Token Usage"]
+)
+
 # ============================================================================
 # HEALTH CHECK ENDPOINT
 # ============================================================================
@@ -48,16 +57,6 @@ async def health_check():
         "service": "token-usage",
         "timestamp": datetime.utcnow().isoformat()
     }
-
-
-# Configure logging
-logger = logging.getLogger(__name__)
-
-# Create router
-router = APIRouter(
-    prefix="/api/token-usage",
-    tags=["Token Usage"]
-)
 
 
 @router.get("/student/{student_id}")

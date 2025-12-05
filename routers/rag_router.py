@@ -1,9 +1,9 @@
 """
 RAG Router
 
-This module defines FastAPI endpoints for the RAG (Retrieval-Augmented Generation)
-system in the Mentor AI EdTech Platform. It exposes REST API endpoints for
-generating questions using the RAG pipeline.
+This module defines FastAPI endpoints for RAG (Retrieval-Augmented Generation)
+system in Mentor AI EdTech Platform. It exposes REST API endpoints for
+generating questions using RAG pipeline.
 
 Endpoints:
 - POST /generate-questions: Generate questions for a single topic
@@ -32,31 +32,6 @@ from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, status, Request
 from fastapi.responses import JSONResponse
-
-# ============================================================================
-# HEALTH CHECK ENDPOINT
-# ============================================================================
-
-@router.get(
-    "/health",
-    summary="Health Check",
-    description=f"Check if the rag service is operational",
-    tags=["Health"]
-)
-async def health_check():
-    """
-    Health check endpoint.
-    
-    Returns:
-        Service health status
-    """
-    from datetime import datetime
-    return {
-        "status": "healthy",
-        "service": "rag",
-        "timestamp": datetime.utcnow().isoformat()
-    }
-
 
 # Import models
 from models.rag_models import (
@@ -110,6 +85,30 @@ router = APIRouter(
         }
     }
 )
+
+# ============================================================================
+# HEALTH CHECK ENDPOINT
+# ============================================================================
+
+@router.get(
+    "/health",
+    summary="Health Check",
+    description=f"Check if rag service is operational",
+    tags=["Health"]
+)
+async def health_check():
+    """
+    Health check endpoint.
+    
+    Returns:
+        Service health status
+    """
+    from datetime import datetime
+    return {
+        "status": "healthy",
+        "service": "rag",
+        "timestamp": datetime.utcnow().isoformat()
+    }
 
 
 # Initialize RAG service with fallback to mock
@@ -442,7 +441,7 @@ async def generate_batch(
     description="""
     Build and return context for a topic using Gemini-based semantic search.
     
-    This endpoint is primarily for testing and debugging the RAG pipeline.
+    This endpoint is primarily for testing and debugging RAG pipeline.
     It retrieves relevant syllabus content using Gemini API without
     generating questions.
     
@@ -552,7 +551,7 @@ async def build_context(
     
     This endpoint retrieves and displays context information including
     token counts, relevance scores, and content preview without actually
-    calling the LLM for question generation.
+    calling LLM for question generation.
     
     **Use Cases:**
     - Estimating generation costs
@@ -660,7 +659,7 @@ async def preview_context(
     status_code=status.HTTP_200_OK,
     summary="Check RAG pipeline health",
     description="""
-    Check the health status of the RAG pipeline and all its dependencies.
+    Check health status of RAG pipeline and all its dependencies.
     
     This endpoint verifies:
     - RAG Service availability
@@ -750,7 +749,7 @@ async def get_pipeline_status(
     status_code=status.HTTP_200_OK,
     summary="Get generation performance metrics",
     description="""
-    Retrieve comprehensive performance metrics for the RAG system.
+    Retrieve comprehensive performance metrics for RAG system.
     
     This endpoint provides detailed statistics about:
     - Total questions generated

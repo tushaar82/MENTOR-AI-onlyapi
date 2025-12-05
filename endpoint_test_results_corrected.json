@@ -1,0 +1,1126 @@
+{
+  "summary": {
+    "total_tests": 49,
+    "successful_tests": 7,
+    "failed_tests": 42,
+    "success_rate": 14.285714285714285,
+    "timestamp": "2025-12-05T10:34:19.429297"
+  },
+  "status_distribution": {
+    "0": 27,
+    "403": 2,
+    "200": 7,
+    "500": 4,
+    "401": 8,
+    "422": 1
+  },
+  "endpoint_performance": {
+    "": {
+      "total": 1,
+      "success": 0
+    },
+    "api": {
+      "total": 39,
+      "success": 7
+    },
+    "register": {
+      "total": 3,
+      "success": 0
+    },
+    "login": {
+      "total": 3,
+      "success": 0
+    },
+    "token": {
+      "total": 1,
+      "success": 0
+    },
+    "logout": {
+      "total": 1,
+      "success": 0
+    },
+    "me": {
+      "total": 1,
+      "success": 0
+    }
+  },
+  "response_time_stats": {
+    "average": 16.04740734003028,
+    "minimum": 0.0006940364837646484,
+    "maximum": 30
+  },
+  "failed_tests": [
+    {
+      "endpoint": "/",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:21:19.212371"
+    },
+    {
+      "endpoint": "/api/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:21:50.242113"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:22:21.223453"
+    },
+    {
+      "endpoint": "/api/rag/pipeline/status",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:22:52.242089"
+    },
+    {
+      "endpoint": "/api/analytics/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:23:23.243665"
+    },
+    {
+      "endpoint": "/api/guidance/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:23:54.225931"
+    },
+    {
+      "endpoint": "/api/auth/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:24:25.242475"
+    },
+    {
+      "endpoint": "/api/ai-features/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:24:56.243992"
+    },
+    {
+      "endpoint": "/api/token-usage/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:25:27.232886"
+    },
+    {
+      "endpoint": "/api/study-center/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:25:58.232552"
+    },
+    {
+      "endpoint": "/register/parent/email",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 201,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:26:29.244366"
+    },
+    {
+      "endpoint": "/register/parent/phone",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 201,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:27:00.242225"
+    },
+    {
+      "endpoint": "/register/parent/google",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 201,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:27:31.244207"
+    },
+    {
+      "endpoint": "/login/email",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:28:02.242954"
+    },
+    {
+      "endpoint": "/login/phone",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:28:33.242623"
+    },
+    {
+      "endpoint": "/login/google",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:29:04.223170"
+    },
+    {
+      "endpoint": "/token/refresh",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:29:35.242440"
+    },
+    {
+      "endpoint": "/logout",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:30:06.242415"
+    },
+    {
+      "endpoint": "/me",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:30:37.214376"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/generate",
+      "method": "POST",
+      "status_code": 403,
+      "expected_status": 201,
+      "success": false,
+      "response_time": 21.98465847969055,
+      "response_data": {
+        "detail": "Student ID does not match authenticated user"
+      },
+      "timestamp": "2025-12-05T10:30:59.300810"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/generate-async",
+      "method": "POST",
+      "status_code": 403,
+      "expected_status": 202,
+      "success": false,
+      "response_time": 0.004586696624755859,
+      "response_data": {
+        "detail": "Student ID does not match authenticated user"
+      },
+      "timestamp": "2025-12-05T10:30:59.305563"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/student/test_student_123",
+      "method": "GET",
+      "status_code": 500,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.01992654800415039,
+      "response_data": {
+        "success": false,
+        "error": {
+          "type": "AttributeError",
+          "message": "'NoneType' object has no attribute 'HTTP_403_FORBIDDEN'",
+          "detail": "An internal server error occurred. Please try again later."
+        }
+      },
+      "timestamp": "2025-12-05T10:30:59.331518"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/schedule",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 201,
+      "success": false,
+      "response_time": 0.0006940364837646484,
+      "error": "[Errno None] Can not write request body for http://localhost:8000/api/diagnostic-test/schedule",
+      "timestamp": "2025-12-05T10:30:59.332449"
+    },
+    {
+      "endpoint": "/api/rag/generate-questions",
+      "method": "POST",
+      "status_code": 500,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.05399370193481445,
+      "response_data": {
+        "detail": "Failed to generate questions: 'coroutine' object has no attribute 'questions'"
+      },
+      "timestamp": "2025-12-05T10:30:59.487188"
+    },
+    {
+      "endpoint": "/api/rag/generate-batch",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:31:30.227461"
+    },
+    {
+      "endpoint": "/api/guidance/activity/log",
+      "method": "POST",
+      "status_code": 500,
+      "expected_status": 201,
+      "success": false,
+      "response_time": 0.11104488372802734,
+      "response_data": {
+        "detail": "Failed to log activity. Please try again later."
+      },
+      "timestamp": "2025-12-05T10:31:30.484801"
+    },
+    {
+      "endpoint": "/api/guidance/analyze/test_student_123",
+      "method": "POST",
+      "status_code": 500,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.12533903121948242,
+      "response_data": {
+        "detail": "Failed to complete analysis. Please try again later."
+      },
+      "timestamp": "2025-12-05T10:31:30.611325"
+    },
+    {
+      "endpoint": "/api/analytics/student/test_student_123",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:32:01.223206"
+    },
+    {
+      "endpoint": "/api/analytics/test/test_123",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:32:32.241890"
+    },
+    {
+      "endpoint": "/api/analytics/analytics_123",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:33:03.223483"
+    },
+    {
+      "endpoint": "/api/analytics/analytics_123/insights",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:33:34.243073"
+    },
+    {
+      "endpoint": "/api/analytics/analytics_123/weak-topics",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:34:05.239673"
+    },
+    {
+      "endpoint": "/api/token-usage/limits/student/test_student_123",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.012146711349487305,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:05.353427"
+    },
+    {
+      "endpoint": "/api/token-usage/parent",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.008562564849853516,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:05.363278"
+    },
+    {
+      "endpoint": "/api/token-usage/student/test_student_123",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.009043216705322266,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:05.373570"
+    },
+    {
+      "endpoint": "/api/token-usage/summary/parent",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.008282184600830078,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:05.383134"
+    },
+    {
+      "endpoint": "/api/study-center/topics",
+      "method": "GET",
+      "status_code": 422,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.009099245071411133,
+      "response_data": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "query",
+              "student_id"
+            ],
+            "msg": "Field required",
+            "input": null,
+            "url": "https://errors.pydantic.dev/2.4/v/missing"
+          }
+        ]
+      },
+      "timestamp": "2025-12-05T10:34:05.393422"
+    },
+    {
+      "endpoint": "/api/study-center/journey/test_student_123",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 13.415596961975098,
+      "error": "Server disconnected",
+      "timestamp": "2025-12-05T10:34:19.265170"
+    },
+    {
+      "endpoint": "/api/ai-features/dashboard",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.014388322830200195,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:19.279969"
+    },
+    {
+      "endpoint": "/api/ai-features/insights",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.0113677978515625,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:19.292226"
+    },
+    {
+      "endpoint": "/api/vector-search/embeddings/status",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.006197452545166016,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:19.299275"
+    },
+    {
+      "endpoint": "/api/vector-search/index/status",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.008473873138427734,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:19.308705"
+    }
+  ],
+  "all_results": [
+    {
+      "endpoint": "/",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:21:19.212371"
+    },
+    {
+      "endpoint": "/api/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:21:50.242113"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:22:21.223453"
+    },
+    {
+      "endpoint": "/api/rag/pipeline/status",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:22:52.242089"
+    },
+    {
+      "endpoint": "/api/analytics/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:23:23.243665"
+    },
+    {
+      "endpoint": "/api/guidance/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:23:54.225931"
+    },
+    {
+      "endpoint": "/api/auth/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:24:25.242475"
+    },
+    {
+      "endpoint": "/api/ai-features/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:24:56.243992"
+    },
+    {
+      "endpoint": "/api/token-usage/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:25:27.232886"
+    },
+    {
+      "endpoint": "/api/study-center/health",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:25:58.232552"
+    },
+    {
+      "endpoint": "/register/parent/email",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 201,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:26:29.244366"
+    },
+    {
+      "endpoint": "/register/parent/phone",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 201,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:27:00.242225"
+    },
+    {
+      "endpoint": "/register/parent/google",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 201,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:27:31.244207"
+    },
+    {
+      "endpoint": "/login/email",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:28:02.242954"
+    },
+    {
+      "endpoint": "/login/phone",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:28:33.242623"
+    },
+    {
+      "endpoint": "/login/google",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:29:04.223170"
+    },
+    {
+      "endpoint": "/token/refresh",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:29:35.242440"
+    },
+    {
+      "endpoint": "/logout",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:30:06.242415"
+    },
+    {
+      "endpoint": "/me",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:30:37.214376"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/generate",
+      "method": "POST",
+      "status_code": 403,
+      "expected_status": 201,
+      "success": false,
+      "response_time": 21.98465847969055,
+      "response_data": {
+        "detail": "Student ID does not match authenticated user"
+      },
+      "timestamp": "2025-12-05T10:30:59.300810"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/generate-async",
+      "method": "POST",
+      "status_code": 403,
+      "expected_status": 202,
+      "success": false,
+      "response_time": 0.004586696624755859,
+      "response_data": {
+        "detail": "Student ID does not match authenticated user"
+      },
+      "timestamp": "2025-12-05T10:30:59.305563"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/test_mock_123/metadata",
+      "method": "GET",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response_time": 0.005515336990356445,
+      "response_data": {
+        "test_id": "test_mock_123",
+        "exam_type": "JEE_MAIN",
+        "student_id": "test_parent_123",
+        "generation_date": "2025-12-05T10:30:59.309224",
+        "start_date": null,
+        "submission_date": null,
+        "status": "pending"
+      },
+      "timestamp": "2025-12-05T10:30:59.311407"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/student/test_student_123",
+      "method": "GET",
+      "status_code": 500,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.01992654800415039,
+      "response_data": {
+        "success": false,
+        "error": {
+          "type": "AttributeError",
+          "message": "'NoneType' object has no attribute 'HTTP_403_FORBIDDEN'",
+          "detail": "An internal server error occurred. Please try again later."
+        }
+      },
+      "timestamp": "2025-12-05T10:30:59.331518"
+    },
+    {
+      "endpoint": "/api/diagnostic-test/schedule",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 201,
+      "success": false,
+      "response_time": 0.0006940364837646484,
+      "error": "[Errno None] Can not write request body for http://localhost:8000/api/diagnostic-test/schedule",
+      "timestamp": "2025-12-05T10:30:59.332449"
+    },
+    {
+      "endpoint": "/api/rag/generate-questions",
+      "method": "POST",
+      "status_code": 500,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.05399370193481445,
+      "response_data": {
+        "detail": "Failed to generate questions: 'coroutine' object has no attribute 'questions'"
+      },
+      "timestamp": "2025-12-05T10:30:59.487188"
+    },
+    {
+      "endpoint": "/api/rag/generate-batch",
+      "method": "POST",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:31:30.227461"
+    },
+    {
+      "endpoint": "/api/rag/context/build",
+      "method": "POST",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response_time": 0.017551660537719727,
+      "response_data": {
+        "context": "Exam: JEE_MAIN\nSubject: Physics\nChapter: Thermodynamics and Fluid Mechanics (Weightage: 20%)\nTopic: Thermodynamics (Weightage: 4%)\nDifficulty: medium\nDescription: Laws of thermodynamics\n\nSubtopics:\n\nLaws of Thermodynamics:\nContent: Thermal equilibrium and the concept of temperature, zeroth law of thermodynamics, heat, work and internal energy. The first law of thermodynamics, isothermal and adiabatic processes. The second law of thermodynamics: reversible and irreversible processes.\nKey Concepts: Zeroth law, First law, Second law, Internal energy, Entropy\nFormulas: \u0394U = Q - W, PV^\u03b3 = constant, \u0394S \u2265 0 for irreversible processes\n",
+        "sources": "Gemini-based semantic search",
+        "token_count": 158,
+        "topic": "Thermodynamics",
+        "exam_type": "JEE_MAIN",
+        "method": "gemini_api",
+        "timestamp": "2025-12-05T10:31:30.241666"
+      },
+      "timestamp": "2025-12-05T10:31:30.245451"
+    },
+    {
+      "endpoint": "/api/rag/context/preview",
+      "method": "POST",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response_time": 0.016020774841308594,
+      "response_data": {
+        "context_preview": "Exam: JEE_ADVANCED\nSubject: Physics\nChapter: Mechanics (Weightage: 30%)\nTopic: Mechanics of Solids and Fluids (Weightage: 8%)\nDifficulty: medium\nDescription: Properties of solids and fluids\n\nSubtopics:\n\nSolids and Fluids:\nContent: Pressure in a fluid; Pascal's law; Buoyancy; Surface energy and surface tension, angle of contact, drops, bubbles and capillary rise. Viscosity (Poiseuille's equation excluded), Modulus of rigidity and bulk modulus in mechanics. Stoke's law; Terminal velocity, Streamli...",
+        "full_length": 994,
+        "token_count": 248,
+        "estimated_cost": 3.1e-05,
+        "topic": "Mechanics",
+        "exam_type": "JEE_ADVANCED",
+        "timestamp": "2025-12-05T10:31:30.259126"
+      },
+      "timestamp": "2025-12-05T10:31:30.262264"
+    },
+    {
+      "endpoint": "/api/rag/metrics",
+      "method": "GET",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response_time": 0.008282661437988281,
+      "response_data": {
+        "total_generated": 0,
+        "success_rate": 0.0,
+        "avg_quality_score": 0.0,
+        "avg_generation_time": 0.0,
+        "cache_hit_rate": 0.0,
+        "total_requests": 0,
+        "failed_requests": 0,
+        "high_quality_rate": 0.0
+      },
+      "timestamp": "2025-12-05T10:31:30.271621"
+    },
+    {
+      "endpoint": "/api/guidance/activity/log",
+      "method": "POST",
+      "status_code": 500,
+      "expected_status": 201,
+      "success": false,
+      "response_time": 0.11104488372802734,
+      "response_data": {
+        "detail": "Failed to log activity. Please try again later."
+      },
+      "timestamp": "2025-12-05T10:31:30.484801"
+    },
+    {
+      "endpoint": "/api/guidance/analyze/test_student_123",
+      "method": "POST",
+      "status_code": 500,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.12533903121948242,
+      "response_data": {
+        "detail": "Failed to complete analysis. Please try again later."
+      },
+      "timestamp": "2025-12-05T10:31:30.611325"
+    },
+    {
+      "endpoint": "/api/analytics/student/test_student_123",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:32:01.223206"
+    },
+    {
+      "endpoint": "/api/analytics/test/test_123",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:32:32.241890"
+    },
+    {
+      "endpoint": "/api/analytics/analytics_123",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:33:03.223483"
+    },
+    {
+      "endpoint": "/api/analytics/analytics_123/insights",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:33:34.243073"
+    },
+    {
+      "endpoint": "/api/analytics/analytics_123/weak-topics",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 30,
+      "error": "Request timeout",
+      "timestamp": "2025-12-05T10:34:05.239673"
+    },
+    {
+      "endpoint": "/api/token-usage/limits/student/test_student_123",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.012146711349487305,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:05.353427"
+    },
+    {
+      "endpoint": "/api/token-usage/parent",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.008562564849853516,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:05.363278"
+    },
+    {
+      "endpoint": "/api/token-usage/student/test_student_123",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.009043216705322266,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:05.373570"
+    },
+    {
+      "endpoint": "/api/token-usage/summary/parent",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.008282184600830078,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:05.383134"
+    },
+    {
+      "endpoint": "/api/study-center/topics",
+      "method": "GET",
+      "status_code": 422,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.009099245071411133,
+      "response_data": {
+        "detail": [
+          {
+            "type": "missing",
+            "loc": [
+              "query",
+              "student_id"
+            ],
+            "msg": "Field required",
+            "input": null,
+            "url": "https://errors.pydantic.dev/2.4/v/missing"
+          }
+        ]
+      },
+      "timestamp": "2025-12-05T10:34:05.393422"
+    },
+    {
+      "endpoint": "/api/study-center/progress/test_student_123",
+      "method": "GET",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response_time": 0.45439982414245605,
+      "response_data": {
+        "success": true,
+        "message": "Progress retrieved successfully",
+        "data": {
+          "student_id": "test_student_123",
+          "total_topics": 0,
+          "completed_topics": 0,
+          "completion_percentage": 0.0,
+          "total_study_time_hours": 0.0,
+          "current_streak_days": 0,
+          "topics_by_subject": {}
+        }
+      },
+      "timestamp": "2025-12-05T10:34:05.849084"
+    },
+    {
+      "endpoint": "/api/study-center/journey/test_student_123",
+      "method": "GET",
+      "status_code": 0,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 13.415596961975098,
+      "error": "Server disconnected",
+      "timestamp": "2025-12-05T10:34:19.265170"
+    },
+    {
+      "endpoint": "/api/ai-features/dashboard",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.014388322830200195,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:19.279969"
+    },
+    {
+      "endpoint": "/api/ai-features/insights",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.0113677978515625,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:19.292226"
+    },
+    {
+      "endpoint": "/api/vector-search/embeddings/status",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.006197452545166016,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:19.299275"
+    },
+    {
+      "endpoint": "/api/vector-search/index/status",
+      "method": "GET",
+      "status_code": 401,
+      "expected_status": 200,
+      "success": false,
+      "response_time": 0.008473873138427734,
+      "response_data": {
+        "detail": "Invalid token. Please login again."
+      },
+      "timestamp": "2025-12-05T10:34:19.308705"
+    },
+    {
+      "endpoint": "/api/vidhya/health",
+      "method": "GET",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response_time": 0.007425069808959961,
+      "response_data": {
+        "status": "healthy",
+        "service": "vidhya-ai-agent",
+        "timestamp": "2025-12-05T10:34:19.313442",
+        "features": {
+          "multilingual_support": true,
+          "chat_history": true,
+          "session_management": true
+        }
+      },
+      "timestamp": "2025-12-05T10:34:19.317163"
+    },
+    {
+      "endpoint": "/api/vidhya/languages",
+      "method": "GET",
+      "status_code": 200,
+      "expected_status": 200,
+      "success": true,
+      "response_time": 0.010362625122070312,
+      "response_data": {
+        "success": true,
+        "data": {
+          "en": "English",
+          "hi": "\u0939\u093f\u0928\u094d\u0926\u0940 (Hindi)",
+          "bn": "\u09ac\u09be\u0982\u09b2\u09be (Bengali)",
+          "te": "\u0c24\u0c46\u0c32\u0c41\u0c17\u0c41 (Telugu)",
+          "ta": "\u0ba4\u0bae\u0bbf\u0bb4\u0bcd (Tamil)",
+          "mr": "\u092e\u0930\u093e\u0920\u0940 (Marathi)",
+          "gu": "\u0a97\u0ac1\u0a9c\u0ab0\u0abe\u0aa4\u0ac0 (Gujarati)",
+          "kn": "\u0c95\u0ca8\u0ccd\u0ca8\u0ca1 (Kannada)",
+          "ml": "\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02 (Malayalam)",
+          "pa": "\u0a2a\u0a70\u0a1c\u0a3e\u0a2c\u0a40 (Punjabi)"
+        }
+      },
+      "timestamp": "2025-12-05T10:34:19.328201"
+    }
+  ]
+}

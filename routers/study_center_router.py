@@ -32,6 +32,18 @@ from services.study_center_service import get_study_center_service
 from services.progress_tracker_service import get_progress_tracker_service
 from middleware.testing_auth import get_current_user_testing as get_current_user
 
+# Configure logging
+logger = logging.getLogger(__name__)
+
+# Create API router
+router = APIRouter(
+    prefix="/api/study-center",
+    tags=["Study Center"]
+)
+
+# Security
+security = [HTTPBearer()]
+
 # ============================================================================
 # HEALTH CHECK ENDPOINT
 # ============================================================================
@@ -55,19 +67,6 @@ async def health_check():
         "service": "study-center",
         "timestamp": datetime.utcnow().isoformat()
     }
-
-
-# Configure logging
-logger = logging.getLogger(__name__)
-
-# Create API router
-router = APIRouter(
-    prefix="/api/study-center",
-    tags=["Study Center"]
-)
-
-# Security
-security = [HTTPBearer()]
 
 
 @router.get(
