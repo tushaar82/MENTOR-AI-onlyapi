@@ -1131,7 +1131,7 @@ Requirements:
 5. Return top {len(resources)} resources
 
 Format as JSON array of resource IDs in ranking order:
-["resource_id1", "resource_id2", ...]
+["resource_id1", "resource_id2", "resource_id3", "resource_id4"]
 """
             
             # Generate filtering using AI service
@@ -1201,7 +1201,8 @@ Format as JSON array of strings:
 [
     "recommendation 1",
     "recommendation 2",
-    ...
+    "recommendation 3",
+    "recommendation 4"
 ]
 """
             
@@ -1267,7 +1268,8 @@ Format as JSON array of strings:
 [
     "next step 1",
     "next step 2",
-    ...
+    "next step 3",
+    "next step 4"
 ]
 """
             
@@ -1429,7 +1431,8 @@ Format as JSON array of strings:
 [
     "insight 1",
     "insight 2",
-    ...
+    "insight 3",
+    "insight 4"
 ]
 """
             

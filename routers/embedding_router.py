@@ -136,7 +136,7 @@ def check_rate_limit(user_id: str) -> None:
             "content": {
                 "application/json": {
                     "example": {
-                        "embedding": [0.123, -0.456, 0.789, "..."],
+                        "embedding": [0.123, -0.456, 0.789, 0.012, -0.345],  # Truncated for example
                         "dimension": 768,
                         "model": "textembedding-gecko@003",
                         "timestamp": "2025-11-26T10:30:00.000Z",
@@ -201,7 +201,7 @@ async def generate_embedding(
         Response:
         ```json
         {
-            "embedding": [0.123, -0.456, ...],  # 768 dimensions
+            "embedding": [0.123, -0.456, 0.789, 0.012, -0.345],  # 768 dimensions (truncated)
             "dimension": 768,
             "model": "textembedding-gecko@003",
             "timestamp": "2025-11-26T10:30:00.000Z"

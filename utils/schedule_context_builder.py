@@ -766,7 +766,7 @@ Generate a JSON schedule with the following structure:
   ],
   "revision_schedule": {
     "revision_days": [68, 69, 70, 71, 72, 73, 74, 75],
-    "topics_to_revise": ["<topic1>", "<topic2>", ...]
+    "topics_to_revise": ["<topic1>", "<topic2>", "<topic3>", "<topic4>"]
   },
   "practice_tests": {
     "test_days": [7, 14, 21, 28, 35, 42, 49, 56, 63, 70],

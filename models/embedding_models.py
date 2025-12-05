@@ -192,7 +192,7 @@ class EmbeddingResponse(BaseModel):
     
     Example:
         >>> response = EmbeddingResponse(
-        ...     embedding=[0.123, -0.456, 0.789, ...],  # 768 dimensions
+        ...     embedding=[0.123, -0.456, 0.789, 0.012, -0.345],  # 768 dimensions (truncated)
         ...     dimension=768,
         ...     model="textembedding-gecko@003",
         ...     timestamp=datetime.utcnow(),

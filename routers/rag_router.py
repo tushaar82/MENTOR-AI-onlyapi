@@ -21,8 +21,8 @@ Example Usage:
     >>> uvicorn main:app --reload
     >>> 
     >>> # Generate questions
-    >>> curl -X POST http://localhost:8000/api/rag/generate-questions \\
-    ...      -H "Content-Type: application/json" \\
+    >>> curl -X POST http://localhost:8000/api/rag/generate-questions \
+    ...      -H "Content-Type: application/json" \
     ...      -d '{"topic":"Calculus","exam_type":"JEE_MAIN","difficulty":"medium"}'
 """
 
@@ -189,7 +189,7 @@ async def generate_questions(
     Example Response:
         ```json
         {
-            "questions": [...],
+            "questions": [],
             "metadata": {
                 "topic": "Limits and Continuity",
                 "exam_type": "JEE_MAIN",
@@ -275,7 +275,7 @@ async def generate_questions(
     "/generate-batch",
     response_model=Dict[str, RAGResponse],
     status_code=status.HTTP_200_OK,
-    summary="Generate questions for multiple topics",
+    summary="Generate questions for multiple topics",   
     description="""
     Generate questions for multiple topics in a single request.
     
@@ -331,22 +331,19 @@ async def generate_batch(
         ```json
         {
             "Calculus": {
-                "questions": [...],
+                "questions": [],
                 "metadata": {...},
-                "generation_time": 3.2,
-                ...
+                "generation_time": 3.2
             },
             "Algebra": {
-                "questions": [...],
+                "questions": [],
                 "metadata": {...},
-                "generation_time": 2.8,
-                ...
+                "generation_time": 2.8
             },
             "Trigonometry": {
-                "questions": [...],
+                "questions": [],
                 "metadata": {...},
-                "generation_time": 3.0,
-                ...
+                "generation_time": 3.0
             }
         }
         ```

@@ -660,8 +660,19 @@ async def health_check():
         db_status = "healthy"
         
         # Check AI services
-        gemini_status = "healthy" if gemini_service else "unhealthy"
-        rag_status = "healthy" if rag_service else "unhealthy"
+        try:
+            gemini_service = get_gemini_service()
+            gemini_status = "healthy" if gemini_service else "unhealthy"
+        except Exception as e:
+            logger.warning(f"Gemini service health check failed: {e}")
+            gemini_status = "unhealthy"
+            
+        try:
+            rag_service = RAGService()
+            rag_status = "healthy" if rag_service else "unhealthy"
+        except Exception as e:
+            logger.warning(f"RAG service health check failed: {e}")
+            rag_status = "unhealthy"
         
         overall_status = "healthy" if all([
             db_status == "healthy",

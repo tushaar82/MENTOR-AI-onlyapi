@@ -18,7 +18,7 @@ Version: 1.0.0
 """
 
 import logging
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Union
 from datetime import datetime
 
 from fastapi import APIRouter, HTTPException, Depends, Query, status
@@ -94,7 +94,7 @@ class InsightsResponse(BaseModel):
     success: bool
     student_id: str
     insight_type: str
-    data: List[Dict[str, Any]] or Dict[str, Any]
+    data: Union[List[Dict[str, Any]], Dict[str, Any]]
     summary: str
     metadata: Dict[str, Any]
     
@@ -105,10 +105,10 @@ class InsightsResponse(BaseModel):
                 "student_id": "student_123",
                 "insight_type": "comprehensive",
                 "data": {
-                    "learning_patterns": [...],
-                    "knowledge_gaps": [...],
-                    "learning_strengths": [...],
-                    "recommendations": [...]
+                    "learning_patterns": [],
+                    "knowledge_gaps": [],
+                    "learning_strengths": [],
+                    "recommendations": []
                 },
                 "summary": "Comprehensive insights with 5 patterns, 3 gaps, 2 strengths, and 8 recommendations",
                 "metadata": {
@@ -141,8 +141,8 @@ class RecommendationsResponse(BaseModel):
                         "title": "Review Heat Transfer Basics",
                         "description": "Master foundational concepts before tackling thermodynamics",
                         "estimated_time_hours": 3.0,
-                        "resources": [...],
-                        "action_steps": [...]
+                        "resources": [],
+                        "action_steps": []
                     }
                 ],
                 "summary": {

@@ -251,8 +251,8 @@ class GeminiAnalyticsService:
                 "metadata": {
                     "generated_at": "...",
                     "exam_type": "...",
-                    "tokens_used": {...},
-                    "generation_time": ...
+                    "tokens_used": {"input_tokens": 100, "output_tokens": 200},
+                    "generation_time": 2.5
                 }
             }
         

@@ -179,15 +179,15 @@ class InteractiveStudyToolsService:
         exercise_creator: Collaborative exercise creation
     
     Example:
-        >>> service = InteractiveStudyToolsService()
-        >>> result = service.create_study_session(
-        ...     parent_id="parent123",
-        ...     child_id="child123",
-        ...     session_type=StudySessionType.COLLABORATIVE_LEARNING,
-        ...     subject="Mathematics",
-        ...     topic="Algebra Basics"
-        ... )
-        >>> print(f"Session created: {result['session_id']}")
+        service = InteractiveStudyToolsService()
+        result = service.create_study_session(
+            parent_id="parent123",
+            child_id="child123",
+            session_type=StudySessionType.COLLABORATIVE_LEARNING,
+            subject="Mathematics",
+            topic="Algebra Basics"
+        )
+        print(f"Session created: {result['session_id']}")
     """
     
     def __init__(
